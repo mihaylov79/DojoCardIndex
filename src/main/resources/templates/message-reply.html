@@ -1,0 +1,30 @@
+<!-- reply.html - Страница за отговор на съобщение -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отговор на съобщение</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/replay.css">
+</head>
+<body>
+
+    <header>
+
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
+    </header>
+    <div class="container-replay">
+            <h2 th:text="'Отговор на съобщение от ' + ${message.sender.firstName} + ' ' + ${message.sender.lastName}">Отговор на съобщение от ...</h2>
+            <form class="replay" th:action="@{/messages/reply}" th:method="POST">
+                <input type="hidden" name="responseToMessageId" th:value="${message.id}" />
+                <label>Съобщение:</label>
+                <p th:text="${message.content}"></p>
+                <textarea name="content" placeholder="Вашият отговор..." required th:text="'Отговор: '"></textarea>
+                <button type="submit">Изпрати</button>
+            </form>
+    <a href="/home">Назад</a>
+</div>
+</body>
+</html>

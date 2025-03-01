@@ -1,0 +1,240 @@
+package cardindex.dojocardindex.User.service;
+
+
+import cardindex.dojocardindex.User.models.RegistrationStatus;
+import cardindex.dojocardindex.User.models.User;
+import cardindex.dojocardindex.User.models.UserStatus;
+import cardindex.dojocardindex.User.repository.UserRepository;
+import cardindex.dojocardindex.Utils.PasswordGenerator;
+import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
+import cardindex.dojocardindex.exceptions.UserNotFoundException;
+import cardindex.dojocardindex.security.CustomUserDetails;
+import cardindex.dojocardindex.web.dto.CreateUserRequest;
+import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
+import cardindex.dojocardindex.web.dto.RegisterRequest;
+import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
+import lombok.Builder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Builder(toBuilder = true)
+@Service
+public class UserService implements UserDetailsService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public void register(RegisterRequest registerRequest){
+        Optional<User>userByEmail = userRepository.findByEmail(registerRequest.getEmail());
+
+        if (userByEmail.isEmpty()){
+            throw new UserNotFoundException();
+        }
+
+        if (userByEmail.get().getRegistrationStatus() == RegistrationStatus.REGISTERED) {
+            throw new UserAlreadyExistException();
+        }
+
+        if (userByEmail.get().getRegistrationStatus() == RegistrationStatus.PENDING){
+            throw new UserAlreadyExistException("Този потребител е регистриран , но изчаква потвърждение от Администратор.");
+        }
+
+        User user = userRepository.getByEmail(registerRequest.getEmail());
+
+        if(userByEmail.get().getRegistrationStatus() == RegistrationStatus.NOT_REGISTERED) {
+            user = user.toBuilder()
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .firstName(registerRequest.getFirstName())
+                    .lastName(registerRequest.getLastName())
+                    .registrationStatus(RegistrationStatus.PENDING).build();
+
+         userRepository.save(user);
+
+        }
+
+    }
+
+    public void createNewUser(CreateUserRequest createUserRequest){
+
+
+        String generatedPassword = PasswordGenerator.generateRandomPassword(12);
+
+        User user = User.builder()
+                .email(createUserRequest.getEmail())
+                .password(passwordEncoder.encode(generatedPassword))
+//                .status(createUserRequest.getStatus())
+                .firstName(createUserRequest.getFirstName())
+                .lastName(createUserRequest.getLastName())
+                .userPhone(createUserRequest.getUserPhone())
+                .profilePicture(createUserRequest.getProfilePicture())
+                .birthDate(createUserRequest.getBirthDate())
+                .reachedDegree(createUserRequest.getReachedDegree())
+                .ageGroup(createUserRequest.getAgeGroup())
+                .isCompetitor(createUserRequest.getIsCompetitor())
+                .height(createUserRequest.getHeight())
+                .weight(createUserRequest.getWeight())
+                .contactPerson(createUserRequest.getContactPerson())
+                .role(createUserRequest.getRole())
+                .status(UserStatus.ACTIVE)
+                .registrationStatus(RegistrationStatus.NOT_REGISTERED).build();
+
+        userRepository.save(user);
+    }
+
+    public void editUserProfile(UUID userId, EditUserProfileRequest editUserProfileRequest){
+
+        User user = getUserById(userId);
+
+        user = user.toBuilder()
+                .firstName(editUserProfileRequest.getFirstName())
+                .lastName(editUserProfileRequest.getLastName())
+                .userPhone(editUserProfileRequest.getUserPhone())
+                .profilePicture(editUserProfileRequest.getProfilePicture())
+                .birthDate(editUserProfileRequest.getBirthDate())
+                .interests(editUserProfileRequest.getInterests())
+                .height(editUserProfileRequest.getHeight())
+                .weight(editUserProfileRequest.getWeight())
+                .contactPerson(editUserProfileRequest.getContactPerson())
+                .contactPersonPhone(editUserProfileRequest.getContactPersonPhone())
+                .build();
+
+        userRepository.save(user);
+    }
+
+    public void editUserProfileByAdmin(UUID userId, UserEditAdminRequest userEditAdminRequest) {
+
+        User user = getUserById(userId);
+
+        user = user.toBuilder()
+                .userPhone(userEditAdminRequest.getUserPhone())
+                .birthDate(userEditAdminRequest.getBirthDate())
+                .role(userEditAdminRequest.getRole())
+                .isCompetitor(userEditAdminRequest.getIsCompetitor())
+                .status(userEditAdminRequest.getStatus())
+                .registrationStatus(userEditAdminRequest.getRegistrationStatus())
+                .reachedDegree(userEditAdminRequest.getReachedDegree())
+                .ageGroup(userEditAdminRequest.getAgeGroup())
+                .height(userEditAdminRequest.getHeight())
+                .weight(userEditAdminRequest.getWeight())
+                .medicalExamsPassed(userEditAdminRequest.getMedicalExamsPassed())
+                .contactPerson(userEditAdminRequest.getContactPerson())
+                .contactPersonPhone(userEditAdminRequest.getUserPhone())
+                .build();
+
+        userRepository.save(user);
+    }
+
+    public User findUserByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("Потребител с електронна поща  [%s] не съществува"));
+    }
+
+    public User getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Потребителят не е намерен в базата данни!"));
+    }
+
+    public User getUserById(UUID userId){
+       return userRepository.findById(userId)
+               .orElseThrow(()-> new UserNotFoundException("Потребител с идентификация: [%s] не е намерен."
+                       .formatted(userId)));
+    }
+
+    public void modifyAccStatus(UUID userId){
+
+        User user = getUserById(userId);
+
+        if (user.getStatus()== UserStatus.ACTIVE){
+
+            user = user.toBuilder()
+                    .status(UserStatus.INACTIVE)
+                    .build();
+        } else if (user.getStatus()== UserStatus.INACTIVE){
+
+            user = user.toBuilder()
+                    .status(UserStatus.ACTIVE)
+                    .build();
+        }
+
+        userRepository.save(user);
+    }
+
+    public void approveRequest(UUID userId){
+
+        User user = getUserById(userId);
+
+        user = user.toBuilder()
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .build();
+
+        userRepository.save(user);
+    }
+
+    public void denyRequest(UUID userId){
+
+        User user = getUserById(userId);
+
+        user = user.toBuilder()
+                .registrationStatus(RegistrationStatus.NOT_REGISTERED)
+                .build();
+
+        userRepository.save(user);
+    }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAll(Sort.by(Sort.Order.desc("registrationStatus"),Sort.Order.desc("status")));
+    }
+
+    public List<User> getAllActiveUsers() {
+
+        return userRepository.findByStatusAndRegistrationStatus(UserStatus.ACTIVE,RegistrationStatus.REGISTERED);
+    }
+
+    public List<User> getRegisterRequests() {
+
+        return userRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
+    }
+
+
+    public Map<UUID, Integer> getUserAges(List<User> users) {
+        return users.stream()
+                .collect(Collectors.toMap(User::getId, user -> calculateAge(user.getBirthDate())));
+    }
+
+    public int calculateAge(LocalDate birthdate) {
+        return birthdate != null ? Period.between(birthdate, LocalDate.now()).getYears() : 0;
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+            User user = userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundException("User with this email does not exist."));
+
+        return new CustomUserDetails(user.getId(), user.getEmail(),user.getPassword(),user.getRole(),user.getRegistrationStatus(),user.getStatus());
+    }
+}

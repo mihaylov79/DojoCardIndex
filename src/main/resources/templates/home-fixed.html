@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Добре дошъл ' + ${user.firstName} + ' ' + ${user.lastName}"></title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+    <header>
+
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
+    </header>
+
+    <div class="main-container">
+        <div class="user-info">
+            <div class="user-bio">
+                <table class="info">
+                    <tr>
+                        <th><img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="Профилна снимка"></th>
+                        <td class="user-buttons">
+                            <button th:attr="onclick=|location.href='/user/details/edit/' + '${user.id}'|">Редактиране</button>
+                            <button onclick="location.href='/messages/send'">Съобщение</button>
+                        </td>
+                    </tr>
+                    <tr><th>Име</th><td th:text="${user.firstName}"></td></tr>
+                    <tr><th>Фамилия</th><td th:text="${user.lastName}"></td></tr>
+                    <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${user.birthDate}"></td></tr>
+                    <tr th:if="${user.role != null} != null"><th>Позиция в клуба</th><td th:text="${user.role.description}"></td></tr>
+                    <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.getRank()} + ' ' + ${user.reachedDegree.getLevel()}"></td></tr>
+                    <tr th:if="${user.interests} != null"><th>Интереси</th><td th:text="${user.interests}"></td></tr>
+                    <tr th:if="${user.isCompetitor} == true"><th>Статус</th><td>състезател</td></tr>
+                    <tr th:if="${user.ageGroup} != null"><th>Възрастова група</th><td th:text="${user.ageGroup.description}"></td></tr>
+<!--                    <tr><th>Категория</th><td th:text="${user.category}"></td></tr>-->
+                    <tr th:if="${user.height} != 0"><th>Ръст</th><td th:text="${user.height}"></td></tr>
+                    <tr th:if="${user.weight} != 0"><th>Тегло</th><td th:text="${user.weight}"></td></tr>
+                    <tr th:if="${user.medicalExamsPassed} != null"><th>Медицински преглед</th><td th:text="${user.medicalExamsPassed}"></td></tr>
+                    <tr th:if="${user.contactPerson != null and !#strings.isEmpty(user.contactPerson)}"><th>Лице за контакт</th><td th:text="${user.contactPerson}"></td></tr>
+                    <tr th:if="${user.contactPersonPhone} != null"><th>Телефон</th><td th:text="${user.contactPersonPhone}"></td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="messages">
+            <div class="user-messages">
+                <table class="private-messages">
+                    <caption>Лични Съобщения</caption>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>От</th>
+                            <th>Съдържание</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody th:if="${messages != null and not #lists.isEmpty(messages)}">
+                    <tr th:each="message : ${messages}">
+                        <td th:text="${#temporals.format(message.created,'dd-MM-yyyy HH:mm')}"></td> <!-- Дата на съобщението -->
+                        <td th:text="${message.sender.firstName + ' ' + message.sender.lastName}"></td> <!-- Изпращач -->
+                        <td th:text="${message.content}"></td> <!-- Съдържание -->
+                        <td class="action-buttons">
+                            <a th:href="@{/messages/reply/{id}(id=${message.id})}">
+                                <button>Отговори</button>
+                            </a>
+                            <a th:href="@{/messages/remove/{id}(id=${message.id})}">
+                                <button>Изчисти</button>
+                            </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="user-events">
+                <table>
+                    <caption>Предстоящи събития</caption>
+                    <thead>
+                        <tr>
+                            <th>Начална дата</th>
+                            <th>Крайна дата</th>
+                            <th>Събитие</th>
+                            <th>Изискване</th>
+                            <th>Място</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="event : ${events}">
+                            <td th:text="${event.startDate}"></td>
+                            <td th:text="${event.endDate}"></td>
+                            <td th:text="${event.name}"></td>
+                            <td th:text="${event.requirements}"></td>
+                            <td th:text="${event.location}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="admin-menu" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
+            <ul>
+                <li><a th:href="@{/admin/add-user}">Добави нов потребител</a></li>
+                <li><a th:href="@{/users/list}">Регистрирани потребители</a></li>
+                <li><a th:href="@{/users/list}">Активни потребители</a></li>
+                <li><a th:href="@{/admin/users/list/all-users}">Всички потребители</a></li>
+                <li><a th:href="@{/admin/register-requests}">Заявки за регистрация</a></li>
+                <li><a href="#">Редактиране на потребител</a></li>
+                <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

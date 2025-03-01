@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Добре дошъл ' + ' ${user.get.firstName} +' '+ ${user.get.lastName}"></title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/user_optimised.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <nav class="menu">
+                <div></div>
+                <div>
+                <ul>
+                      
+                    <li><a href="#">Събития</a></li>
+                    <li><a href="#">Съобщения</a></li>
+                    <li><a href="#">За нас</a></li>
+                    <li><a href="#">Вход</a></li>
+                    <li><a href="#">Регистрация</a></li>
+                    
+                        
+                </ul>
+
+            </div>
+            </nav>
+        </div>
+        <div class="main-container">
+            <div class="user-info">
+                <div class="user-pic">
+                    <img src="https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=280&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                </div>
+                <div class="user-bio">
+                    <table class="info">
+                        <tr>
+                            <th scope="col">Име</th>
+                            <td>Иван</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Фамилия</th>
+                            <td>Иванов</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Дата на раждане</th>
+                            <td>25.07.2010</td>
+                        </tr>
+                    
+                        <tr>
+                            <th scope="col">Позиция в клуба</th>
+                            <td>член</td>
+                        </tr>
+                            <th scope="col">Защитена степен</th>
+                            <td>4 кю</td>
+                        <tr>
+                            <th scope="col">Интереси</th>
+                           <td>Спорт , Филми , Хеви-метъл</td> 
+                        </tr>
+                        
+                    </table>
+                   
+                </div>
+
+                <div class="other-info">
+                    <table>
+                        <tr>
+                            <th>Статус</th>
+                            <td>състезател</td>
+                        </tr>
+                        <tr>
+                            <th>Възрастова група</th>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <th>Категория</th>
+                            <td>до 60 кг</td>
+                        </tr>
+                        <tr>
+                            <th>Ръст</th>
+                            <td>170</td>
+                        </tr>
+                        <tr>
+                            <th>Тегло</th>
+                            <td>60</td>
+                        </tr>
+                        <tr>
+                            <th>Преминал медицински прегледи</th>
+                            <td>01.02.2025</td>
+                            
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="contact-person">
+                    <table>
+                        <tr>
+                            <th>Лице за контакт</th>
+                            <td>Георги Иванов</td>
+                            
+                        </tr>
+                        <tr>
+                            <th>Телефон за връзка</th>
+                            <td>08773443545</td>
+                            
+                        </tr>
+                    </table>
+
+                </div>
+               
+            </div>
+            <div class="messages">
+                <div class="user-messages">
+                    <table class="private-messages">
+                        <caption>Лични Съобщения</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Дата</th>
+                                <th scope="col">От</th>
+                                <th scope="col">Съдържание</th>
+                                <th scope="col">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td>10.01.2025</td>
+                            <td>Администратор</td>
+                            <td>Моля променете вашата парола</td>
+                            <td><button onclick="alert('Прочетено')">Изчисти</button></td>
+                            
+                        </tbody>
+
+                    </table>
+
+                </div>
+                <!-- <div class="public-messages">
+                    <table class="private-messages">
+                        <caption>Публични Съобщения</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Дата</th>
+                                <th scope="col">От</th>
+                                <th scope="col">Съдържание</th>
+                                <th scope="col">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td>11.01.2025</td>
+                            <td>Администратор</td>
+                            <td>Тренировката на 13.01.2025 ще се проведе от 18:30ч.</td>
+                            <td><button onclick="alert('Прочетено')">Маркирай като прочетено</button></td>
+                            
+                        </tbody>
+
+                    </table>
+                </div> -->
+                <div class="user-events">
+                    <table>
+                        <caption>Предстоящи събития </caption>
+                        <thead>
+                                <tr>
+                                    <th scope="col">Начална дата</th>
+                                    <th scope="col">Крайна дата</th>
+                                    <th scope="col">Събитие</th>
+                                    <th scope="col">Изискване за участие</th>
+                                    <th scope="col">Място на събитието</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>11.01.2025</td>
+                                <td>12.01.2025</td>
+                                <td>Треньорски семинар</td>
+                                <td>Треньор</td>
+                                <td>Габрово</td>
+                            </tr>
+            
+                            <tr>
+                                <td>16.03.2025</td>
+                                <td>16.03.2025</td>
+                                <td>Държавно първенство по ката</td>
+                                <td>Няма</td>
+                                <td>Бургас</td>
+                            </tr>
+                        </tbody>
+            
+                    </table>
+                </div>
+            </div>   
+        </div>
+    </header>
+</body>
+</html>

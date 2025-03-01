@@ -1,0 +1,11 @@
+package cardindex.dojocardindex.Event.repository;
+
+import cardindex.dojocardindex.Event.models.Event;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface EventRepository extends JpaRepository<Event, UUID> {
+}

@@ -1,0 +1,91 @@
+.message-container {
+    margin: 20px;
+    color: #e18e09;
+}
+
+table {
+    margin: 0 auto;
+    width: 95%;
+    align-items: center;
+    text-align: right;
+    padding-right: 0.3em;
+    font: 1.5em "Caveat";
+    border-radius: 0.5em;
+    background-color: rgb(0, 0, 0, 0.6);  /* Мрак фон за таблицата */
+    color: #e18e09;  /* Текста остава в златистия нюанс */
+}
+tr{
+    display: flex;
+    flex-direction: column;
+}
+
+th {
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+td {
+    font: 1.5em "Caveat";
+    padding: 0.1em;
+    /*background-color: rgb(0, 0, 0, 0.7); !* Теменужено черен фон за клетките *!*/
+    border-radius: 0.3em;
+}
+
+.caption {
+    text-align: right;
+    margin-left: 40%;
+    padding: 0.1em;
+    font: 1.3vw "Caveat", sans-serif;
+    background-color: rgb(0, 0, 0, 0.7); /* Задържаме полупрозрачност */
+    border-radius: 0.3em;
+    color: #e18e09; /* Златист цвят за надписите */
+}
+
+.posted {
+    margin: 0 auto;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex: 1 1 50%;
+    /*background-color: rgb(0, 0, 0, 0.6); !* Полупрозрачен черен фон *!*/
+    max-width: 50%;
+    margin-top: 2em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    border-radius: 0.5em;
+}
+
+.user-info {
+    margin: 0 auto;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    border-radius: 0.3em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    color: #e18e09; /* Златист текст за информация */
+}
+
+.posted-by, .date {
+    font-size: 0.8em;
+    color: #e18e09;
+}
+
+.title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #e18e09; /* Заглавието също ще е в златистия нюанс */
+}
+
+.message-content {
+    padding-top: 10px;
+    font-size: 1.7em;
+    color: #e18e09;  /* Текста на съобщението ще е в златисто */
+    text-align: right;
+    width: 100%;
+}

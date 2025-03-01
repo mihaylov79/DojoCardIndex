@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Членове на клуба</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/users-list2.css">
+</head>
+<body>
+    <header>
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    </header>
+    <div class="table-container">
+        <table>
+            <caption>Членове на клуб "Драгон Доджо ДСД"</caption>
+            <tr>
+                <th>Снимка</th>
+                <th>Име</th>
+                <th>Фамилия</th>
+                <th>Ел. поща</th>
+                <th>Възраст</th>
+                <th>Защитена степен</th>
+                <th>Състезателен статус</th>
+                <th>Статус на акаунта</th>
+                <th>Действие</th>
+            </tr>
+            <tr th:each="user:${allActiveUsers}">
+                <td>
+                    <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
+                </td>
+                <td th:text="${user.firstName}">
+                    
+                </td>
+                <td th:text="${user.lastName}">
+                    
+                </td>
+
+                <td th:text="${user.email}">
+                    
+                </td>
+
+                <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>">
+                    
+                </td>
+
+                <td th:text="${user.reachedDegree}">
+                    
+                </td>
+
+                <td th:if="${user.isCompetitor} == true">Състезател
+                    
+                </td>
+
+                <td th:if="${user.isCompetitor} == false"> -
+
+                </td>
+
+                <td th:text="${user.status.description}">
+                    
+                </td>
+
+                <td class="actions">
+                    <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).ACTIVE}"
+                          th:action="@{/admin/users/modify-status}"
+                          th:method="POST">
+                        <input type="hidden" name="id" th:value="${user.id}"/>
+                        <button type="submit">Деактивирай</button>
+                    </form>
+                    <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).INACTIVE}"
+                          th:action="@{/admin/users/modify-status}"
+                          th:method="POST">
+                        <input type="hidden" name="id" th:value="${user.id}"/>
+                        <button type="submit">Активирай</button>
+                    </form>
+
+                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|">Редактиране</button>
+
+                    
+                </td>
+
+
+            </tr>
+        </table>
+    </div>
+    
+</body>
+</html>

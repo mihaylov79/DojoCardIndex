@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Публикации</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/posts.css">
+</head>
+<body>
+    <header>
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    </header>
+
+    <div class="message-container">
+<!--        <div class="user-info">-->
+<!--            <p th:text="'Здравей, ' + ${user.firstName} + ' ' + ${user.lastName}"></p>-->
+<!--        </div>-->
+
+        <div class="posted" th:each="post : ${allActivePosts}">
+            <table>
+<!--                <caption >Драгон Доджо ДСД</caption>-->
+                <tr>
+                    <td class="info">
+                        <span class="posted-by" th:text="'Публикувано от: ' + ${post.author.firstName} + ' ' + ${post.author.lastName}">Публикувано от: Свилен</span>
+                        <span class="date" th:text="${#temporals.format(post.created,'dd-MM-yyyy HH:mm')}">10.01.2025</span>
+                    </td>
+                    <td class="title">
+                        <strong th:text="${post.title}"></strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="message-content" th:text="${post.content}">
+                        
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
