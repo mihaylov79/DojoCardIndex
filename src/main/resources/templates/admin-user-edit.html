@@ -65,8 +65,10 @@
 
         <div class="field">
             <label for="field-reachedDegree">Защитена степен</label>
-            <input type="text" id="field-reachedDegree" th:field="*{reachedDegree}" placeholder="">
-            <span th:if="${#fields.hasErrors('reachedDegree')}" th:errors="*{reachedDegree}"></span>
+            <select id="field-reachedDegree" th:field="*{reachedDegree}" >
+            <option th:each="reachedDegree : ${T(cardindex.dojocardindex.User.models.Degree).values()}" th:value="${reachedDegree}" th:text="${reachedDegree.description}" value=""></option>
+<!--            <span th:if="${#fields.hasErrors('reachedDegree')}" th:errors="*{reachedDegree}"></span>-->
+            </select>
         </div>
 
         <div class="field">

@@ -47,10 +47,9 @@
                 </td>
 
                 <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>">
-                    
-<!--                </td>-->
 
-                <td th:text="${user.reachedDegree}">
+
+                <td th:text="${user.reachedDegree?.description ?: '-'}">
                     
                 </td>
 
