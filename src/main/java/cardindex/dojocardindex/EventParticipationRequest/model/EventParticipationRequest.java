@@ -7,14 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class EventParticipationRequest {
 
     @Id
@@ -36,4 +36,8 @@ public class EventParticipationRequest {
 
     @Column
     private String reason;
+
+    @Column
+    private LocalDateTime created;
+
 }

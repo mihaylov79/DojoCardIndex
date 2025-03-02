@@ -3,11 +3,7 @@ package cardindex.dojocardindex.Event.models;
 import cardindex.dojocardindex.User.models.User;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Setter;
-
-
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -82,15 +78,15 @@ public class Event {
         return firstPlaceWinner;
     }
 
-    //TODO: Да добавя CustomExceptions TournamentExceptions
+
     public void setFirstPlaceWinner(User firstPlaceWinner) {
         if(this.type == EventType.TOURNAMENT) {
             this.firstPlaceWinner = firstPlaceWinner;
         }else {
-            throw new IllegalArgumentException("Winner can be set only for TOURNAMENT event");
+            throw new IllegalArgumentException("Победители могат да бъдат добавяни само в събития тип Турнир");
         }
         if (!users.contains(firstPlaceWinner)) {
-            throw new IllegalArgumentException("Winner must be a participant in the event.");
+            throw new IllegalArgumentException("Победителя трявбва да бъде участник в събитието.");
         }
         if (this.firstPlaceWinner != null) {
             this.firstPlaceWinner.setAchievedFirstPlaces(this.firstPlaceWinner.getAchievedFirstPlaces() - 1);
@@ -110,10 +106,10 @@ public class Event {
         if (this.type == EventType.TOURNAMENT) {
             this.secondPlaceWinner = secondPlaceWinner;
         }else {
-            throw new IllegalArgumentException("Winner can be set only for TOURNAMENT event");
+            throw new IllegalArgumentException("Победители могат да бъдат добавяни само в събития тип Турнир");
         }
         if (!users.contains(secondPlaceWinner)) {
-            throw new IllegalArgumentException("Winner must be a participant in the event.");
+            throw new IllegalArgumentException("Победителя трявбва да бъде участник в събитието.");
         }
         if (this.secondPlaceWinner != null) {
             this.secondPlaceWinner.setAchievedSecondPlaces(this.secondPlaceWinner.getAchievedSecondPlaces() - 1);
@@ -133,11 +129,11 @@ public class Event {
         if (this.type == EventType.TOURNAMENT) {
             this.thirdPlaceWinner = thirdPlaceWinner;
         }else {
-            throw new IllegalArgumentException("Winner can be set only for TOURNAMENT event");
+            throw new IllegalArgumentException("Победители могат да бъдат добавяни само в събития тип Турнир");
         }
 
         if (!users.contains(thirdPlaceWinner)) {
-            throw new IllegalArgumentException("Winner must be a participant in the event.");
+            throw new IllegalArgumentException("Победителя трявбва да бъде участник в събитието.");
         }
         if (this.thirdPlaceWinner != null) {
             this.thirdPlaceWinner.setAchievedThirdPlaces(this.thirdPlaceWinner.getAchievedThirdPlaces() - 1);
