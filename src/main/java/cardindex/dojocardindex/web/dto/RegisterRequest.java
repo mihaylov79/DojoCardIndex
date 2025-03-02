@@ -3,8 +3,7 @@ package cardindex.dojocardindex.web.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.springframework.stereotype.Component;
-import org.unbescape.xml.XmlEscape;
+
 
 
 public class RegisterRequest {

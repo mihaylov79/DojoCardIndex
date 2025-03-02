@@ -3,7 +3,6 @@ package cardindex.dojocardindex.web;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
-import cardindex.dojocardindex.web.dto.CreateUserRequest;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.mapper.DTOMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -112,6 +111,21 @@ public class UserController {
 
         return modelAndView;
 
+
+    }
+
+    @GetMapping("/users/details/{id}")
+    public ModelAndView getUserDetailsPage(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+        User user = userService.getUserById(id);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user-details");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("currentUser", currentUser);
+
+        return modelAndView;
 
     }
 

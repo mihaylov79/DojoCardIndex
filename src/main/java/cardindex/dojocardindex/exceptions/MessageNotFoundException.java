@@ -1,6 +1,6 @@
 package cardindex.dojocardindex.exceptions;
 
-import lombok.Builder;
+
 
 public class MessageNotFoundException extends RuntimeException{
 

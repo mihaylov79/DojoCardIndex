@@ -1,6 +1,6 @@
 package cardindex.dojocardindex.User.models;
 
-import org.hibernate.jpa.spi.NativeQueryMapTransformer;
+
 
 public enum RegistrationStatus {
 

@@ -8,6 +8,7 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.MessageNotFoundException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.web.dto.SendMessageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortArgumentResolver;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ public class MessageService {
     private final UserService userService;
     private final SortArgumentResolver sortArgumentResolver;
 
+    @Autowired
     public MessageService(MessageRepository messageRepository, UserService userService, SortArgumentResolver sortArgumentResolver) {
         this.messageRepository = messageRepository;
         this.userService = userService;

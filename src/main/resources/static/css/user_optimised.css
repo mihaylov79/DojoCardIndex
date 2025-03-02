@@ -74,7 +74,7 @@ button {
     background-color: #e18e09;
     padding: 0.3em;
     border-radius: 0.3em;
-    font: 1,3vw "Caveat";
+    font: 1.3vw "Caveat";
 }
 .user-pic {
     width: 95%;
@@ -118,10 +118,10 @@ button {
         /* align-self:flex-start; */
     }
 
-    .contact-person {
-        
-        align-self:last auto;
-    }
+    /*.contact-person {*/
+    /*    */
+    /*    align-self:last auto;*/
+    /*}*/
 
     table {
         width: 90vw;

@@ -27,7 +27,9 @@
             </tr>
             <tr th:each="user:${allActiveUsers}">
                 <td>
+                    <a th:href="@{/users/details/{id}(id=${user.id})}">
                     <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
+                    </a>
                 </td>
                 <td th:text="${user.firstName}">
                     
@@ -41,8 +43,7 @@
                 </td>
 
                 <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>">
-                    
-                </td>
+
 
                 <td th:text="${user.reachedDegree}">
                     

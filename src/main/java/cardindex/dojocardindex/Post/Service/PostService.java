@@ -7,10 +7,8 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.web.dto.CreatePostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.List;
 

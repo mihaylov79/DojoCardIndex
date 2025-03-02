@@ -1,8 +1,6 @@
 package cardindex.dojocardindex.web.dto;
 
-import cardindex.dojocardindex.User.models.*;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
+
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
