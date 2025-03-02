@@ -2,6 +2,7 @@ package cardindex.dojocardindex.Event.models;
 
 import cardindex.dojocardindex.User.models.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Setter;
 
 
@@ -10,7 +11,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
-
+@Builder(toBuilder = true)
 @Entity
 public class Event {
 
@@ -22,7 +23,7 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventType type;
 
-    @Setter
+
     @Column(name = "description",nullable = false)
     private String EventDescription;
 
@@ -35,6 +36,9 @@ public class Event {
     @Column
     @Enumerated(EnumType.STRING)
     private Requirements requirements;
+
+    @Column
+    private boolean closed;
 
     @ManyToMany(mappedBy = "events")
     private Set<User>users = new LinkedHashSet<>();
@@ -56,14 +60,18 @@ public class Event {
 
     }
 
-    public Event(UUID uuid, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, Requirements requirements, Set<User> users) {
+    public Event(UUID uuid, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, Requirements requirements, boolean closed, Set<User> users, User firstPlaceWinner, User secondPlaceWinner, User thirdPlaceWinner) {
         this.uuid = uuid;
         this.type = type;
         EventDescription = eventDescription;
         this.startDate = startDate;
         this.endDate = endDate;
         this.requirements = requirements;
+        this.closed = closed;
         this.users = users;
+        this.firstPlaceWinner = firstPlaceWinner;
+        this.secondPlaceWinner = secondPlaceWinner;
+        this.thirdPlaceWinner = thirdPlaceWinner;
     }
 
     public UUID getUuid() {
@@ -149,9 +157,6 @@ public class Event {
         EventDescription = eventDescription;
     }
 
-    //    public void setUuid(UUID uuid) {
-//        this.uuid = uuid;
-//    }
 
     public EventType getType() {
         return type;
@@ -192,5 +197,9 @@ public class Event {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

@@ -2,6 +2,7 @@ package cardindex.dojocardindex.User.models;
 
 import cardindex.dojocardindex.Comment.models.Comment;
 import cardindex.dojocardindex.Event.models.Event;
+import cardindex.dojocardindex.EventParticipationRequest.model.EventParticipationRequest;
 import cardindex.dojocardindex.Post.models.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -107,13 +108,15 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<EventParticipationRequest>requests = new ArrayList<>();
+
     public User() {
 
     }
 
 
-
-    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, Set<Event> events, List<Comment> comments, List<Post> posts) {
+    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -141,47 +144,37 @@ public class User {
         this.events = events;
         this.comments = comments;
         this.posts = posts;
+        this.requests = requests;
     }
+
 
     public UUID getId() {
         return id;
     }
 
-//    public void setId(UUID id) {
-//        this.id = id;
-//    }
 
     public String getEmail() {
         return email;
     }
 
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
+
 
     public String getPassword() {
         return password;
     }
 
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
 
     public UserRole getRole() {
         return role;
     }
 
-//    public void setRole(UserRole role) {
-//        this.role = role;
-//    }
+
 
     public UserStatus getStatus() {
         return status;
     }
 
-//    public void setStatus(UserStatus status) {
-//        this.status = status;
-//    }
+
 
     public RegistrationStatus getRegistrationStatus() {
         return registrationStatus;
@@ -195,25 +188,16 @@ public class User {
         return firstName;
     }
 
-//    public void setFirstName(String firstName) {
-//        this.firstName = firstName;
-//    }
 
     public String getLastName() {
         return lastName;
     }
 
-//    public void setLastName(String lastName) {
-//        this.lastName = lastName;
-//    }
 
     public String getUserPhone() {
         return userPhone;
     }
 
-//    public void setUserPhone(String userPhone) {
-//        this.userPhone = userPhone;
-//    }
 
     public String getProfilePicture() {
         return profilePicture;
@@ -227,17 +211,11 @@ public class User {
         return birthDate;
     }
 
-//    public void setBirthDate(LocalDate birthDate) {
-//        this.birthDate = birthDate;
-//    }
 
     public Degree getReachedDegree() {
         return reachedDegree;
     }
 
-//    public void setReachedDegree(Degree reachedDegree) {
-//        this.reachedDegree = reachedDegree;
-//    }
 
     public String getInterests() {
         return interests;
@@ -251,9 +229,6 @@ public class User {
         return ageGroup;
     }
 
-//    public void setAgeGroup(AgeGroup ageGroup) {
-//        this.ageGroup = ageGroup;
-//    }
 
     public boolean getIsCompetitor() {
         return isCompetitor;
@@ -267,41 +242,25 @@ public class User {
         return height;
     }
 
-//    public void setHeight(int height) {
-//        this.height = height;
-//    }
 
     public int getWeight() {
         return weight;
     }
 
-//    public void setWeight(int weight) {
-//        this.weight = weight;
-//    }
 
     public LocalDate getMedicalExamsPassed() {
         return medicalExamsPassed;
     }
 
-//    public void setMedicalExamsPassed(LocalDate medicalExamsPassed) {
-//        this.medicalExamsPassed = medicalExamsPassed;
-//    }
 
     public String getContactPerson() {
         return contactPerson;
     }
 
-//    public void setContactPerson(String contactPerson) {
-//        this.contactPerson = contactPerson;
-//    }
 
     public String getContactPersonPhone() {
         return contactPersonPhone;
     }
-
-//    public void setContactPersonPhone(String contactPersonPhone) {
-//        this.contactPersonPhone = contactPersonPhone;
-//    }
 
     public int getAchievedFirstPlaces() {
         return achievedFirstPlaces;
@@ -354,4 +313,10 @@ public class User {
     public List<Post> getPosts() {
         return posts;
     }
+
+    public List<EventParticipationRequest> getRequests() {
+        return requests;
+    }
 }
+
+

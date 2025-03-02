@@ -86,7 +86,6 @@ public class UserService implements UserDetailsService {
         User user = User.builder()
                 .email(createUserRequest.getEmail())
                 .password(passwordEncoder.encode(generatedPassword))
-//                .status(createUserRequest.getStatus())
                 .firstName(createUserRequest.getFirstName())
                 .lastName(createUserRequest.getLastName())
                 .userPhone(createUserRequest.getUserPhone())
