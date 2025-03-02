@@ -14,8 +14,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class UserEditAdminRequest {
-// TODO да се добави поле - birthDate и isCompetitor
-//  - съшо и в admin-user-edit.html и DTO Mapper
+
     @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
     private String userPhone;
 

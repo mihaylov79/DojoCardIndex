@@ -79,7 +79,7 @@ public class MessageController {
     public ModelAndView replyMessage(@RequestParam UUID responseToMessageId,
                                      @RequestParam String content,
                                      @AuthenticationPrincipal CustomUserDetails details){
-        //Ако user-a не е логнат ще даде ли грешка ? - въпреки че за да стигне до тази страница е необходим логин
+
         User user = userService.getUserById(details.getId());
 
         messageService.replyMessage(responseToMessageId, content);
