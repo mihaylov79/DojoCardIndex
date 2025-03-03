@@ -40,10 +40,17 @@ public class Post {
    @Column
    private boolean isRead;
 
-   @OneToMany(mappedBy = "post")
+   @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
    private List<Comment> comments = new ArrayList<>();
 
+   public void addComment(Comment comment) {
+      comments.add(comment);
+      comment.setPost(this);
+   }
 
-
+   public void removeComment(Comment comment) {
+      comments.remove(comment);
+      comment.setPost(null);
+   }
 
 }

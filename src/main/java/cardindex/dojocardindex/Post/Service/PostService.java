@@ -5,12 +5,14 @@ import cardindex.dojocardindex.Post.models.Post;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.web.dto.CreatePostRequest;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PostService {
@@ -44,5 +46,11 @@ public class PostService {
 
         postRepository.save(post);
 
+    }
+
+    public Post getPostById(UUID postId){
+
+        return postRepository.findById(postId)
+                .orElseThrow(()-> new EntityNotFoundException("Публикацията не е намерена."));
     }
 }

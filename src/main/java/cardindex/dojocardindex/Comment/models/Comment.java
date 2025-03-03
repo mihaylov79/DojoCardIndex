@@ -3,11 +3,17 @@ package cardindex.dojocardindex.Comment.models;
 import cardindex.dojocardindex.Post.models.Post;
 import cardindex.dojocardindex.User.models.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
 
     @Id
@@ -43,4 +49,6 @@ public class Comment {
     public void setCommentAuthor(User commentAuthor) {
         this.commentAuthor = commentAuthor;
     }
+
+
 }
