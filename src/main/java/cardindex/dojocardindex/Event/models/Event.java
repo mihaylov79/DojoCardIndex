@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
+
 @Builder(toBuilder = true)
 @Entity
 public class Event {

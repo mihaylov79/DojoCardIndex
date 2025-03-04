@@ -6,7 +6,6 @@ import cardindex.dojocardindex.Event.repository.EventRepository;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.EventNotFoundException;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +17,13 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserService userService;
-    private final EmailValidator emailValidator;
+
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserService userService, EmailValidator emailValidator) {
+    public EventService(EventRepository eventRepository, UserService userService) {
         this.eventRepository = eventRepository;
         this.userService = userService;
-        this.emailValidator = emailValidator;
+
     }
 
     public void addNewEvent(CreateEventRequest createEventRequest){
