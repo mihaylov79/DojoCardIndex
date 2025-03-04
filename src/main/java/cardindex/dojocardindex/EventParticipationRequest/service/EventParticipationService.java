@@ -34,7 +34,15 @@ public class EventParticipationService {
 
         User user = userService.getUserById(userId);
 
-        Event event = eventService.getEventBuId(eventId);
+        Event event = eventService.getEventById(eventId);
+
+        requestRepository.findByUserAndEvent(user,event).ifPresent(existingRequest ->{
+            switch (existingRequest.getStatus()){
+                case REJECTED -> throw new RuntimeException("Вашата заявка е била отхвърлена!");
+                case PENDING ->  throw new RuntimeException("Вашата заявка все още чака одобрение");
+                case APPROVED -> throw new RuntimeException("Вашата заявка вече е била одобрена");
+            }
+        });
 
         EventParticipationRequest request = EventParticipationRequest.builder()
                 .user(user)

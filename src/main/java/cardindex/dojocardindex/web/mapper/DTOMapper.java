@@ -2,7 +2,7 @@ package cardindex.dojocardindex.web.mapper;
 
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.User.models.User;
-import cardindex.dojocardindex.web.dto.CreateEventRequest;
+import cardindex.dojocardindex.web.dto.EditEventRequest;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
 import lombok.experimental.UtilityClass;
@@ -47,9 +47,9 @@ public class DTOMapper {
                 .build();
     }
 
-    public static CreateEventRequest mapEventToCreateEventRequest(Event event) {
+    public static EditEventRequest mapEventToEditEventRequest(Event event) {
 
-        return CreateEventRequest.builder()
+        return EditEventRequest.builder()
                 .eventType(event.getType())
                 .eventDescription(event.getEventDescription())
                 .startDate(event.getStartDate())

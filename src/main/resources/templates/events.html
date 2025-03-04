@@ -55,6 +55,8 @@
                 <form th:action="@{/events/{eventId}/join(eventId=${event.id})}" method="post">
                     <button type="submit">Заяви участие</button>
                 </form>
+
+                <button th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>
             </td>
         </tr>
         </tbody>

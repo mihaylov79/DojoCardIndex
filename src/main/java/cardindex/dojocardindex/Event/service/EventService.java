@@ -41,7 +41,7 @@ public class EventService {
     }
 
     public void closeEvent(UUID eventId){
-        Event event = getEventBuId(eventId);
+        Event event = getEventById(eventId);
 
         event = event.toBuilder().closed(true).build();
 
@@ -51,7 +51,7 @@ public class EventService {
     //TODO Да добавя възможност за задаване на победителите в събитието или в едит или в отделен метод
     public void editEvent(UUID eventId, CreateEventRequest createEventRequest){
 
-        Event event = getEventBuId(eventId);
+        Event event = getEventById(eventId);
 
         event = event.toBuilder()
                 .type(createEventRequest.getEventType())
@@ -66,7 +66,7 @@ public class EventService {
 
 
 
-    public Event getEventBuId(UUID eventId){
+    public Event getEventById(UUID eventId){
         return eventRepository.findById(eventId).orElseThrow(() ->new EventNotFoundException("Събитие с идентификация [%s] не съществува".formatted(eventId)));
     }
 
