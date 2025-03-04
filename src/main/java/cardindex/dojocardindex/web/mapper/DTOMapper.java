@@ -54,6 +54,7 @@ public class DTOMapper {
                 .eventDescription(event.getEventDescription())
                 .startDate(event.getStartDate())
                 .endDate(event.getEndDate())
+                .location(event.getLocation())
                 .requirements(event.getRequirements())
                 .build();
     }

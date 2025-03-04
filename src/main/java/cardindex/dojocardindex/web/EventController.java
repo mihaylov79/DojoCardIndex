@@ -11,11 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.naming.Binding;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +59,25 @@ public class EventController {
         modelAndView.addObject("currentUser",currentUser);
         modelAndView.addObject("createEventRequest", new CreateEventRequest());
 
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
+    @PostMapping("/new")
+    public ModelAndView createNewEvent(@AuthenticationPrincipal CustomUserDetails details, CreateEventRequest createEventRequest, BindingResult result){
+
+        User currentUser = userService.getUserById(details.getId());
+
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("new-event");
+            modelAndView.addObject("currentuser", currentUser);
+            return modelAndView;
+        }
+        eventService.addNewEvent(createEventRequest);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/events");
+        modelAndView.addObject(currentUser);
         return modelAndView;
     }
 

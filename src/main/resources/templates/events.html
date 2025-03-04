@@ -43,16 +43,17 @@
         <tr th:each="event : ${events}">
             <td th:text="${event.startDate}">11.01.2025</td>
             <td th:text="${event.endDate}">12.01.2025</td>
-            <td th:text="${event.title}">Треньорски семинар</td>
-            <td th:text="${event.requirement}">Треньор</td>
+            <td th:text="${event.type.description}">Треньорски семинар</td>
+            <td th:text="${event.requirements.description}">Треньор</td>
             <td th:text="${event.location}">Габрово</td>
             <td>
                 <ul>
-                    <li th:each="participant : ${event.participants}" th:text="${participant.name}">Име на участник</li>
+                    <li th:each="participant : ${event.getUsers()}" th:text="${participant.firstName + ' ' + participant.lastName}">Име на участник</li>
                 </ul>
             </td>
             <td>
-                <form th:action="@{/events/{eventId}/join(eventId=${event.id})}" method="post">
+                <form th:action="@{/events/{eventId}/join(eventId=${event.id})}" method="POST">
+<!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
                     <button type="submit">Заяви участие</button>
                 </form>
 

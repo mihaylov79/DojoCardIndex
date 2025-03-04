@@ -14,12 +14,11 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    private UUID id;
 
     @Column(name = "event_type",nullable = false)
     @Enumerated(EnumType.STRING)
     private EventType type;
-
 
     @Column(name = "description",nullable = false)
     private String EventDescription;
@@ -30,6 +29,9 @@ public class Event {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(nullable = false)
+    private String location;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Requirements requirements;
@@ -37,7 +39,7 @@ public class Event {
     @Column
     private boolean closed;
 
-    @ManyToMany(mappedBy = "events")
+    @ManyToMany(mappedBy = "events",fetch = FetchType.EAGER)
     private Set<User>users = new LinkedHashSet<>();
 
     @ManyToOne
@@ -57,12 +59,13 @@ public class Event {
 
     }
 
-    public Event(UUID uuid, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, Requirements requirements, boolean closed, Set<User> users, User firstPlaceWinner, User secondPlaceWinner, User thirdPlaceWinner) {
-        this.uuid = uuid;
+    public Event(UUID id, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, String location, Requirements requirements, boolean closed, Set<User> users, User firstPlaceWinner, User secondPlaceWinner, User thirdPlaceWinner) {
+        this.id = id;
         this.type = type;
         EventDescription = eventDescription;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.location = location;
         this.requirements = requirements;
         this.closed = closed;
         this.users = users;
@@ -71,8 +74,8 @@ public class Event {
         this.thirdPlaceWinner = thirdPlaceWinner;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
     public User getFirstPlaceWinner() {
@@ -146,12 +149,12 @@ public class Event {
 
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
+    public String getLocation() {
+        return location;
     }
 
-    public void setEventDescription(String eventDescription) {
-        EventDescription = eventDescription;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
 
@@ -168,33 +171,19 @@ public class Event {
     }
 
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
     public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
 
     public Requirements getRequirements() {
         return requirements;
-    }
-
-    public void setRequirements(Requirements requirements) {
-        this.requirements = requirements;
     }
 
     public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
 
     public boolean isClosed() {
         return closed;

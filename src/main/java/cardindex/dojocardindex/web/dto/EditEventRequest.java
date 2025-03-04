@@ -19,6 +19,8 @@ public class EditEventRequest {
 
         private LocalDate endDate;
 
+        private String location;
+
         private Requirements requirements;
 
 }

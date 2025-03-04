@@ -33,6 +33,8 @@ public class EventService {
                 .EventDescription(createEventRequest.getEventDescription())
                 .startDate(createEventRequest.getStartDate())
                 .endDate(createEventRequest.getEndDate())
+                .location(createEventRequest.getLocation())
+                .requirements(createEventRequest.getRequirements())
                 .closed(false)
                 .build();
 
@@ -57,6 +59,7 @@ public class EventService {
                 .type(createEventRequest.getEventType())
                 .EventDescription(createEventRequest.getEventDescription())
                 .startDate(createEventRequest.getStartDate())
+                .location(createEventRequest.getLocation())
                 .endDate(createEventRequest.getEndDate())
                 .requirements(createEventRequest.getRequirements())
                 .build();

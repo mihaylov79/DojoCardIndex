@@ -31,7 +31,7 @@
 
     <label for="requirements">Изисквания:</label>
     <select id="requirements" name="requirements" th:field="*{requirements}">
-        <option th:each="requirements : ${T(cardindex.dojocardindex.Event.models.Requirements).values()}" th:value="${requirements.description}" th:text="${requirements}" value=""></option>
+        <option th:each="requirements : ${T(cardindex.dojocardindex.Event.models.Requirements).values()}" th:value="${requirements}" th:text="${requirements.description}" value=""></option>
     </select>
 
     <button type="submit">Създай събитие</button>
