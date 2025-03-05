@@ -31,7 +31,7 @@
                     <tr><th>Фамилия</th><td th:text="${user.lastName}"></td></tr>
                     <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${user.birthDate}"></td></tr>
                     <tr th:if="${user.role != null} != null"><th>Позиция в клуба</th><td th:text="${user.role.description}"></td></tr>
-                    <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.getRank()} + ' ' + ${user.reachedDegree.getLevel()}"></td></tr>
+                    <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.description}"></td></tr>
                     <tr th:if="${user.interests} != null"><th>Интереси</th><td th:text="${user.interests}"></td></tr>
                     <tr th:if="${user.isCompetitor} == true"><th>Статус</th><td>състезател</td></tr>
                     <tr th:if="${user.ageGroup} != null"><th>Възрастова група</th><td th:text="${user.ageGroup.description}"></td></tr>

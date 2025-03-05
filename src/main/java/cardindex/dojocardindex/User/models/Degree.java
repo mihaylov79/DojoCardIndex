@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.User.models;
 
 public enum Degree {
+    NONE("-"),
     KYU_10("10 кю"),
     KYU_9("9 кю"),
     KYU_8("8 кю"),
