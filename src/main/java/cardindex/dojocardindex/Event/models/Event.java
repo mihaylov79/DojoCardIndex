@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Builder(toBuilder = true)
 @Entity
+@Table(name = "events")
 public class Event {
 
     @Id

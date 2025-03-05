@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Builder(toBuilder = true)
+@Table(name = "messages")
 public class Message {
 
     @Id

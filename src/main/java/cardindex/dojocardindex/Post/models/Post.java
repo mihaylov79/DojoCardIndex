@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "posts")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
