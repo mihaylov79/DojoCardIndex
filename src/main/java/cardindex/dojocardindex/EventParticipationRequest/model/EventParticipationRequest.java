@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+@Table(name = "event_participation_requests")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,5 +39,9 @@ public class EventParticipationRequest {
 
     @Column
     private LocalDateTime created;
+
+    @ManyToOne
+    @JoinColumn(name = "processedBy")
+    private User processedBy;
 
 }

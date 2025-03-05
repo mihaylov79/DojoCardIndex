@@ -12,6 +12,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.*;
 
+@Table(name = "users")
 @Entity
 @Getter
 @Builder(toBuilder = true)
@@ -111,12 +112,15 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<EventParticipationRequest>requests = new ArrayList<>();
 
+    @OneToMany(mappedBy = "processedBy")
+    private Set<EventParticipationRequest> processedRequests = new LinkedHashSet<>();
+
     public User() {
 
     }
 
 
-    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests) {
+    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests, Set<EventParticipationRequest> processedRequests) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -145,8 +149,8 @@ public class User {
         this.comments = comments;
         this.posts = posts;
         this.requests = requests;
+        this.processedRequests = processedRequests;
     }
-
 
     public UUID getId() {
         return id;
@@ -316,6 +320,10 @@ public class User {
 
     public List<EventParticipationRequest> getRequests() {
         return requests;
+    }
+
+    public Set<EventParticipationRequest> getProcessedRequests() {
+        return processedRequests;
     }
 }
 

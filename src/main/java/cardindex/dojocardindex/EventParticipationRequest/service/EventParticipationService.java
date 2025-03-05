@@ -62,21 +62,27 @@ public class EventParticipationService {
         return requestRepository.findById(requestId).orElseThrow(()-> new RequestNotFoundException("Заявка за участие с идентификация [%s] не съществува.".formatted(requestId)));
     }
 
-    public void approveRequest(UUID requestId){
+    public void approveRequest(UUID requestId, User currentUser){
 
         EventParticipationRequest request = getRequestById(requestId);
 
         request.getEvent().getUsers().add(request.getUser());
-        request = request.toBuilder().status(RequestStatus.APPROVED).build();
+        request = request.toBuilder()
+                .status(RequestStatus.APPROVED)
+                .processedBy(currentUser)
+                .build();
 
         requestRepository.save(request);
     }
 
-    public void rejectRequest(UUID requestId){
+    public void rejectRequest(UUID requestId, User currentUser){
 
         EventParticipationRequest request = getRequestById(requestId);
 
-        request = request.toBuilder().status(RequestStatus.REJECTED).build();
+        request = request.toBuilder()
+                .status(RequestStatus.REJECTED)
+                .processedBy(currentUser)
+                .build();
 
         requestRepository.save(request);
 
