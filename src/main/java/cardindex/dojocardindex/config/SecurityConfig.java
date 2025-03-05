@@ -1,8 +1,6 @@
 package cardindex.dojocardindex.config;
 
-import cardindex.dojocardindex.User.models.RegistrationStatus;
-import cardindex.dojocardindex.User.models.UserRole;
-import cardindex.dojocardindex.User.models.UserStatus;
+import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.User.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import cardindex.dojocardindex.User.models.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -43,7 +40,7 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/home",true)
-                        .failureUrl("/login?error")// Тук задаваш свой URL за логин страницата
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -69,6 +66,7 @@ public class SecurityConfig {
                         .firstName("Admin")
                         .lastName("User")
                         .isCompetitor(false)
+                        .reachedDegree(Degree.NONE)
                         .build();
                 userRepository.save(admin);
             }

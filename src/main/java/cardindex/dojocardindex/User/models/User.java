@@ -56,7 +56,7 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "reached_degree", nullable = false)
+    @Column(name = "reached_degree",nullable = false)
     @Enumerated(EnumType.STRING)
     private Degree reachedDegree = Degree.NONE;
 
