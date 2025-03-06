@@ -9,20 +9,9 @@
 </head>
 <body>
 <header>
-    <div class="header-container">
-        <nav class="menu">
-            <div></div>
-            <div>
-                <ul>
-                    <li><a href="#">Начало</a></li>
-                    <li><a href="#">Съобщения</a></li>
-                    <li><a href="#">За нас</a></li>
-                    <li><a href="#">Вход</a></li>
-                    <li><a href="#">Регистрация</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
+
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
 </header>
 
 <div class="table-container">
@@ -52,7 +41,7 @@
                 </ul>
             </td>
             <td>
-                <form th:action="@{/events/{eventId}/join(eventId=${event.id})}" method="POST">
+                <form th:action="@{/events/requests/submit/{eventId}(eventId=${event.id})}" method="POST">
 <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
                     <button type="submit">Заяви участие</button>
                 </form>

@@ -13,7 +13,7 @@
             <ul>
                 <li><a th:href="@{/}">Начало</a></li>
                 <li><a href="#">За нас</a></li>
-                <li><a href="#">Събития</a></li>
+                <li><a th:href="@{/events}">Събития</a></li>
                 <li><a th:href="@{/posts}">Съобщения</a></li>
                 <li class="home" sec:authorize="isAuthenticated()"><a th:href="@{/home}">Профилна страница</a></li>
                 <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Вход</a></li>

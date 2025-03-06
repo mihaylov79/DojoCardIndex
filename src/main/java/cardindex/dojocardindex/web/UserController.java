@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/user/details/edit/{id}")
+    @PutMapping("/user/details/edit/{id}")
     public ModelAndView editProfileDetails(@PathVariable UUID id, EditUserProfileRequest editUserProfileRequest,BindingResult result){
 
         if (result.hasErrors()){

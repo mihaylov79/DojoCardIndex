@@ -1,0 +1,97 @@
+/* Основни стилове */
+:root {
+    --primary-color: #e18e09;
+    --bg-color: rgba(0, 0, 0, 0.6);
+    --font-family: "Caveat", cursive;
+}
+
+/* Оформление на таблицата */
+.table-container {
+    margin: 1em auto;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.3em;
+    font: 1.3vw var(--font-family);
+    color: var(--primary-color);
+    border-radius: 0.3em;
+}
+
+caption {
+    text-align: end;
+    font: 1.5vw var(--font-family);
+    font-weight: bold;
+    background-color: var(--bg-color);
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+}
+
+tr {
+    background-color: var(--bg-color);
+    border-radius: 0.3em;
+}
+
+th, td {
+    vertical-align: middle;
+    padding: 0.5em;
+    text-align: center;
+}
+
+/* Бутоните */
+td.actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+button {
+    background-color: var(--primary-color);
+    padding: 0.3em 0.6em;
+    margin: 0.2em;
+    border-radius: 0.3em;
+    font: 1.2vw var(--font-family);
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button.reject {
+    background-color: red;
+    color: white;
+}
+
+/* Responsive дизайн */
+@media (max-width: 1024px) {
+    .table-container {
+        width: 95%;
+    }
+
+    table, caption {
+        font-size: 2vw;
+    }
+}
+
+@media (max-width: 768px) {
+    table, caption {
+        font-size: 2.5vw;
+    }
+}
+
+@media (max-width: 480px) {
+    table {
+        font-size: 4vw;
+    }
+
+    caption {
+        font-size: 5vw;
+    }
+}
