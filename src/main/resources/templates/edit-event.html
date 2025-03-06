@@ -14,7 +14,7 @@
 
 <form th:action="@{'/events/edit/' + ${event.id}}" method="POST" th:object="${editEventRequest}">
     <input type="hidden" name="_method" value="PUT"/>
-    <h2>Ново събитие</h2>
+    <h2>Редактиране на събитие</h2>
 
     <label for="eventType">Тип събитие:</label>
     <select id="eventType" name="eventType" th:field="*{eventType}">
@@ -38,7 +38,7 @@
     <label for="location">Местоположение:</label>
     <input type="text" id="location" name="location" th:field="*{location}" />
 
-    <button type="submit">Създай събитие</button>
+    <button type="submit">Запази промените</button>
 </form>
 
 </body>

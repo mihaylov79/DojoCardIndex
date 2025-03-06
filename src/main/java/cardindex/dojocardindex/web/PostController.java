@@ -44,6 +44,7 @@ public class PostController {
         return modelAndView;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TRAINER')")
     @GetMapping("/create")
     public ModelAndView getPostCreatePage(@AuthenticationPrincipal CustomUserDetails details){
         User user  = userService.getUserById(details.getId());
