@@ -63,8 +63,15 @@
                 <label for="role">Роля</label>
                 <select id="role" th:field="*{role}">
                     <option th:each="role : ${T(cardindex.dojocardindex.User.models.UserRole).values()}" th:value="${role}" th:text="${role.description}" value="USER"></option>
-<!--                    <option value="ADMIN">Администратор</option>-->
                 </select>
+            </div>
+
+            <div class="field">
+                <label for="reachedDegree">Защитена степен</label>
+                <select id="reachedDegree" th:field="*{reachedDegree}">
+                    <option th:each="reachedDegree : ${T(cardindex.dojocardindex.User.models.Degree).values()}" th:value="${reachedDegree}" th:text="${reachedDegree.description}" value=""></option>
+                </select>
+                <span class="errors" th:if="${#fields.hasErrors('reachedDegree')}" th:errors="*{reachedDegree}"></span>
             </div>
 
             <div class="field">

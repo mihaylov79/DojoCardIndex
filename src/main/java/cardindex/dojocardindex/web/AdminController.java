@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,7 @@ public class AdminController {
         User user = userService.getUserById(details.getId());
 
         if (result.hasErrors()){
+            System.out.println("Грешки при валидация: " + result.getAllErrors());
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("addUser");
             modelAndView.addObject("user", user);

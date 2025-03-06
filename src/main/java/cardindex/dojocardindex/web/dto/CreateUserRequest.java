@@ -2,12 +2,11 @@ package cardindex.dojocardindex.web.dto;
 
 import cardindex.dojocardindex.User.models.*;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDate;
@@ -33,8 +32,10 @@ public class CreateUserRequest {
     @URL(message = "Моля въведета валиден URL")
     private String profilePicture;
 
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+
+
 
     private Degree reachedDegree;
 
@@ -46,7 +47,9 @@ public class CreateUserRequest {
     @NotNull(message = "Моля отбележете дали потребителят е състезател")
     private boolean isCompetitor;
 
+
     private int height;
+
 
     private int weight;
 

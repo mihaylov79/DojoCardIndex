@@ -1,7 +1,7 @@
 package cardindex.dojocardindex.User.models;
 
 public enum AgeGroup {
-
+    NONE("не е посочена"),
     CH8("деца до 8 г."),
     CH10("деца до 10 г."),
     CH12("деца до 12 г."),

@@ -6,6 +6,7 @@ import cardindex.dojocardindex.Event.repository.EventRepository;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.EventNotFoundException;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
+import cardindex.dojocardindex.web.dto.EditEventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,17 +52,17 @@ public class EventService {
 
     }
     //TODO Да добавя възможност за задаване на победителите в събитието или в едит или в отделен метод
-    public void editEvent(UUID eventId, CreateEventRequest createEventRequest){
+    public void editEvent(UUID eventId, EditEventRequest editEventRequest){
 
         Event event = getEventById(eventId);
 
         event = event.toBuilder()
-                .type(createEventRequest.getEventType())
-                .EventDescription(createEventRequest.getEventDescription())
-                .startDate(createEventRequest.getStartDate())
-                .location(createEventRequest.getLocation())
-                .endDate(createEventRequest.getEndDate())
-                .requirements(createEventRequest.getRequirements())
+                .type(editEventRequest.getEventType())
+                .EventDescription(editEventRequest.getEventDescription())
+                .startDate(editEventRequest.getStartDate())
+                .location(editEventRequest.getLocation())
+                .endDate(editEventRequest.getEndDate())
+                .requirements(editEventRequest.getRequirements())
                 .build();
 
         eventRepository.save(event);

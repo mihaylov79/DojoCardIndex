@@ -56,9 +56,10 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "reached_degree",nullable = false)
+
+    @Column(name = "reached_degree")
     @Enumerated(EnumType.STRING)
-    private Degree reachedDegree = Degree.NONE;
+    private Degree reachedDegree;
 
     @Column(columnDefinition = "TEXT", length = 500)
     private String interests;

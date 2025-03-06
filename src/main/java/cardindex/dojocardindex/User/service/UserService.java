@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.User.service;
 
 
+import cardindex.dojocardindex.User.models.Degree;
 import cardindex.dojocardindex.User.models.RegistrationStatus;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.models.UserStatus;
@@ -70,6 +71,7 @@ public class UserService implements UserDetailsService {
                     .password(passwordEncoder.encode(registerRequest.getPassword()))
                     .firstName(registerRequest.getFirstName())
                     .lastName(registerRequest.getLastName())
+                    .reachedDegree(Degree.NONE)
                     .registrationStatus(RegistrationStatus.PENDING).build();
 
          userRepository.save(user);
@@ -91,7 +93,7 @@ public class UserService implements UserDetailsService {
                 .userPhone(createUserRequest.getUserPhone())
                 .profilePicture(createUserRequest.getProfilePicture())
                 .birthDate(createUserRequest.getBirthDate())
-                .reachedDegree(createUserRequest.getReachedDegree())
+                .reachedDegree(createUserRequest.getReachedDegree()== null ? Degree.NONE : createUserRequest.getReachedDegree() )
                 .ageGroup(createUserRequest.getAgeGroup())
                 .isCompetitor(createUserRequest.getIsCompetitor())
                 .height(createUserRequest.getHeight())
