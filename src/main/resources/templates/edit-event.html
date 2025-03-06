@@ -12,7 +12,8 @@
 <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
 
-<form th:action="@{'/events/edit/' + ${event.id}}" method="post" th:object="${editEventRequest}">
+<form th:action="@{'/events/edit/' + ${event.id}}" method="POST" th:object="${editEventRequest}">
+    <input type="hidden" name="_method" value="PUT"/>
     <h2>Ново събитие</h2>
 
     <label for="eventType">Тип събитие:</label>
@@ -33,6 +34,9 @@
     <select id="requirements" name="requirements" th:field="*{requirements}">
         <option th:each="requirements : ${T(cardindex.dojocardindex.Event.models.Requirements).values()}" th:value="${requirements}" th:text="${requirements.description}" value=""></option>
     </select>
+
+    <label for="location">Местоположение:</label>
+    <input type="text" id="location" name="location" th:field="*{location}" />
 
     <button type="submit">Създай събитие</button>
 </form>

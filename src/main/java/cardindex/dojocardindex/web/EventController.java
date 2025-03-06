@@ -97,12 +97,13 @@ public class EventController {
     }
 
     @PutMapping("/edit/{id}")
-    public ModelAndView editEvent(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details, BindingResult result, EditEventRequest editEventRequest){
+    public ModelAndView editEvent(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details, EditEventRequest editEventRequest, BindingResult result){
 
         User currentUser = userService.getUserById(details.getId());
         Event event = eventService.getEventById(id);
 
         if (result.hasErrors()){
+            System.out.println("Грешки при валидация: " + result.getAllErrors());
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("edit-event");
             modelAndView.addObject("currentUser",currentUser);
