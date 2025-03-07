@@ -172,7 +172,7 @@ public class AdminController {
     @PostMapping("/users/details/edit/{id}")
     public ModelAndView editUserDetailsByAdmin(@PathVariable UUID id,
                                                @AuthenticationPrincipal CustomUserDetails details,
-                                               UserEditAdminRequest userEditAdminRequest,
+                                               @Valid UserEditAdminRequest userEditAdminRequest,
                                                BindingResult result){
 
         User adminUser = userService.getUserById(details.getId());

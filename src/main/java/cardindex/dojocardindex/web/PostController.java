@@ -6,6 +6,7 @@ import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreatePostRequest;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
+import java.util.*;
+
 
 
 @Controller
@@ -59,7 +61,7 @@ public class PostController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'TRAINER')")
     @PostMapping("/create")
-    public ModelAndView createNewPost(@AuthenticationPrincipal CustomUserDetails details, CreatePostRequest createPostRequest, BindingResult result){
+    public ModelAndView createNewPost(@AuthenticationPrincipal CustomUserDetails details, @Valid CreatePostRequest createPostRequest, BindingResult result){
 
         User user = userService.getUserById(details.getId());
 

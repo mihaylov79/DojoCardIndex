@@ -46,7 +46,7 @@ public class EventParticipationRequestController {
         return modelAndView;
 
     }
-
+    //TODO Да проверя constraints - за да реша дали има нужда да валидирам
     @PostMapping("/submit/{id}")
     public ModelAndView submitParticipationRequest(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details){
 

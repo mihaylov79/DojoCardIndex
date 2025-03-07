@@ -5,6 +5,7 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.mapper.DTOMapper;
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -42,7 +43,7 @@ public class UserController {
 
 
     @PutMapping("/user/details/edit/{id}")
-    public ModelAndView editProfileDetails(@PathVariable UUID id, EditUserProfileRequest editUserProfileRequest,BindingResult result){
+    public ModelAndView editProfileDetails(@PathVariable UUID id, @Valid EditUserProfileRequest editUserProfileRequest, BindingResult result){
 
         if (result.hasErrors()){
             User user = userService.getUserById(id);

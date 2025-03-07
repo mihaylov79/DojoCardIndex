@@ -8,6 +8,7 @@ import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
 import cardindex.dojocardindex.web.dto.EditEventRequest;
 import cardindex.dojocardindex.web.mapper.DTOMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -97,13 +98,12 @@ public class EventController {
     }
 
     @PutMapping("/edit/{id}")
-    public ModelAndView editEvent(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details, EditEventRequest editEventRequest, BindingResult result){
+    public ModelAndView editEvent(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details, @Valid EditEventRequest editEventRequest, BindingResult result){
 
         User currentUser = userService.getUserById(details.getId());
         Event event = eventService.getEventById(id);
 
         if (result.hasErrors()){
-            System.out.println("Грешки при валидация: " + result.getAllErrors());
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("edit-event");
             modelAndView.addObject("currentUser",currentUser);
@@ -113,7 +113,6 @@ public class EventController {
         }
 
         eventService.editEvent(id,editEventRequest);
-
         ModelAndView modelAndView = new ModelAndView("redirect:/events");
         modelAndView.addObject(currentUser);
 

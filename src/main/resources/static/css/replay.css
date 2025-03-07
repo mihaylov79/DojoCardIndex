@@ -51,7 +51,6 @@ textarea {
     height: 25vh;
     display: flex;
     align-items: center;
-    /*outline: none;*/
     background-color: #e18e09;
     opacity: 0.8;
     font:1.5vw "Caveat";
