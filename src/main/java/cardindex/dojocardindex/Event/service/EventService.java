@@ -2,16 +2,22 @@ package cardindex.dojocardindex.Event.service;
 
 
 import cardindex.dojocardindex.Event.models.Event;
+import cardindex.dojocardindex.Event.models.EventType;
 import cardindex.dojocardindex.Event.repository.EventRepository;
+import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.EventNotFoundException;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
 import cardindex.dojocardindex.web.dto.EditEventRequest;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 @Service
 public class EventService {
@@ -81,4 +87,91 @@ public class EventService {
     }
 
 
+    @Transactional
+    public void setWinner(UUID eventId, UUID userId, int place) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+        if (event.getType() != EventType.TOURNAMENT) {
+            throw new IllegalStateException("Only tournaments can have winners.");
+        }
+
+        User user = userService.getUserById(userId);
+
+        if (!event.getUsers().contains(user)) {
+            throw new IllegalArgumentException("Победителят трябва да бъде участник в събитието!");
+        }
+
+        switch (place) {
+            case 1 -> updateWinner(event, event.getFirstPlaceWinner(), user,
+                    User::getAchievedFirstPlaces, User::setAchievedFirstPlaces);
+            case 2 -> updateWinner(event, event.getSecondPlaceWinner(), user,
+                    User::getAchievedSecondPlaces, User::setAchievedSecondPlaces);
+            case 3 -> updateWinner(event, event.getThirdPlaceWinner(), user,
+                    User::getAchievedThirdPlaces, User::setAchievedThirdPlaces);
+            default -> throw new IllegalArgumentException("Invalid place. Must be 1, 2, or 3.");
+        }
+
+        eventRepository.save(event);
+    }
+
+    private void updateWinner(Event event, User oldWinner, User newWinner,
+                              Function<User, Integer> getPlaceCount,
+                              BiConsumer<User, Integer> setPlaceCount) {
+
+        if (oldWinner != null) {
+            setPlaceCount.accept(oldWinner, getPlaceCount.apply(oldWinner) - 1);
+        }
+
+        if (newWinner != null) {
+            setPlaceCount.accept(newWinner, getPlaceCount.apply(newWinner) + 1);
+        }
+
+
+        int placeCount = getPlaceCount.apply(newWinner);
+        assert newWinner != null;
+        if (placeCount == newWinner.getAchievedFirstPlaces()) {
+            event.setFirstPlaceWinner(newWinner);
+        } else if (placeCount == newWinner.getAchievedSecondPlaces()) {
+            event.setSecondPlaceWinner(newWinner);
+        } else if (placeCount == newWinner.getAchievedThirdPlaces()) {
+            event.setThirdPlaceWinner(newWinner);
+        }
+    }
+
+    @Transactional
+    public void resetWinners(UUID eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Събитието не е открито"));
+
+        if (event.getType() != EventType.TOURNAMENT) {
+            throw new IllegalStateException("Победители могат да бъдат задавани само в ТУРНИР");
+        }
+
+        resetWinner(event, event.getFirstPlaceWinner(), User::getAchievedFirstPlaces, User::setAchievedFirstPlaces);
+        resetWinner(event, event.getSecondPlaceWinner(), User::getAchievedSecondPlaces, User::setAchievedSecondPlaces);
+        resetWinner(event, event.getThirdPlaceWinner(), User::getAchievedThirdPlaces, User::setAchievedThirdPlaces);
+
+        event = event.toBuilder()
+                .firstPlaceWinner(null)
+                .secondPlaceWinner(null)
+                .thirdPlaceWinner(null)
+                .build();
+
+        eventRepository.save(event);
+    }
+
+    private void resetWinner(Event event, User winner,
+                             Function<User, Integer> getPlaceCount,
+                             BiConsumer<User, Integer> setPlaceCount) {
+        if (winner != null) {
+            setPlaceCount.accept(winner, getPlaceCount.apply(winner) - 1);
+        }
+    }
+
+
+
+    public void saveEvent(Event event){
+        eventRepository.save(event);
+    }
 }

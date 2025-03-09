@@ -83,7 +83,6 @@ public class MessageService {
 
         Message originalMessage = originalMessageOpt.get();
 
-        // Създаваме ново съобщение, което ще бъде отговор на оригиналното съобщение
         Message replyMessage = Message.builder()
                 .content(content)
                 .sender(sender)

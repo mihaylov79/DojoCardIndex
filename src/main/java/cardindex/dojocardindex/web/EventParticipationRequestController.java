@@ -1,5 +1,6 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.service.EventService;
 import cardindex.dojocardindex.EventParticipationRequest.service.EventParticipationService;
 import cardindex.dojocardindex.User.models.User;
@@ -9,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -73,5 +71,43 @@ public class EventParticipationRequestController {
 
         return modelAndView;
     }
+
+    @GetMapping("/{eventId}/event-details")
+    public ModelAndView getEventDetails(@PathVariable UUID eventId,
+                                        @AuthenticationPrincipal CustomUserDetails details) {
+
+        Event event = eventService.getEventById(eventId);
+
+        ModelAndView modelAndView = new ModelAndView("event-details");
+
+        User currentUser = userService.getUserById(details.getId());
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("event", event);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PutMapping("/{eventId}/users/{userId}/unapprove")
+    public ModelAndView unApproveUserRequest(
+            @PathVariable UUID eventId,
+            @PathVariable UUID userId,
+            @AuthenticationPrincipal CustomUserDetails details) {
+
+        Event event = eventService.getEventById(eventId);
+
+        User currentUser = userService.getUserById(details.getId());
+
+        User user = userService.getUserById(userId);
+
+        requestService.unApproveRequest(event, user, currentUser);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/events/" + eventId + "/details");
+        modelAndView.addObject("successMessage", "Статусът на заявката е променен на 'REJECTED'.");
+        modelAndView.addObject("currentUser", currentUser);
+
+        return modelAndView;
+    }
+
+
 
 }

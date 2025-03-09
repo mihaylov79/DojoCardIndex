@@ -230,6 +230,11 @@ public class UserService implements UserDetailsService {
         return birthdate != null ? Period.between(birthdate, LocalDate.now()).getYears() : 0;
     }
 
+    public void saveUser(User user) {
+
+        userRepository.save(user);
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -238,4 +243,6 @@ public class UserService implements UserDetailsService {
 
         return new CustomUserDetails(user.getId(), user.getEmail(),user.getPassword(),user.getRole(),user.getRegistrationStatus(),user.getStatus());
     }
+
+
 }

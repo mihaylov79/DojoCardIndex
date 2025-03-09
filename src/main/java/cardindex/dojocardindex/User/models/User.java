@@ -96,7 +96,7 @@ public class User {
     @Column
     private int rating;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_events",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -325,6 +325,19 @@ public class User {
 
     public Set<EventParticipationRequest> getProcessedRequests() {
         return processedRequests;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 

@@ -46,7 +46,18 @@
                     <button type="submit">Заяви участие</button>
                 </form>
 
+                <form th:action="@{/events/{eventId}/close(eventId=${event.id})}" th:method="PUT">
+                    <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
+                    <button type="submit">Затвори събитие</button>
+                </form>
+
                 <button th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>
+
+                <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победител</button>
+
+                <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/details'|">Детайли</button>
+
+
             </td>
         </tr>
         </tbody>

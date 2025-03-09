@@ -80,6 +80,18 @@ public class EventController {
         return modelAndView;
     }
 
+    @PutMapping("/{eventId}/close")
+    public ModelAndView closeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails details){
+
+        User currentuser = userService.getUserById(details.getId());
+
+        eventService.closeEvent(eventId);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/events");
+        modelAndView.addObject("currentuser", currentuser);
+        return modelAndView;
+    }
+
     @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
     @GetMapping("/edit/{id}")
     public ModelAndView getEditEventPage(@PathVariable UUID id,@AuthenticationPrincipal CustomUserDetails details){
@@ -97,6 +109,7 @@ public class EventController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @PutMapping("/edit/{id}")
     public ModelAndView editEvent(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details, @Valid EditEventRequest editEventRequest, BindingResult result){
 
@@ -119,4 +132,60 @@ public class EventController {
         return modelAndView;
 
     }
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/{eventId}/winners")
+    public ModelAndView showSetWinnersPage(@PathVariable UUID eventId) {
+
+        Event event = eventService.getEventById(eventId);
+
+        System.out.println("Участници в събитието:");
+        event.getUsers().forEach(user -> System.out.println(user.getEmail())); // Дебъгване
+
+
+        ModelAndView modelAndView = new ModelAndView("set-winners");
+        modelAndView.addObject("event", event);
+        modelAndView.addObject("users", event.getUsers()); // Всички участници в турнира
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/{eventId}/set-winner")
+    public ModelAndView setWinner(@PathVariable UUID eventId,
+                                  @RequestParam UUID userId,
+                                  @RequestParam int place) {
+
+        eventService.setWinner(eventId, userId, place);
+
+        return new ModelAndView("redirect:/events/" + eventId + "/winners");
+    }
+
+    @GetMapping("/{eventId}/details")
+    public ModelAndView getEventDetails(@PathVariable UUID eventId,
+                                        @AuthenticationPrincipal CustomUserDetails details) {
+
+        Event event = eventService.getEventById(eventId);
+
+        ModelAndView modelAndView = new ModelAndView("event-details");
+
+        User currentUser = userService.getUserById(details.getId());
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("event", event);
+        modelAndView.addObject("successMessage", "Победителите са нулирани успешно!");
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/{eventId}/reset-winners")
+    public ModelAndView resetWinners(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails details) {
+
+        User currentUser = userService.getUserById(details.getId());
+        eventService.resetWinners(eventId);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/events/{eventId}/details");
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("successMessage", "Победителите са нулирани успешно!");
+
+        return modelAndView;
+    }
+
 }
