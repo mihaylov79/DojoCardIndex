@@ -1,117 +1,98 @@
 /* Основен стил за body */
 body {
-    font-family: 'Arial', sans-serif;
-    /*background-color: #f4f4f4;*/
-    color: #333;
-    margin: 0;
+    font-family: "Caveat", cursive;
+    /*font-size: 1.2em;*/
     padding: 0;
+    margin: 0;
+    /*background-color: #f4f4f4;*/
+    color: #e18e09;
 }
 
 /* Контейнер за основния контент */
 .container {
-    width: 90%;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: rgba(0, 0, 0, 0.7);
-
+    width: 85%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
-    margin-top: 30px;
-}
-
-/* Заглавие на страницата */
-h1, h2 {
-    font-size: 2rem;
     color: #e18e09;
-    margin-bottom: 20px;
 }
 
-/* Стилизиране на таблицата с детайли за събитията */
-.event-details-table {
+/* Заглавия */
+h5, h6 {
+    font-size: 1.8em;
+    color: #e18e09;
+    margin-bottom: 15px;
+}
+
+.event_info {
+    font: 1.5em Caveat;
+}
+
+/* Стилизиране на таблицата */
+.reset td{
+    padding: 0;
+    text-align: right;
+}
+
+.reset{
+    margin-top: 0;
+    margin-bottom: 0.3em;
+}
+table {
     width: 100%;
-    margin-top: 30px;
-    border-collapse: separate;
-    border-spacing: 0 0.3em;
-    font: 1.7vw "Caveat";
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-.event-details-table th, .event-details-table td {
-    padding: 0.1em 0.3em 0.2em 0.3em;
+table th, table td {
+    padding: 10px;
     text-align: center;
+    border-bottom: 1px solid #e18e09;
 }
 
-.event-details-table tr {
-    background-color: rgb(0, 0, 0, 0.6);
-    border-radius: 0.3em;
-    margin-bottom: 0.5em;
-}
-
-.event-details-table th {
-    font-weight: bold;
-    background-color: rgb(0, 0, 0, 0.6);
+th {
+    font-size: 1.5em;
+    /*background-color: rgba(0, 0, 0, 0.6);*/
     color: #e18e09;
 }
 
-.event-details-table caption {
-    text-align: end;
-    margin-left: 50%;
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
-    padding: 0.1em;
-    padding-right: 0.3em;
-    font: 1.8vw "Caveat";
-    font-weight: bold;
-    background-color: rgb(0, 0, 0, 0.6);
+td {
+    font-size: 1.8em;
 }
 
 /* Стил за бутоните */
 button {
     cursor: pointer;
-    border-radius: 0.3em;
-    margin: 0.3em;
-    font-weight: bold;
-    font: 1.4vw "Caveat";
-    background: rgba(0, 0, 0, 0.6);
-    color: #e18e09;
-    width: 80%;
-    padding: 0.3em;
+    border-radius: 5px;
+    font-size: 0.8em;
+    background: #e18e09;
+    color: black;
+    padding: 0.25em 0.5em;
+    margin-bottom: 0.2em;
+    font-family: "Caveat", sans-serif;
     border: none;
 }
 
-button:hover, button:focus {
+button:hover, button:focus{
+    opacity: 0.8;
+}
+
+.container > a:hover, .container > a:focus {
     background: #e18e09;
     color: black;
 }
 
-/* Стилове за участниците в събитието */
-ul.participants {
-    list-style-type: none;
-    padding: 0;
+.container > a{
+    text-decoration: none;
+    color: #e18e09;
+    font: 1.5em "Caveat";
+    padding: 0.25em;
+    border-radius: 0.3em;
+    margin-top: 0.3em;
 }
 
-ul.participants li {
-    font-size: 1.2rem;
-    color: #333;
-}
-
-/* Стилове за блоковете с детайли */
-.details-block {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.details-block h3 {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
-}
-
-.details-block p {
-    font-size: 1.2rem;
-    line-height: 1.6;
-    /*color: #555;*/
-}
 
 /* Медия запитвания за мобилни устройства */
 @media (max-width: 768px) {
@@ -119,16 +100,16 @@ ul.participants li {
         width: 95%;
     }
 
-    .event-details-table {
-        font-size: 1.2rem;
+    h1, h2 {
+        font-size: 1.5em;
     }
 
-    .details-block h3 {
-        font-size: 1.4rem;
+    table th, table td {
+        font-size: 1em;
     }
 
     button {
         width: 100%;
-        font-size: 1.2rem;
+        font-size: 1em;
     }
 }

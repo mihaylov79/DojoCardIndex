@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -165,11 +166,15 @@ public class EventController {
 
         Event event = eventService.getEventById(eventId);
 
+        List<User> eventUsers = event.getUsers().stream().toList();
+        Map<UUID, Integer> userAges = userService.getUserAges(eventUsers);
+
         ModelAndView modelAndView = new ModelAndView("event-details");
 
         User currentUser = userService.getUserById(details.getId());
         modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("event", event);
+        modelAndView.addObject("userAges",userAges);
         modelAndView.addObject("successMessage", "Победителите са нулирани успешно!");
         return modelAndView;
     }

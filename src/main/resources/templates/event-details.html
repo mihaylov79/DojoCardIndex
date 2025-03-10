@@ -14,25 +14,28 @@
 </header>
 
 <div class="container">
-    <h1 th:text="'Детайли за събитието: ' + ${event.eventDescription}"></h1>
-
+    <h5 th:text="'Детайли за събитието: ' + ${event.eventDescription}"></h5>
+<div class="event_info">
 <!--     Показване на съобщение за успешна операция-->
-    <th:block th:if="${successMessage}">
-        <p class="success-message" th:text="${successMessage}"></p>
-    </th:block>
+<!--    <th:block th:if="${successMessage}">-->
+<!--        <p class="success-message" th:text="${successMessage}"></p>-->
+<!--    </th:block>-->
 
     <p><strong>Тип:</strong> <span th:text="${event.type.description}"></span></p>
     <p><strong>Проведено:</strong>
         <span th:text="${#temporals.format(event.startDate, 'dd-MM-yyyy')}"></span> -
         <span th:text="${#temporals.format(event.endDate, 'dd-MM-yyyy')}"></span>
     </p>
+</div>
 
-    <h2>Участници:</h2>
+    <h6>Участници:</h6>
     <table>
         <thead>
         <tr>
             <th>Име</th>
             <th>Фамилия</th>
+            <th>Степен</th>
+            <th>Възраст</th>
             <th>Действия</th>
         </tr>
         </thead>
@@ -40,30 +43,40 @@
         <tr th:each="user : ${event.users}">
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
+            <td th:text="${user.reachedDegree.description}"></td>
+            <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>
             <td>
                 <form th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}" th:method="PUT">
                     <input type="hidden" name="_method" value="put"/>
                     <button type="submit">Отпиши</button>
                 </form>
 
+
+
+<!--                 Показване на съобщение за успех-->
+<!--                <div th:if="${successMessage}" class="alert alert-success">-->
+<!--                    <span th:text="${successMessage}"></span>-->
+<!--                </div>-->
+
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+    <table class="reset">
+        <tr>
+            <td>
                 <form th:action="@{/events/{eventId}/reset-winners(eventId=${event.id})}" method="post">
                     <button type="submit" class="btn btn-danger"
                             onclick="return confirm('Сигурни ли сте, че искате да нулирате победителите?');">
                         Нулирай победителите
                     </button>
                 </form>
-
-<!--                 Показване на съобщение за успех-->
-                <div th:if="${successMessage}" class="alert alert-success">
-                    <span th:text="${successMessage}"></span>
-                </div>
-
             </td>
         </tr>
-        </tbody>
     </table>
 
-    <a th:href="@{/events}">⬅ Назад към списъка със събития</a>
+    <a class="back" th:href="@{/events}">⬅ Назад към списъка със събития</a>
 </div>
 
 </body>
