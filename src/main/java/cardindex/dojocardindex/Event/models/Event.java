@@ -3,6 +3,8 @@ package cardindex.dojocardindex.Event.models;
 import cardindex.dojocardindex.User.models.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -12,6 +14,7 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "events")
+@Getter
 public class Event {
 
     @Id

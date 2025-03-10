@@ -23,7 +23,8 @@ body {
 h5, h6 {
     font-size: 1.8em;
     color: #e18e09;
-    margin-bottom: 15px;
+    margin: 0.5em 0;
+    background-color: rgba(0, 0, 0, 0.6)
 }
 
 .event_info {
@@ -43,7 +44,7 @@ h5, h6 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 table th, table td {
