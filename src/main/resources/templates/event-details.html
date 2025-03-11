@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html lang="bg" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,14 +29,14 @@
 </div>
 
     <h6>Участници:</h6>
-    <table>
+    <table th:unless="${event.users.isEmpty()}">
         <thead>
         <tr>
             <th>Име</th>
             <th>Фамилия</th>
             <th>Степен</th>
             <th>Възраст</th>
-            <th>Действия</th>
+            <th sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Действия</th>
 
         </tr>
         </thead>
@@ -47,7 +47,7 @@
             <td th:text="${user.reachedDegree.description}"></td>
             <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>
             <td>
-                <form th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}" th:method="PUT">
+                <form sec:authorize="hasAnyRole('ADMIN','TRAINER')" th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}" th:method="PUT">
                     <input type="hidden" name="_method" value="put"/>
                     <button type="submit">Отпиши</button>
                 </form>
@@ -55,7 +55,7 @@
 
 
 <!--                 Показване на съобщение за успех-->
-<!--                <div th:if="${successMessage}" class="alert alert-success">-->
+<!--                <div th:if="${#fields.successMessage}" class="alert alert-success">-->
 <!--                    <span th:text="${successMessage}"></span>-->
 <!--                </div>-->
 
@@ -63,6 +63,12 @@
         </tr>
 
         </tbody>
+    </table>
+
+    <table class="noParticipants" th:if="${event.users.isEmpty()}">
+        <tr>
+            <td>Няма добавени участници !</td>
+        </tr>
     </table>
 
     <h6>Победители:</h6>
@@ -73,7 +79,7 @@
             <th>Фамилия</th>
             <th>Степен</th>
             <th>Възраст</th>
-            <th>Действия</th>
+            <th sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Действия</th>
 
         </tr>
         </thead>
@@ -83,7 +89,7 @@
             <td th:text="${event.getFirstPlaceWinner().lastName}"></td>
             <td th:text="${event.getFirstPlaceWinner().reachedDegree.description}"></td>
             <td th:text="${event.getFirstPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getFirstPlaceWinner().id]}"></td>
-            <td> - </td>
+            <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"> - </td>
         </tr>
 
         <tr th:if="${event.getSecondPlaceWinner() != null}">
@@ -91,7 +97,7 @@
             <td th:text="${event.getSecondPlaceWinner().lastName}"></td>
             <td th:text="${event.getSecondPlaceWinner().reachedDegree.description}"></td>
             <td th:text="${event.getSecondPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getFirstPlaceWinner().id]}"></td>
-            <td> - </td>
+            <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"> - </td>
         </tr>
 
         <tr th:if="${event.getThirdPlaceWinner() != null}">
@@ -99,7 +105,7 @@
             <td th:text="${event.getThirdPlaceWinner().lastName}"></td>
             <td th:text="${event.getThirdPlaceWinner().reachedDegree.description}"></td>
             <td th:text="${event.getThirdPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getFirstPlaceWinner().id]}"></td>
-            <td> - </td>
+            <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"> - </td>
         </tr>
 
         </tbody>
@@ -112,7 +118,7 @@
     <table class="reset" th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
         <tr>
             <td>
-                <form th:action="@{/events/{eventId}/reset-winners(eventId=${event.id})}" method="post">
+                <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:action="@{/events/{eventId}/reset-winners(eventId=${event.id})}" method="post">
                     <button type="submit" class="btn btn-danger"
                             onclick="return confirm('Сигурни ли сте, че искате да нулирате победителите?');">
                         Нулирай победителите

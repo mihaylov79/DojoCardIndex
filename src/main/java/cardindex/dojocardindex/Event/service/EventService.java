@@ -11,9 +11,11 @@ import cardindex.dojocardindex.web.dto.CreateEventRequest;
 import cardindex.dojocardindex.web.dto.EditEventRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -84,6 +86,11 @@ public class EventService {
 
         return eventRepository.findAllByClosedOrderByStartDate(false);
 
+    }
+
+    public List<Event> getUpcomingEvents(){
+
+        return eventRepository.findAllByStartDateAfterAndClosed(LocalDate.now(),false, Limit.of(3));
     }
 
 

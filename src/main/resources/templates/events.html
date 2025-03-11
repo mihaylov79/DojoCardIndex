@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="bg" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,10 +22,11 @@
             <th scope="col">Начална дата</th>
             <th scope="col">Крайна дата</th>
             <th scope="col">Събитие</th>
-            <th scope="col">Изискване за участие</th>
-            <th scope="col">Място на събитието</th>
+            <th scope="col">Описание</th>
+            <th scope="col">Изисквания</th>
+            <th scope="col">Място</th>
             <th scope="col">Участници</th>
-            <th scope="col">Действие</th>
+            <th  scope="col">Действие</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,7 @@
             <td th:text="${event.startDate}">11.01.2025</td>
             <td th:text="${event.endDate}">12.01.2025</td>
             <td th:text="${event.type.description}">Треньорски семинар</td>
+            <td th:text="${event.eventDescription}">Треньорски семинар</td>
             <td th:text="${event.requirements.description}">Треньор</td>
             <td th:text="${event.location}">Габрово</td>
             <td>
@@ -41,19 +43,19 @@
                 </ul>
             </td>
             <td>
-                <form th:action="@{/events/requests/submit/{eventId}(eventId=${event.id})}" method="POST">
+                <form th:action="@{/events/requests/submit/{eventId}(eventId=${event.id})}" th:method="POST">
 <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
                     <button type="submit">Заяви участие</button>
                 </form>
 
-                <form th:action="@{/events/{eventId}/close(eventId=${event.id})}" th:method="PUT">
+                <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:action="@{/events/{eventId}/close(eventId=${event.id})}" th:method="PUT">
                     <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
                     <button type="submit">Затвори събитие</button>
                 </form>
 
-                <button th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>
+                <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>
 
-                <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победител</button>
+                <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победители</button>
 
                 <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/details'|">Детайли</button>
 

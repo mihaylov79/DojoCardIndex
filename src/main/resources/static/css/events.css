@@ -51,6 +51,10 @@ button {
     /*border: 2px solid #e18e09;*/
 }
 
+ul {
+    list-style-type: none;
+}
+
 button:hover,
 button:focus {
     background: #e18e09;

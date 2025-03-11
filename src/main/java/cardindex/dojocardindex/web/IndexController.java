@@ -1,5 +1,7 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Event.models.Event;
+import cardindex.dojocardindex.Event.service.EventService;
 import cardindex.dojocardindex.Message.Service.MessageService;
 import cardindex.dojocardindex.Message.models.Message;
 import cardindex.dojocardindex.User.models.User;
@@ -26,12 +28,14 @@ public class IndexController {
     private final UserService userService;
     private final MessageService messageService;
     private final HttpSession httpSession;
+    private final EventService eventService;
 
     @Autowired
-    public IndexController(UserService userService, MessageService messageService, HttpSession httpSession) {
+    public IndexController(UserService userService, MessageService messageService, HttpSession httpSession, EventService eventService) {
         this.userService = userService;
         this.messageService = messageService;
         this.httpSession = httpSession;
+        this.eventService = eventService;
     }
 
     @GetMapping("/")
@@ -83,11 +87,13 @@ public class IndexController {
         User user = userService.getUserById(details.getId());
 
         List<Message> unreadMessages = messageService.getReceivedMessagesByUser(user.getId());
+        List<Event> events = eventService.getUpcomingEvents();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home-fixed");
         modelAndView.addObject("user", user);
         modelAndView.addObject("messages", unreadMessages);
+        modelAndView.addObject("events",events);
 
         return modelAndView;
     }

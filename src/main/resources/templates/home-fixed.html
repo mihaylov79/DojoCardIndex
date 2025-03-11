@@ -92,8 +92,8 @@
                         <tr th:each="event : ${events}">
                             <td th:text="${event.startDate}"></td>
                             <td th:text="${event.endDate}"></td>
-                            <td th:text="${event.name}"></td>
-                            <td th:text="${event.requirements}"></td>
+                            <td th:text="${event.eventDescription}"></td>
+                            <td th:text="${event.requirements.description}"></td>
                             <td th:text="${event.location}"></td>
                         </tr>
                     </tbody>
