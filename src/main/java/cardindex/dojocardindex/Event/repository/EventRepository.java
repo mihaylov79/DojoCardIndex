@@ -2,6 +2,7 @@ package cardindex.dojocardindex.Event.repository;
 
 import cardindex.dojocardindex.Event.models.Event;
 import org.springframework.data.domain.Limit;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,7 +17,5 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     List<Event> findAllByStartDateBeforeAndClosed(LocalDate startDateBefore, boolean closed, Limit limit);
 
-    List<Event> findAllByStartDateAfterAndClosedAndClosed(LocalDate startDateAfter, boolean closed, boolean closed1, Limit limit);
-
-    List<Event> findAllByStartDateAfterAndClosed(LocalDate startDateAfter, boolean closed, Limit limit);
+    List<Event> findAllByStartDateAfterAndClosed(LocalDate startDateAfter, boolean closed, Limit limit, Sort sort);
 }

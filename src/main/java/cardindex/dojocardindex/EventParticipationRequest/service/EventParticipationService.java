@@ -2,7 +2,6 @@ package cardindex.dojocardindex.EventParticipationRequest.service;
 
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.models.EventType;
-import cardindex.dojocardindex.Event.repository.EventRepository;
 import cardindex.dojocardindex.Event.service.EventService;
 import cardindex.dojocardindex.EventParticipationRequest.model.EventParticipationRequest;
 import cardindex.dojocardindex.EventParticipationRequest.model.RequestStatus;
@@ -25,14 +24,14 @@ public class EventParticipationService {
     private final EventParticipationRequestRepository requestRepository;
     private final UserService userService;
     private final EventService eventService;
-    private final EventRepository eventRepository;
+
 
     @Autowired
-    public EventParticipationService(EventParticipationRequestRepository requestRepository, UserService userService, EventService eventService, EventRepository eventRepository) {
+    public EventParticipationService(EventParticipationRequestRepository requestRepository, UserService userService, EventService eventService) {
         this.requestRepository = requestRepository;
         this.userService = userService;
         this.eventService = eventService;
-        this.eventRepository = eventRepository;
+
     }
 
     public void submitRequest(UUID userId, UUID eventId){
@@ -117,7 +116,7 @@ public class EventParticipationService {
                 .orElseThrow(() -> new IllegalArgumentException("Заявката не е намерена"));
 
         request = request.toBuilder()
-                .status(RequestStatus.REJECTED)
+                .status(RequestStatus.PENDING)
                 .processedBy(currentUser)
                 .build();
 
@@ -130,9 +129,7 @@ public class EventParticipationService {
             eventService.resetWinners(event.getId());
         }
 
-        System.out.println("Потребителите преди премахване: " + event.getUsers().size());
         event.getUsers().remove(user);
-        System.out.println("Потребителите след премахване: " + event.getUsers().size());
         user.getEvents().remove(event);
 
         eventService.saveEvent(event);
