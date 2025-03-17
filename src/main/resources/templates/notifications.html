@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки за известия</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/notifications.css">
+</head>
+
+<body>
+    <header>
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    </header>
+
+    <div class="main-container">
+        <div class="notification-settings">
+            <h2>Статус на известията за потребител: <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span></h2>
+            <button th:attr="onclick=|location.href='/notifications/toggle/' + ${user.id}|">
+                <span th:text="${notificationPreference.enabled ? 'Изключи' : 'Включи'}"></span>
+            </button>
+        </div>
+
+        <div class="notification-history">
+            <table>
+                <caption>История на нотификациите</caption>
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Тема</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="notification : ${notifications}">
+                        <td th:text="${#temporals.format(notification.timestamp,'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${notification.subject}"></td>
+                        <td th:text="${notification.status}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="back">
+           <a th:href="@{/home}">Обратно</a>
+        </p>
+
+    </div>
+</body>
+
+</html>

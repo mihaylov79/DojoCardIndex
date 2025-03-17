@@ -9,6 +9,7 @@ import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.Utils.PasswordGenerator;
 import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
+import cardindex.dojocardindex.notification.service.NotificationService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreateUserRequest;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
@@ -42,11 +43,13 @@ public class UserService implements UserDetailsService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.notificationService = notificationService;
     }
 
     public void register(RegisterRequest registerRequest){
@@ -193,6 +196,9 @@ public class UserService implements UserDetailsService {
                 .build();
 
         userRepository.save(user);
+
+        // заявка към mail-svc за задаване настройки за мейл известията.(default = true)
+        notificationService.saveNotificationPreference(userId,true, user.getEmail());
     }
 
     public void denyRequest(UUID userId){
