@@ -73,10 +73,17 @@ public class NotificationService {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        ResponseEntity<Void> httpResponse = notificationClient.sendEmail(notificationRequest);
+        ResponseEntity<Void> httpResponse;
 
-        if (!httpResponse.getStatusCode().is2xxSuccessful()){
-            log.error("[Грешка при Feign заявка към notification-svc] Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID);
+        try{
+            httpResponse=notificationClient.sendEmail(notificationRequest);
+
+            if (!httpResponse.getStatusCode().is2xxSuccessful()){
+                log.error("[Грешка при Feign заявка към notification-svc] Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID);
+            }
+        } catch (Exception e) {
+            log.warn("Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID,e);
         }
+
     }
 }
