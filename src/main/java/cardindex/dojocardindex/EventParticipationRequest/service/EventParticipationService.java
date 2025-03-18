@@ -10,6 +10,7 @@ import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.EventClosedException;
 import cardindex.dojocardindex.exceptions.RequestNotFoundException;
+import cardindex.dojocardindex.notification.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -24,14 +25,15 @@ public class EventParticipationService {
     private final EventParticipationRequestRepository requestRepository;
     private final UserService userService;
     private final EventService eventService;
+    private final NotificationService notificationService;
 
 
     @Autowired
-    public EventParticipationService(EventParticipationRequestRepository requestRepository, UserService userService, EventService eventService) {
+    public EventParticipationService(EventParticipationRequestRepository requestRepository, UserService userService, EventService eventService, NotificationService notificationService) {
         this.requestRepository = requestRepository;
         this.userService = userService;
         this.eventService = eventService;
-
+        this.notificationService = notificationService;
     }
 
     public void submitRequest(UUID userId, UUID eventId){
@@ -90,6 +92,11 @@ public class EventParticipationService {
         eventService.saveEvent(event);
         userService.saveUser(user);
 
+        String emailBody = "Вашата заявка за участие беше ободбрена. За повече информация посетете профилната си страница.";
+        notificationService.sendNotification(user.getId(),user.getFirstName(), user.getLastName(), "Заявка за участие",emailBody);
+
+
+
        event.getUsers().forEach(u -> System.out.println(u.getEmail()));
 
 
@@ -106,6 +113,9 @@ public class EventParticipationService {
                 .build();
 
         requestRepository.save(request);
+
+        String emailBody = "Вашата заявка за участие беше отхвърлена. За повече информация посетете профилната си страница.";
+        notificationService.sendNotification(request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getFirstName(),"Заявка за участие",emailBody);
 
     }
 
@@ -134,6 +144,9 @@ public class EventParticipationService {
 
         eventService.saveEvent(event);
         userService.saveUser(user);
+
+        String emailBody = "Вашата заявка за участие беше върната за преразглеждане. Ще бъдете уведомени с мейл за по нататъшно развитие.";
+        notificationService.sendNotification(user.getId(),user.getFirstName(),user.getLastName(), "Заявка за участие",emailBody);
 
     }
 

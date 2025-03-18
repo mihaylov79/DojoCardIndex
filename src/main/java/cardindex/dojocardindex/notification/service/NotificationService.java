@@ -1,13 +1,16 @@
 package cardindex.dojocardindex.notification.service;
 
 import cardindex.dojocardindex.notification.client.NotificationClient;
+import cardindex.dojocardindex.notification.client.dto.Notification;
 import cardindex.dojocardindex.notification.client.dto.NotificationPreferenceRequest;
 import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
+import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -55,4 +58,25 @@ public class NotificationService {
         return httpResponse.getBody();
     }
 
+    public List<Notification> getNotificationHistory(UUID recipientId) {
+        ResponseEntity<List<Notification>> httpResponse = notificationClient
+                                                                    .getUserNotificationHistory(recipientId);
+        return httpResponse.getBody();
+    }
+
+    public void sendNotification(UUID recipientID,String firstName, String lastName, String title, String content){
+
+        NotificationRequest notificationRequest = NotificationRequest.builder()
+                .title(title)
+                .content(content)
+                .recipientId(recipientID)
+                .firstName(firstName)
+                .lastName(lastName)
+                .build();
+        ResponseEntity<Void> httpResponse = notificationClient.sendEmail(notificationRequest);
+
+        if (!httpResponse.getStatusCode().is2xxSuccessful()){
+            log.error("[Грешка при Feign заявка към notification-svc] Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID);
+        }
+    }
 }
