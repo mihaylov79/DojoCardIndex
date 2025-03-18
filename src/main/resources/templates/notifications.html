@@ -16,15 +16,23 @@
 
     <div class="main-container">
         <div class="notification-settings">
+            <div>
             <h2>Статус на известията за потребител: <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span></h2>
+            </div>
+            <div>
+            <h2><span class="status" th:text="${notificationPreference.enabled ? 'Включени' : 'Изключени'}"
+                      th:classappend="${notificationPreference.enabled ? 'enabled' : 'disabled'}"></span></h2>
+            </div>
+            <div>
             <button th:attr="onclick=|location.href='/notifications/toggle/' + ${user.id}|">
                 <span th:text="${notificationPreference.enabled ? 'Изключи' : 'Включи'}"></span>
             </button>
+            </div>
         </div>
 
         <div class="notification-history">
             <table>
-                <caption>История на нотификациите</caption>
+                <caption>История на известията</caption>
                 <thead>
                     <tr>
                         <th>Дата</th>
@@ -33,9 +41,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="notification : ${notifications}">
-                        <td th:text="${#temporals.format(notification.timestamp,'dd-MM-yyyy HH:mm')}"></td>
-                        <td th:text="${notification.subject}"></td>
+                    <tr th:each="notification : ${notificationHistory}">
+                        <td th:text="${#temporals.format(notification.created,'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${notification.title}"></td>
                         <td th:text="${notification.status}"></td>
                     </tr>
                 </tbody>

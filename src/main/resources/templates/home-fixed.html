@@ -26,6 +26,7 @@
                         <td class="user-buttons">
                             <button th:attr="onclick=|location.href='/user/details/edit/' + '${user.id}'|">Редактиране</button>
                             <button onclick="location.href='/messages/send'">Съобщение</button>
+                            <button onclick="location.href='/notifications'">Известия</button>
                         </td>
                     </tr>
                     <tr><th>Име</th><td th:text="${user.firstName}"></td></tr>
