@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="bg"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <meta charset="UTF-8">
@@ -24,9 +24,15 @@
                       th:classappend="${notificationPreference.enabled ? 'enabled' : 'disabled'}"></span></h2>
             </div>
             <div>
-            <button th:attr="onclick=|location.href='/notifications/toggle/' + ${user.id}|">
-                <span th:text="${notificationPreference.enabled ? 'Изключи' : 'Включи'}"></span>
-            </button>
+                <form th:action="@{/notifications/user-preference}" th:method="PUT">
+                    <input type="hidden" name="_method" value="put"/> <!-- Симулира PUT заявка за Spring -->
+                    <input type="hidden" name="userId" th:value="${user.id}" />
+                    <input type="hidden" name="enabled" th:value="${!notificationPreference.enabled}" />
+
+                    <button type="submit">
+                        <span th:text="${notificationPreference.enabled ? 'Изключи' : 'Включи'}"></span>
+                    </button>
+                </form>
             </div>
         </div>
 

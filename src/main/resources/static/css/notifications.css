@@ -70,7 +70,7 @@ body {
 }
 
 .notification-settings h2, .notification-history h2 {
-    font-size: 2em;
+    font-size: 1.5vw;
     font-weight: bold;
     color: var(--primary-color);
 }
@@ -79,8 +79,8 @@ button {
     background-color: var(--bg-color);
     color: var(--primary-color);
     border: none;
-    padding: 0.25em 1.5em;
-    font-size: 1.7em;
+    padding: 0.3em 1.5em;
+    font-size: 1.3vw;
     font-weight: bold;
     cursor: pointer;
     border-radius: 0.5em;
@@ -104,7 +104,7 @@ table, th, td {
     /* border: 1px solid #444; */
     text-align: center;
     color: #e18e09;
-    font-size: 1.3em;
+    font-size: 1.3vw;
 }
 
 th, td {
@@ -118,14 +118,14 @@ th {
 }
 
 caption{
-    font-size: 1.6em;
+    font-size: 1.5vw;
     font-family: var(--font-family), sans-serif;
     color: #e18e09;
     text-align: right;
     /*margin: 0.25em auto;*/
 }
 .back a {
-    font-size: 2em;
+    font-size: 1.3vw;
     font-weight: bold;
     background: var(--bg-color);
     border-radius: 0.3em;

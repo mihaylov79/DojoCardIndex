@@ -73,6 +73,7 @@ public class NotificationService {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
+
         ResponseEntity<Void> httpResponse;
 
         try{
@@ -84,6 +85,17 @@ public class NotificationService {
         } catch (Exception e) {
             log.warn("Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID,e);
         }
+
+    }
+
+    public void changeNotificationPreferences(UUID recipientId,boolean enabled){
+        try {
+            notificationClient.changeNotificationPreferences(recipientId, enabled);
+        } catch (Exception e) {
+            log.warn("Промяната на настройки за известия за потребител с [{}] не може да бъде извършена ",recipientId,e);
+        }
+
+
 
     }
 }

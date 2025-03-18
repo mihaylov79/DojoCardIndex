@@ -7,10 +7,7 @@ import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
 import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,5 +26,8 @@ public interface NotificationClient {
 
     @PostMapping
     ResponseEntity<Void>sendEmail(@RequestBody NotificationRequest notificationRequest);
+
+    @PutMapping("/preferences")
+    ResponseEntity<Void>changeNotificationPreferences(@RequestParam(name = "recipientId") UUID recipientId, @RequestParam(name = "enabled") boolean enabled);
 
 }
