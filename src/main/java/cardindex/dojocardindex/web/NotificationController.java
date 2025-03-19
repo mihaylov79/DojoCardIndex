@@ -10,10 +10,7 @@ import cardindex.dojocardindex.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -46,6 +43,18 @@ public class NotificationController {
 
         return modelAndView;
 
+    }
+
+    @DeleteMapping
+    public ModelAndView clearUserHistory(@AuthenticationPrincipal CustomUserDetails details){
+
+        User user = userService.getUserById(details.getId());
+        notificationService.removeUserNotificationHistory(details.getId());
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/notifications");
+        modelAndView.addObject("user", user);
+
+        return modelAndView;
     }
 
     @PutMapping("/user-preference")

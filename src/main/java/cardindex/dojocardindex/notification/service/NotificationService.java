@@ -101,4 +101,15 @@ public class NotificationService {
             log.warn("Неочаквана грешка при промяна на настройки за известия за потребител [{}]",recipientId,e);
         }
     }
+
+    public void removeUserNotificationHistory(UUID recipientId){
+
+        try{
+            notificationClient.clearNotificationHistory(recipientId);
+        } catch (Exception e) {
+            log.error("Не може да бъде установена връзка с mail-svc за да бъде изчистена историята на известията за потребител с идентификация - [{}]",recipientId,e);
+        }
+
+    }
+
 }

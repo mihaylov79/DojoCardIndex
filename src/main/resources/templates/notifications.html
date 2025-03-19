@@ -38,6 +38,14 @@
 
         <div class="notification-history">
             <table>
+                <div>
+                    <form th:action="@{/notifications}" th:method="DELETE">
+                        <input type="hidden" name="_method" value="delete"/> <!-- Симулира PUT заявка за Spring -->
+                        <input type="hidden" name="recipientId" th:value="${user.id}" />
+                        <button type="submit">Изчисти историята
+                        </button>
+                    </form>
+                </div>
                 <caption>История на известията</caption>
                 <thead>
                     <tr>
