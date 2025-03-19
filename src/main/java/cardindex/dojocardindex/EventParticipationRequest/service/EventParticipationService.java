@@ -92,7 +92,7 @@ public class EventParticipationService {
         eventService.saveEvent(event);
         userService.saveUser(user);
 
-        String emailBody = "Вашата заявка за участие беше ободбрена. За повече информация посетете профилната си страница.";
+        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше одобрена.<br>За повече информация посетете профилната си страница.".formatted(event.getEventDescription(),event.getLocation(),event.getStartDate());
         notificationService.sendNotification(user.getId(),user.getFirstName(), user.getLastName(), "Заявка за участие",emailBody);
 
 
@@ -114,7 +114,7 @@ public class EventParticipationService {
 
         requestRepository.save(request);
 
-        String emailBody = "Вашата заявка за участие беше отхвърлена. За повече информация посетете профилната си страница.";
+        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше отхвърлена.<br>За повече информация посетете профилната си страница.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
         notificationService.sendNotification(request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getFirstName(),"Заявка за участие",emailBody);
 
     }
@@ -145,7 +145,7 @@ public class EventParticipationService {
         eventService.saveEvent(event);
         userService.saveUser(user);
 
-        String emailBody = "Вашата заявка за участие беше върната за преразглеждане. Ще бъдете уведомени с мейл за по нататъшно развитие.";
+        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s беше върната за преразглеждане.<br>Ще бъдете уведомени с мейл за по нататъшно развитие.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
         notificationService.sendNotification(user.getId(),user.getFirstName(),user.getLastName(), "Заявка за участие",emailBody);
 
     }

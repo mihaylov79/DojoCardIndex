@@ -64,38 +64,41 @@ public class NotificationService {
         return httpResponse.getBody();
     }
 
-    public void sendNotification(UUID recipientID,String firstName, String lastName, String title, String content){
+    public void sendNotification(UUID recipientID, String firstName, String lastName, String title, String content) {
+        // Проверка на предпочитанията за известия
+        NotificationPreference preference = getUserNotificationPreference(recipientID);
 
-        NotificationRequest notificationRequest = NotificationRequest.builder()
-                .title(title)
-                .content(content)
-                .recipientId(recipientID)
-                .firstName(firstName)
-                .lastName(lastName)
-                .build();
+        if (preference.isEnabled()) {
+            NotificationRequest notificationRequest = NotificationRequest.builder()
+                    .title(title)
+                    .content(content)
+                    .recipientId(recipientID)
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .build();
 
-        ResponseEntity<Void> httpResponse;
+            ResponseEntity<Void> httpResponse;
 
-        try{
-            httpResponse=notificationClient.sendEmail(notificationRequest);
+            try {
+                httpResponse = notificationClient.sendEmail(notificationRequest);
 
-            if (!httpResponse.getStatusCode().is2xxSuccessful()){
-                log.error("[Грешка при Feign заявка към notification-svc] Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID);
+                if (!httpResponse.getStatusCode().is2xxSuccessful()) {
+                    log.error("[Грешка при Feign заявка към notification-svc] Известие към потребител с идентификация [{}] не беше изпратено!", recipientID);
+                }
+            } catch (Exception e) {
+                log.warn("Известие към потребител с идентификация [{}] не беше изпратено!", recipientID, e);
             }
-        } catch (Exception e) {
-            log.warn("Известие към потребител с идентификация - [{}] - не беше изпратено!",recipientID,e);
+        } else {
+            log.warn("Известията за потребител с ID [{}] са изключени. Известие няма да бъде изпратено.", recipientID);
         }
-
     }
+
 
     public void changeNotificationPreferences(UUID recipientId,boolean enabled){
         try {
             notificationClient.changeNotificationPreferences(recipientId, enabled);
         } catch (Exception e) {
-            log.warn("Промяната на настройки за известия за потребител с [{}] не може да бъде извършена ",recipientId,e);
+            log.warn("Неочаквана грешка при промяна на настройки за известия за потребител [{}]",recipientId,e);
         }
-
-
-
     }
 }
