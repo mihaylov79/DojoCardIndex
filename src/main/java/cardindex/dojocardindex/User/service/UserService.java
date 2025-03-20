@@ -204,7 +204,6 @@ public class UserService implements UserDetailsService {
         notificationService.saveNotificationPreference(userId,true, user.getEmail());
 
         // изпращаме известие на потребителя за успещна регистрация
-
         String emailContent = "Вашата заявка за регистрация беше потвърдена.Вече можете да влезете в профила си.";
         notificationService.sendNotification(userId,user.getFirstName(), user.getLastName(), "Заявка за регистрация",emailContent);
     }
@@ -253,7 +252,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-            User user = userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundException("User with this email does not exist."));
+            User user = userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundException("Потребител с мейл: %s не е намерен!".formatted(username)));
 
         return new CustomUserDetails(user.getId(), user.getEmail(),user.getPassword(),user.getRole(),user.getRegistrationStatus(),user.getStatus());
     }

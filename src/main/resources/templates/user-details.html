@@ -25,7 +25,7 @@
                     <tr><th>Фамилия</th><td th:text="${user.lastName}"></td></tr>
                     <tr><th>Поща</th><td th:text="${user.email}"></td></tr>
                     <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${user.birthDate}"></td></tr>
-                    <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.getRank()} + ' ' + ${user.reachedDegree.getLevel()}"></td></tr>
+                    <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.description}"></td></tr>
                     <tr th:if="${user.interests} != null"><th>Интереси</th><td th:text="${user.interests}"></td></tr>
                 </table>
             </div>

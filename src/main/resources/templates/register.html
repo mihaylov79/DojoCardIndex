@@ -18,6 +18,7 @@
     <div class="form">
         <form class="register" th:action="@{/register}" th:method="POST" th:object="${registerRequest}">
             <h2>Регистрация</h2>
+            <span th:text="${userAlreadyExistMessage}" class="credentials-error"></span>
             
             <div class="field">
                 <label for="field-name">Име</label>
@@ -27,19 +28,20 @@
             <div class="field">
                 <label for="field-surname" >Фамилия</label>
                 <input type="text" name="surname" id="field-surname" placeholder="Вашата фамилия" th:field="*{lastName}">
-                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Вашата фамилия</span>
+                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="credentials-error">Вашата фамилия</span>
             </div>
 
             <div class="field">
               <label for="field-email">Електронна поща</label>
               <input type="email" name="email" id="field-email" placeholder="Email" th:field="*{email}">
-              <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="helper info">например: john.doe@gmail.com</span>
+              <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="credentials-error">например: john.doe@gmail.com</span>
+
             </div>
         
             <div class="field">
               <label for="field-password">Парола</label>
               <input type="password" name="password" id="field-password" placeholder="Password" th:field="*{password}">
-              <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="helper info">минимална дължина 6 символа, букви и цифри, поне 1 специален символ</span>
+              <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="credentials-error">минимална дължина 6 символа, букви и цифри, поне 1 специален символ</span>
             </div>
         
             <input type="submit" class="button login" value="Изпрати">

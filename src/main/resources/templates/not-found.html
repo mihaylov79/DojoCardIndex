@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Dojo - Страницата не е намерена</title>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+    <div class="error-info">
+        <h2>Грешка 404</h2>
+        <p>Страницата не е намерена</p>
+    </div>
+
+    <div class="additional-info">
+        <div class="message">
+            <p>---------------------------------------</p>
+            <p th:text="${errorMessage} ?: 'Съжаляваме, но страницата, която търсите, не съществува.'"></p>
+            <p>---------------------------------------</p>
+
+            <h2>Ако съобщението отгоре не Ви говори нищо - натиснете F5. Ако и това не помогне - свържете се с нас за съдействие!</h2>
+        </div>
+        <a href="/">Върни се на началната страница</a>
+    </div>
+
+</div>
+</body>
+</html>

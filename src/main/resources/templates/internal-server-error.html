@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Dojo - Нещо се обърка</title>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+    <div class="error-info">
+        <h3 th:text="${statusCode} ?: 'Грешка 500'"></h3>
+        <p th:text="${errorType} ?: 'Internal Server Error'"></p>
+    </div>
+    <div class="additional-info">
+        <div class="message">
+            <h2>Нещо се обърка!</h2>
+            <p>---------------------------</p>
+
+            <!-- Проверка дали съобщението съдържа "Connection refused" -->
+            <h6 th:if="${exceptionMessage != null and #strings.contains(exceptionMessage, 'Connection refused')}"
+                th:text="'Неуспешна връзка със сървъра. Опитайте отново по-късно.'"></h6>
+
+<!--            <h6 th:if="${exceptionMessage == null or not #strings.contains(exceptionMessage, 'Connection refused')}"-->
+<!--                th:text="${exceptionMessage} ?: 'Натиснете F5 и ако това не помогне - свържете се с нас за съдействие!'"></h6>-->
+
+            <p>---------------------------</p>
+            <h2>Ако съобщението отгоре не Ви говори нищо - натиснете F5. Ако и това не помогне - свържете се с нас за съдействие!</h2>
+        </div>
+        <p th:text="'Грешка: ' + (${messageError} ?: 'Съжаляваме за причиненото неудобство')"></p>
+        <a href="/">Върни се на началната страница</a>
+    </div>
+</div>
+
+</body>
+</html>

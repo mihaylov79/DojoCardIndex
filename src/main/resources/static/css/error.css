@@ -1,0 +1,88 @@
+/* Основни стилове */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: 14px/1.5 "Roboto", Verdana, sans-serif;
+    background-image: url('/images/background2D.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* Контейнер за грешка */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.error-info {
+    align-items: start;
+    width: 70vw;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 1.5em;
+    border-radius: 0.5em;
+    color: #e18e09;
+    font-size: 1.6em;
+    font-family: "Caveat", cursive;
+    margin-bottom: 1em;
+}
+
+.additional-info {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 2em;
+    border-radius: 0.5em;
+    /*color: white;*/
+    max-width: 70vw;
+    font-family: "Caveat", cursive;
+}
+
+.message h2 {
+    color: #e18e09;
+    font-size: 2em;
+    margin-bottom: 0.5em;
+}
+
+.message h6 {
+    font-size: 1.3em;
+    color: white;
+    margin-bottom: 0.5em;
+}
+.message h5{
+    font-size: 1.6em;
+    color: white;
+    margin-bottom: 0.5em;
+}
+
+.additional-info p {
+    font-size: 1em;
+    color: white;
+}
+
+.additional-info a {
+    display: inline-block;
+    margin-top: 1em;
+    padding: 0.8em 1.5em;
+    background-color: #e18e09;
+    color: black;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 0.5em;
+    transition: background 0.3s ease;
+}
+
+.additional-info a:hover {
+    background-color: white;
+    color: black;
+}
