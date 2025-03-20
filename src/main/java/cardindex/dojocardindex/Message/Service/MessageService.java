@@ -10,7 +10,6 @@ import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.web.dto.SendMessageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortArgumentResolver;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +23,11 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final UserService userService;
-    private final SortArgumentResolver sortArgumentResolver;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository, UserService userService, SortArgumentResolver sortArgumentResolver) {
+    public MessageService(MessageRepository messageRepository, UserService userService) {
         this.messageRepository = messageRepository;
         this.userService = userService;
-        this.sortArgumentResolver = sortArgumentResolver;
     }
 
     public List<Message> getReceivedMessagesByUser(UUID userId) {
@@ -107,6 +104,11 @@ public class MessageService {
         message = message.toBuilder().isRead(true).build();
 
         messageRepository.save(message);
+    }
+
+    public int deleteOldMessages(LocalDateTime time){
+
+      return messageRepository.deleteAllByCreatedBeforeAndIsReadTrue(time);
     }
 
 

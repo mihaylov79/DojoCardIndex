@@ -41,6 +41,7 @@ public class Comment {
         return post;
     }
 
+//    ДА НЕ МАХАМ ТОЗИ СЕТЪР!
     public void setPost(Post post) {
         this.post = post;
     }

@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.*;
 @Entity
 @Getter
 @Builder(toBuilder = true)
+@Slf4j
 public class User {
 
     @Id
@@ -326,6 +328,13 @@ public class User {
     public Set<EventParticipationRequest> getProcessedRequests() {
         return processedRequests;
     }
+
+
+    public void removeCommentsByPost(Post post) {
+        comments.removeIf(comment -> comment.getPost().equals(post));
+        log.warn("Премахване на коментарите от потребител с ID: {} за пост с ID: {}", id, post.getId());
+    }
+
 
     @Override
     public boolean equals(Object o) {

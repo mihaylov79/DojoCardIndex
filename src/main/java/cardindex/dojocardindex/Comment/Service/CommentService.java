@@ -41,9 +41,6 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-
-
-
     }
 
     public List<Comment> getCommentsForPost(UUID postId){

@@ -98,10 +98,10 @@ public class EventService {
     @Transactional
     public void setWinner(UUID eventId, UUID userId, int place) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Събитието не е открито"));
 
         if (event.getType() != EventType.TOURNAMENT) {
-            throw new IllegalStateException("Only tournaments can have winners.");
+            throw new IllegalStateException("Победители могат да бъдат задавани само в ТУРНИР");
         }
 
         User user = userService.getUserById(userId);
@@ -117,7 +117,7 @@ public class EventService {
                     User::getAchievedSecondPlaces, User::setAchievedSecondPlaces);
             case 3 -> updateWinner(event, event.getThirdPlaceWinner(), user,
                     User::getAchievedThirdPlaces, User::setAchievedThirdPlaces);
-            default -> throw new IllegalArgumentException("Invalid place. Must be 1, 2, or 3.");
+            default -> throw new IllegalArgumentException("Невалидна позиция. Позицията може да бъде 1, 2, или 3.");
         }
 
         eventRepository.save(event);

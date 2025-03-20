@@ -41,9 +41,10 @@ public class Post {
    @Column
    private boolean isRead;
 
-   @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
+   @OneToMany(mappedBy = "post",fetch = FetchType.EAGER,cascade = CascadeType.ALL,orphanRemoval = true)
    private List<Comment> comments = new ArrayList<>();
 
+   // Методи за коментари - да не ги махам
    public void addComment(Comment comment) {
       comments.add(comment);
       comment.setPost(this);
@@ -53,5 +54,6 @@ public class Post {
       comments.remove(comment);
       comment.setPost(null);
    }
+
 
 }
