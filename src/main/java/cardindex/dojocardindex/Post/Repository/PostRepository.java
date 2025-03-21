@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.Post.Repository;
 
 import cardindex.dojocardindex.Post.models.Post;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
 
     List<Post> findAllByCreatedBeforeAndIsReadIsTrue(LocalDateTime date);
+
+    List<Post> findAllByIsReadIsFalse(Sort created);
 }

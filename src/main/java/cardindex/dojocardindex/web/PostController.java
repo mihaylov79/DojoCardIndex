@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -75,6 +76,20 @@ public class PostController {
             postService.createNewPost(createPostRequest);
 
         return new ModelAndView("redirect:/posts");
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/close/{id}")
+    public ModelAndView removePots(@PathVariable UUID id,@AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+
+        postService.closePost(id);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/posts");
+        modelAndView.addObject("user", currentUser);
+
+        return modelAndView;
     }
 
 

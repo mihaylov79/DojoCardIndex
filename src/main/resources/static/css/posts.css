@@ -178,14 +178,18 @@ textarea:focus{
     border: none;
 }
 button {
-    width: 25%;
-    height: 1em;
-    background-color: black;
+    /*width: 25%;*/
+    /*height: 1em;*/
+    background-color: transparent;
+    border-radius: 0.5em;
     color: #e18e09;
     border: none;
     padding: 0.1em;
-    font: 1.2em "Caveat";
+    font: 0.7em "Caveat";
     cursor: pointer;
+}
+button:hover {
+    opacity: 0.8;
 }
 .comment-button:hover {
     opacity: 0.8;

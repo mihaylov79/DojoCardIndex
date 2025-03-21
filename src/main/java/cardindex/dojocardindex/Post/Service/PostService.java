@@ -31,7 +31,7 @@ public class PostService {
     }
 
     public List<Post> getAllUnreadPosts(){
-        return postRepository.findAll(Sort.by(Sort.Order.desc("created")));
+        return postRepository.findAllByIsReadIsFalse(Sort.by(Sort.Order.desc("created")));
     }
 
 
@@ -56,6 +56,16 @@ public class PostService {
 
         return postRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("Публикацията не е намерена."));
+    }
+
+    public void closePost(UUID postId){
+        Post post = getPostById(postId);
+
+        post = post.toBuilder()
+                .isRead(true)
+                .build();
+
+        postRepository.save(post);
     }
 
     @Transactional

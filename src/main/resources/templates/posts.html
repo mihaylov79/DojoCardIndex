@@ -30,6 +30,13 @@
             <tr>
                 <td colspan="2" class="message-content" th:text="${post.content}"></td>
             </tr>
+            <tr th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <td colspan="2" class="post-actions">
+                    <form th:action="@{/posts/close/{id}(id=${post.id})}" th:method="POST">
+                        <button type="submit" class="close-post-btn">Затвори пост</button>
+                    </form>
+                </td>
+            </tr>
         </table>
 
 
