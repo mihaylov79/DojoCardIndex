@@ -28,7 +28,8 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({EventNotFoundException.class,
                        MessageNotFoundException.class,
-                       RequestNotFoundException.class})
+                       RequestNotFoundException.class,
+                       RequestAlreadyExistException.class})
     public ModelAndView handleBadRequestException(Exception exception){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");

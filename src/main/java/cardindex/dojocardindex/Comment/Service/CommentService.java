@@ -43,6 +43,17 @@ public class CommentService {
 
     }
 
+//    public void deleteComment(UUID commentId, User user){
+//
+//       Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new RuntimeException("Такъв коментар не е намерен!"));
+//
+//       comment = comment.toBuilder()
+//               .deleted(true)
+//               .build();
+//
+//       commentRepository.save(comment);
+//    }
+
     public List<Comment> getCommentsForPost(UUID postId){
 
         return commentRepository.findByPost_Id(postId);

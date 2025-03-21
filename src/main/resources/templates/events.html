@@ -45,12 +45,12 @@
             <td>
                 <form th:action="@{/events/requests/submit/{eventId}(eventId=${event.id})}" th:method="POST">
 <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
-                    <button type="submit">Заяви участие</button>
+                    <button type="submit" onclick="return confirm('Заявавате участие за това събитие?');" >Заяви участие</button>
                 </form>
 
                 <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:action="@{/events/{eventId}/close(eventId=${event.id})}" th:method="PUT">
                     <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
-                    <button type="submit">Затвори събитие</button>
+                    <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да ЗАТВОРИТЕ това събитие?');">Затвори събитие</button>
                 </form>
 
                 <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>

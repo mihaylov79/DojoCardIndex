@@ -9,6 +9,7 @@ import cardindex.dojocardindex.EventParticipationRequest.repository.EventPartici
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.EventClosedException;
+import cardindex.dojocardindex.exceptions.RequestAlreadyExistException;
 import cardindex.dojocardindex.exceptions.RequestNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +49,9 @@ public class EventParticipationService {
 
         requestRepository.findByUserAndEvent(user,event).ifPresent(existingRequest ->{
             switch (existingRequest.getStatus()){
-                case REJECTED -> throw new RuntimeException("Вашата заявка е била отхвърлена!");
-                case PENDING ->  throw new RuntimeException("Вашата заявка все още чака одобрение");
-                case APPROVED -> throw new RuntimeException("Вашата заявка вече е била одобрена");
+                case REJECTED -> throw new RequestAlreadyExistException("Вашата заявка е била отхвърлена!");
+                case PENDING ->  throw new RequestAlreadyExistException("Вашата заявка все още чака одобрение");
+                case APPROVED -> throw new RequestAlreadyExistException("Вашата заявка вече е била одобрена");
             }
         });
 

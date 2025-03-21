@@ -77,7 +77,7 @@
                           th:action="@{/admin/users/modify-status}"
                           th:method="POST">
                         <input type="hidden" name="id" th:value="${user.id}"/>
-                        <button type="submit">Деактивирай</button>
+                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да ДЕАКТИВИРАТЕ този потребител ?');">Деактивирай</button>
                     </form>
                     <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).INACTIVE}"
                           th:action="@{/admin/users/modify-status}"

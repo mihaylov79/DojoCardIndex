@@ -14,17 +14,17 @@
 
 <div class="main-container">
     <div class="error-info">
-        <h3 th:text="${statusCode} ?: 'Грешка 400'"></h3>
-        <p th:text="${errorType} ?: 'Bad Request'"></p>
+        <h2>Грешка 400</h2>
+        <h3>Bad Request</h3>
     </div>
     <div class="additional-info">
         <div class="message">
             <h2>Нещо се обърка!</h2>
-            <p>---------------------------</p>
 
-                <h6 th:text="${errorMessage}"></h6>
+            <hr class="line"/>
+                <h5 th:text="${errorMessage}"></h5>
+            <hr class="line"/>
 
-            <p>---------------------------</p>
             <h2>Ако съобщението отгоре не Ви говори нищо - натиснете F5. Ако и това не помогне - свържете се с нас за съдействие!</h2>
         </div>
         <p th:text="'Грешка: ' + ${exception}"></p>
