@@ -134,6 +134,11 @@ button:hover {
     border-radius: 0.3em;
 }
 
+th img {
+    max-width: 200px;
+    max-height: 200px;
+}
+
 .admin-menu a{
     text-decoration: none;
     color: #e18e09;
