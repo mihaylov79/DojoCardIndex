@@ -123,6 +123,28 @@ td {
     border-bottom: 1px solid #e18e09;
 }
 
+.comment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-comment-btn {
+    background-color: rgb(0, 0, 0, 0.6);
+    border-radius: 0.5em;
+    color: #e18e09;
+    border: none;
+    padding: 0.3em 0.5em;
+    font: 0.7em "Caveat";
+    cursor: pointer;
+}
+
+.delete-comment-btn:hover {
+
+    color: black;
+}
+
+
 /*.comments-section form {*/
 /*    margin-top: 1em;*/
 /*    width: 100%;*/

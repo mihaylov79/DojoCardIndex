@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="60">
-    <title>Детайли за публикацията</title>
+    <title>Публикации</title>
     <link rel="stylesheet" href="/css/default.css">
     <link rel="stylesheet" href="/css/posts.css">
 
@@ -43,9 +43,16 @@
         <div class="comments-section">
 
             <ul>
-                <li th:each="comment : ${post.comments}">
-                    <strong th:text="${comment.commentAuthor.getFirstName()} + ' ' + ${comment.commentAuthor.lastName}">Име</strong>:
-                    <span th:text="${comment.content}">Съдържание</span>
+                <li th:each="comment : ${post.comments}" class="comment-item">
+                    <div>
+                        <strong th:text="${comment.commentAuthor.getFirstName()} + ' ' + ${comment.commentAuthor.lastName}">Име</strong>:
+                        <span th:text="${comment.content}">Съдържание</span>
+                    </div>
+                    <form th:if="${#authorization.expression('hasRole(''ADMIN'')') or #authentication.name == comment.commentAuthor.email}"
+                          th:action="@{/comments/remove/{id}(id=${comment.id})}" th:method="DELETE" style="display:inline;">
+<!--                        <input type="hidden" name="_method" value="DELETE"/>-->
+                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да изтриете този коментар?');" class="delete-comment-btn">ПРЕМАХНИ</button>
+                    </form>
                 </li>
             </ul>
 

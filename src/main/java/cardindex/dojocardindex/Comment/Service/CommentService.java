@@ -6,9 +6,11 @@ import cardindex.dojocardindex.Comment.models.Comment;
 import cardindex.dojocardindex.Post.Service.PostService;
 import cardindex.dojocardindex.Post.models.Post;
 import cardindex.dojocardindex.User.models.User;
+import cardindex.dojocardindex.User.models.UserRole;
 import cardindex.dojocardindex.web.dto.CreateCommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,16 +45,36 @@ public class CommentService {
 
     }
 
-//    public void deleteComment(UUID commentId, User user){
-//
-//       Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new RuntimeException("Такъв коментар не е намерен!"));
-//
-//       comment = comment.toBuilder()
-//               .deleted(true)
-//               .build();
-//
-//       commentRepository.save(comment);
-//    }
+    public Comment getCommentById(UUID commentId){
+
+        return commentRepository.findById(commentId).orElseThrow(()-> new RuntimeException("Такъв коментар не е намерен!"));
+    }
+
+
+    @Transactional
+    public void deleteComment(UUID commentId, User user){
+
+       Comment comment = getCommentById(commentId);
+
+        if (user != comment.getCommentAuthor() && user.getRole()!= UserRole.ADMIN){
+
+            throw new RuntimeException("Само Администратор или авторът на коментара могат да го премахнат");
+
+        }
+
+        Post post = comment.getPost();
+        if (post != null){
+            post.getComments().remove(comment);
+        }
+
+        User commentAuthor = comment.getCommentAuthor();
+        if (commentAuthor != null)
+            commentAuthor.getComments().remove(comment);
+
+       commentRepository.delete(comment);
+    }
+
+
 
     public List<Comment> getCommentsForPost(UUID postId){
 

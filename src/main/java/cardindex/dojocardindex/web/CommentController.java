@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -69,5 +66,20 @@ public class CommentController {
         modelAndView.addObject("currentUser", currentUser);
 
         return modelAndView;
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public ModelAndView removeComment(@PathVariable UUID id,
+                                      @AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+
+        commentService.deleteComment(id,currentUser);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/posts");
+        modelAndView.addObject("currentUser", currentUser);
+
+        return modelAndView;
+
     }
 }

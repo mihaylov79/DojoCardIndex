@@ -37,6 +37,8 @@ public class Comment {
     @Column
     private LocalDateTime commented;
 
+
+
     public Post getPost() {
         return post;
     }
