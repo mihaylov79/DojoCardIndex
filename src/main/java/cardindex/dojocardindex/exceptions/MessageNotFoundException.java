@@ -2,7 +2,7 @@ package cardindex.dojocardindex.exceptions;
 
 
 
-public class MessageNotFoundException extends RuntimeException{
+public class MessageNotFoundException extends IllegalArgumentException{
 
     private static final String DEFAULT_MESSAGE = "Съобщението не беше намерено.";
 
