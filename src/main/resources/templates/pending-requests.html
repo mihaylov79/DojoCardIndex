@@ -36,13 +36,13 @@
             <td th:text="${request.user.firstName}">Име</td>
             <td th:text="${request.user.lastName}">Фамилия</td>
             <td th:text="${request.user.reachedDegree?.description ?: '-'}">Степен</td>
-            <td th:text="${request.user.birthDate}">Възраст</td>
+            <td th:text="${request.user.birthDate == null} or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[request.user.id]}">Възраст</td>
             <td class="actions">
                 <form th:action="@{'/events/requests/approve/' + ${request.id}}" method="post">
                     <input type="hidden" name="requestId" th:value="${request.id}">
                     <button type="submit">Одобри</button>
                 </form>
-                <form th:action="@{/admin/requests/reject}" method="post">
+                <form th:action="@{/events/requests/reject/{id}(id=${request.id})}" th:method="GET">
                     <input type="hidden" name="requestId" th:value="${request.id}">
                     <button type="submit" class="reject">Откажи</button>
                 </form>

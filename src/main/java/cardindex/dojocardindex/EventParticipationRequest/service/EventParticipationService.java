@@ -115,9 +115,27 @@ public class EventParticipationService {
 
         requestRepository.save(request);
 
-        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше отхвърлена.<br>За повече информация посетете профилната си страница.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
+        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше отхвърлена. За повече информация посетете профилната си страница.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
         notificationService.sendNotification(request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getFirstName(),"Заявка за участие",emailBody);
 
+    }
+
+    public void rejectRequest(UUID requestId, User currentUser,String reason){
+
+        EventParticipationRequest request = getRequestById(requestId);
+
+        request = request.toBuilder()
+                .status(RequestStatus.REJECTED)
+                .reason(reason)
+                .processedBy(currentUser)
+                .build();
+
+        requestRepository.save(request);
+
+        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше отхвърлена. За повече информация посетете профилната си страница.".formatted(request.getEvent().getEventDescription(),
+                                                                                                                                                                      request.getEvent().getLocation(),
+                                                                                                                                                                      request.getEvent().getStartDate());
+        notificationService.sendNotification(request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getFirstName(),"Заявка за участие",emailBody);
     }
 
     public void unApproveRequest(Event event, User user, User currentUser) {

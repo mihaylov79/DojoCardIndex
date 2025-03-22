@@ -45,7 +45,7 @@
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.reachedDegree.description}"></td>
-            <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>
+            <td th:text="${user.birthDate == null} or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>
             <td>
                 <form sec:authorize="hasAnyRole('ADMIN','TRAINER')" th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}" th:method="PUT">
                     <input type="hidden" name="_method" value="put"/>

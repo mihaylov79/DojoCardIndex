@@ -36,7 +36,6 @@ public class CreateUserRequest {
     private LocalDate birthDate;
 
 
-
     private Degree reachedDegree;
 
    @Length(max = 500, message = "Това поле не може да надвишава 500 символа")

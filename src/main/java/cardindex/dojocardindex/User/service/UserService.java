@@ -235,7 +235,7 @@ public class UserService implements UserDetailsService {
 
 
     public Map<UUID, Integer> getUserAges(List<User> users) {
-        return users.stream()
+        return users.stream().distinct()
                 .collect(Collectors.toMap(User::getId, user -> calculateAge(user.getBirthDate())));
     }
 

@@ -46,7 +46,7 @@
                     
                 </td>
 
-                <td th:text="${user.birthDate == null} ? 'Неизвестна' : ${userAges[user.id]}"></td>">
+                <td th:text="${user.birthDate == null}  or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>">
 
 
                 <td th:text="${user.reachedDegree?.description ?: '-'}">
