@@ -27,6 +27,8 @@
                             <button th:attr="onclick=|location.href='/users/details/edit/' + '${user.id}'|">Редактиране</button>
                             <button onclick="location.href='/messages/send'">Съобщение</button>
                             <button onclick="location.href='/notifications'">Известия</button>
+                            <button th:attr="onclick=|location.href='/events/requests/' + '${user.id}'|">Заявки</button>
+
                         </td>
                     </tr>
                     <tr><th>Име</th><td th:text="${user.firstName}"></td></tr>
@@ -103,13 +105,13 @@
         </div>
 
         <div class="admin-menu" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
+            <div class="admin-title">АДМИН ПАНЕЛ</div>
             <ul>
                 <li><a th:href="@{/admin/add-user}">Добави нов потребител</a></li>
                 <li><a th:href="@{/users/list}">Регистрирани потребители</a></li>
-                <li><a th:href="@{/users/list}">Активни потребители</a></li>
+<!--                <li><a th:href="@{/users/list}">Активни потребители</a></li>-->
                 <li><a th:href="@{/admin/users/list/all-users}">Всички потребители</a></li>
                 <li><a th:href="@{/admin/register-requests}">Заявки за регистрация</a></li>
-                <li><a href="#">Редактиране на потребител</a></li>
                 <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>
                 <li><a th:href="@{/events/new}">Добавяне на събитие</a></li>
                 <li><a th:href="@{/events/requests/pending}">Чакащи заявки за участие</a></li>

@@ -18,7 +18,7 @@ tr, td, th {
 
 tr {
     margin-bottom: 0.5em;
-    background-color: rgb(0,0,0,0.6);
+    background-color: rgb(0,0,0,0.7);
     border-radius: 0.3em;
 }
 
@@ -43,7 +43,7 @@ button {
     font-weight: bold;
     font: 1.4vw "Caveat";
     /*font-size: 1em;*/
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     color: #e18e09;
     width: 80%;
     padding: 0.3em;

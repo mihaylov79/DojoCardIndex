@@ -14,10 +14,12 @@ import cardindex.dojocardindex.exceptions.RequestNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-
 
 
 @Service
@@ -167,6 +169,15 @@ public class EventParticipationService {
         String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s беше върната за преразглеждане.<br>Ще бъдете уведомени с мейл за по нататъшно развитие.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
         notificationService.sendNotification(user.getId(),user.getFirstName(),user.getLastName(), "Заявка за участие",emailBody);
 
+    }
+
+    public List<EventParticipationRequest> getRequestsBuUserId(UUID userId,RequestStatus status){
+
+        User currentUser = userService.getUserById(userId);
+
+       return requestRepository.findAllByUser(currentUser).stream()
+               .filter(r -> r.getEvent().getEndDate().isAfter(LocalDate.now())).filter(r->r.getStatus() == status)
+               .sorted(Comparator.comparing(EventParticipationRequest::getCreated).reversed()).toList();
     }
 
 

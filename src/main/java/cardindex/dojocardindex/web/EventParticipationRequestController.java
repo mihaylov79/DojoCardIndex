@@ -3,6 +3,7 @@ package cardindex.dojocardindex.web;
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.service.EventService;
 import cardindex.dojocardindex.EventParticipationRequest.model.EventParticipationRequest;
+import cardindex.dojocardindex.EventParticipationRequest.model.RequestStatus;
 import cardindex.dojocardindex.EventParticipationRequest.service.EventParticipationService;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
@@ -152,6 +153,28 @@ public class EventParticipationRequestController {
 
         return modelAndView;
 
+    }
+
+    @GetMapping("/{userId}")
+    public ModelAndView getUserRequestsPage(@AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+        RequestStatus pending = RequestStatus.PENDING;
+        RequestStatus approved = RequestStatus.APPROVED;
+        RequestStatus rejected = RequestStatus.REJECTED;
+
+        List<EventParticipationRequest> pendingRequests = requestService.getRequestsBuUserId(details.getId(),pending);
+        List<EventParticipationRequest> approvedRequests = requestService.getRequestsBuUserId(details.getId(),approved);
+        List<EventParticipationRequest> rejectedRequests = requestService.getRequestsBuUserId(details.getId(),rejected);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user-partisipation-requests");
+        modelAndView.addObject("pendingRequest",pendingRequests);
+        modelAndView.addObject("approvedRequest",approvedRequests);
+        modelAndView.addObject("rejectedRequest",rejectedRequests);
+        modelAndView.addObject("currentUser",currentUser);
+
+        return modelAndView;
     }
 
 

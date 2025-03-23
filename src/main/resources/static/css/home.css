@@ -1,7 +1,7 @@
 /* General Styles */
 :root {
     --primary-color: #e18e09;
-    --bg-color: rgba(0, 0, 0, 0.6);
+    --bg-color: rgba(0, 0, 0, 0.7);
     --font-family: "Caveat", cursive;
 }
 
@@ -18,7 +18,6 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    
     border-radius: 0.3em;
     padding: 1em;
     
@@ -27,8 +26,18 @@
 
 .admin-menu{
     background-color: var(--bg-color);
+    align-items: end;
     margin: 2em 0;
     width: 16vw;
+}
+
+.admin-title{
+    font: 1.5em var(--font-family);
+    display: flex;
+    font-weight: bold;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: 0.5em;
 }
 
 .user-info table{
