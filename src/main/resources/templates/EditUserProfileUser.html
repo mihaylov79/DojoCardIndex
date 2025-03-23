@@ -15,7 +15,7 @@
     </header>
 
     <div class="form">
-    <form class="edit-profile" th:action="@{'/user/details/edit/' + ${user.id}}" th:method="POST" th:object="${editUserProfileRequest}">
+    <form class="edit-profile" th:action="@{'/users/details/edit/' + ${user.id}}" th:method="POST" th:object="${editUserProfileRequest}">
         <input type="hidden" name="_method" value="PUT"/>
         <h2>Редактиране</h2>
 

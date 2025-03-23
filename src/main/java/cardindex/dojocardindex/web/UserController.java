@@ -27,7 +27,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/details/edit/{id}")
+    @GetMapping("/users/details/edit/{id}")
     public ModelAndView getUserEditPage(@PathVariable UUID id) {
 
             User user = userService.getUserById(id);
@@ -42,7 +42,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/user/details/edit/{id}")
+    @PutMapping("/users/details/edit/{id}")
     public ModelAndView editProfileDetails(@PathVariable UUID id, @Valid EditUserProfileRequest editUserProfileRequest, BindingResult result){
 
         if (result.hasErrors()){
