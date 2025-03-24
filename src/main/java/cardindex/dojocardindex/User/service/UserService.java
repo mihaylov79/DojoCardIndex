@@ -79,8 +79,8 @@ public class UserService implements UserDetailsService {
 
          userRepository.save(user);
 
-         String emailBody = "Вашата заявка за регистрация беше получена и изпратена за потвърждение към Администратор.Ще получите известие когато заявката Ви бъде обработена.";
-         notificationService.sendNotification(user.getId(), user.getFirstName(), user.getLastName(), "Заявка за регистрация",emailBody);
+//         String emailBody = "Вашата заявка за регистрация беше получена и изпратена за потвърждение към Администратор.Ще получите известие когато заявката Ви бъде обработена.";
+//         notificationService.sendNotification(user.getId(), user.getFirstName(), user.getLastName(), "Заявка за регистрация",emailBody);
 
         }
 
@@ -205,7 +205,7 @@ public class UserService implements UserDetailsService {
 
         // изпращаме известие на потребителя за успещна регистрация
         String emailContent = "Вашата заявка за регистрация беше потвърдена.Вече можете да влезете в профила си.";
-        notificationService.sendNotification(userId,user.getFirstName(), user.getLastName(), "Заявка за регистрация",emailContent);
+        notificationService.sendNotification(userId,user.getFirstName(), user.getLastName(), "Одобрена заявка за регистрация",emailContent);
     }
 
     public void denyRequest(UUID userId){

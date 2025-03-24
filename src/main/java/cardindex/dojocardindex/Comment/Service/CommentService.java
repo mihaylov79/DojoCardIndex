@@ -56,7 +56,7 @@ public class CommentService {
 
        Comment comment = getCommentById(commentId);
 
-        if (user != comment.getCommentAuthor() && user.getRole()!= UserRole.ADMIN){
+        if (!user.equals(comment.getCommentAuthor()) && user.getRole()!= UserRole.ADMIN){
 
             throw new RuntimeException("Само Администратор или авторът на коментара могат да го премахнат");
 
