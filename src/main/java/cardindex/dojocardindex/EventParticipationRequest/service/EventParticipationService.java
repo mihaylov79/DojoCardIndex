@@ -148,6 +148,7 @@ public class EventParticipationService {
 
         request = request.toBuilder()
                 .status(RequestStatus.PENDING)
+                .reason(null)
                 .processedBy(currentUser)
                 .build();
 
@@ -178,6 +179,17 @@ public class EventParticipationService {
        return requestRepository.findAllByUser(currentUser).stream()
                .filter(r -> r.getEvent().getEndDate().isAfter(LocalDate.now())).filter(r->r.getStatus() == status)
                .sorted(Comparator.comparing(EventParticipationRequest::getCreated).reversed()).toList();
+    }
+
+    public List<EventParticipationRequest> getAllNotPendingRequests(){
+
+       return requestRepository.findAllByStatusIsNot(RequestStatus.PENDING)
+               .stream().filter(request->request.getEvent().getEndDate().isAfter(LocalDate.now()))
+               .sorted(
+                       Comparator.comparing(EventParticipationRequest::getCreated, Comparator.reverseOrder())
+                               .thenComparing(r -> r.getEvent().getStartDate())
+                               .thenComparing(EventParticipationRequest::getStatus)
+               ).toList();
     }
 
 

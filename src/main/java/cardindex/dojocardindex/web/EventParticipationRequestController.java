@@ -8,6 +8,7 @@ import cardindex.dojocardindex.EventParticipationRequest.service.EventParticipat
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -94,12 +95,14 @@ public class EventParticipationRequestController {
         return modelAndView;
     }
 
+    //TODO Този ендпойнт се ползва на 2 места - да опитам да връщам на предишната страница
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @PutMapping("/{eventId}/users/{userId}/unapprove")
     public ModelAndView unApproveUserRequest(
             @PathVariable UUID eventId,
             @PathVariable UUID userId,
-            @AuthenticationPrincipal CustomUserDetails details) {
+            @AuthenticationPrincipal CustomUserDetails details,
+            HttpServletRequest request) {
 
         Event event = eventService.getEventById(eventId);
 
@@ -108,9 +111,9 @@ public class EventParticipationRequestController {
         User user = userService.getUserById(userId);
 
         requestService.unApproveRequest(event, user, currentUser);
-
-        ModelAndView modelAndView = new ModelAndView("redirect:/events/" + eventId + "/details");
-        modelAndView.addObject("successMessage", "Статусът на заявката е променен на 'REJECTED'.");
+        String referer = request.getHeader("Referer");
+        //"redirect:/events/" + eventId + "/details"
+        ModelAndView modelAndView = new ModelAndView("redirect:" + referer);
         modelAndView.addObject("currentUser", currentUser);
 
         return modelAndView;
@@ -172,6 +175,25 @@ public class EventParticipationRequestController {
         modelAndView.addObject("pendingRequest",pendingRequests);
         modelAndView.addObject("approvedRequest",approvedRequests);
         modelAndView.addObject("rejectedRequest",rejectedRequests);
+        modelAndView.addObject("currentUser",currentUser);
+
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/not-pending")
+    public ModelAndView getNotPendingRequestsPage(@AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+
+        List<EventParticipationRequest> notPendingRequests = requestService.getAllNotPendingRequests();
+        List<User> requestUsersList = notPendingRequests.stream().map(EventParticipationRequest::getUser).toList();
+        Map<UUID, Integer>userAges = userService.getUserAges(requestUsersList);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("not-pending");
+        modelAndView.addObject("notPendingRequests",notPendingRequests);
+        modelAndView.addObject("userAges",userAges);
         modelAndView.addObject("currentUser",currentUser);
 
         return modelAndView;

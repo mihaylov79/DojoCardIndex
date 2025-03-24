@@ -24,4 +24,6 @@ public interface EventParticipationRequestRepository extends JpaRepository<Event
     Optional<List<EventParticipationRequest>> findAllByUserAndEvent(User user, Event event);
 
     List<EventParticipationRequest> findAllByUser(User user);
+
+    List<EventParticipationRequest> findAllByStatusIsNot(RequestStatus status);
 }

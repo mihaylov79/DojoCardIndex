@@ -27,6 +27,22 @@ public class NotificationService {
 
     }
 
+    public void checkNotificationPreference(UUID recipientId, String email) {
+        try {
+            NotificationPreferenceRequest preferenceRequest = NotificationPreferenceRequest.builder()
+                    .recipientId(recipientId)
+                    .enabled(true) // по подразбиране включено
+                    .info(email)
+                    .build();
+
+            notificationClient.updateNotificationPreference(preferenceRequest);
+        } catch (Exception e) {
+            log.error("Грешка при проверка/създаване на предпочитания за известия за потребител [{}]", recipientId, e);
+        }
+    }
+
+
+
     public void saveNotificationPreference(UUID recipientId, boolean notification,String email){
 
 
