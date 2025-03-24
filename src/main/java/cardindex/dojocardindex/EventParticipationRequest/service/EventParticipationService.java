@@ -106,22 +106,6 @@ public class EventParticipationService {
 
     }
 
-    public void rejectRequest(UUID requestId, User currentUser){
-
-        EventParticipationRequest request = getRequestById(requestId);
-
-        request = request.toBuilder()
-                .status(RequestStatus.REJECTED)
-                .processedBy(currentUser)
-                .build();
-
-        requestRepository.save(request);
-
-        String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше отхвърлена. За повече информация проверете меню Заявки на профилната си страница.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
-        notificationService.sendNotification(request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getFirstName(),"Отхвърлена заявка за участие",emailBody);
-
-    }
-
     public void rejectRequest(UUID requestId, User currentUser,String reason){
 
         EventParticipationRequest request = getRequestById(requestId);
