@@ -23,31 +23,31 @@
         <div class="field">
             <label for="field-firstName">Име</label>
             <input type="text" id="field-firstName" th:field="*{firstName}" placeholder="">
-            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="errors"></span>
         </div>
 
         <div class="field">
             <label for="field-lastName">Фамилия</label>
             <input type="text" id="field-lastName" th:field="*{lastName}" placeholder="">
-            <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+            <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="errors"></span>
         </div>
 
         <div class="field">
             <label for="field-userPhone">Телефон</label>
             <input type="text" id="field-userPhone" th:field="*{userPhone}" placeholder="">
-            <span th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}"></span>
+            <span th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}" class="errors"></span>
         </div>
 
         <div class="field">
             <label for="field-profilePicture">Снимка на профила (URL)</label>
             <input type="url" id="field-profilePicture" th:field="*{profilePicture}" placeholder="">
-            <span th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}"></span>
+            <span th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}" class="errors"></span>
         </div>
 
         <div class="field">
             <label for="field-birthDate">Дата на раждане</label>
             <input type="date" id="field-birthDate" th:field="*{birthDate}" placeholder="">
-            <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
+            <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="errors"></span>
         </div>
 
         <div class="field">
@@ -58,24 +58,24 @@
         <div class="field">
             <label for="field-height">Височина (см)</label>
             <input type="number" id="field-height" th:field="*{height}" placeholder="" min="0">
-            <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
+            <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}" class="errors"></span>
         </div>
 
         <div class="field">
             <label for="field-weight">Тегло (кг)</label>
             <input type="number" id="field-weight" th:field="*{weight}" placeholder="" min="0">
-            <span th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></span>
+            <span th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" class="errors"></span>
         </div>
 
         <div class="field">
             <label for="field-contactPerson">Лице за контакт</label>
-            <input type="text" id="field-contactPerson" th:field="*{contactPerson}" placeholder="">
+            <input type="text" id="field-contactPerson" th:field="*{contactPerson}" placeholder="" class="errors">
         </div>
 
         <div class="field">
             <label for="field-contactPersonPhone">Телефон на лице за контакт</label>
             <input type="text" id="field-contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">
-            <span th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"></span>
+            <span th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}" class="errors"></span>
         </div>
 
         <input type="submit" class="button save" value="Запази">
