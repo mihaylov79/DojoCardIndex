@@ -56,7 +56,7 @@
                     
                 </td>
 
-                <td>
+                <td class="actions">
                     <form th:action="@{/admin/register-requests/deny}" th:method="POST">
                         <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit">Отхвърли</button>

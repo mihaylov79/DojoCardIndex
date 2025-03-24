@@ -1,7 +1,7 @@
 /* Основни стилове */
 :root {
     --primary-color: #e18e09;
-    --bg-color: rgba(0, 0, 0, 0.6);
+    --bg-color: rgba(0, 0, 0, 0.7);
     --font-family: "Caveat", cursive;
 }
 
@@ -54,11 +54,13 @@ th, td {
 }
 
 /* За контейнера на бутоните */
-td.actions {
-    display: flex;
-    justify-content: center; /* Центрира бутоните по хоризонтала */
-    gap: 0.5em; /* Разстояние между бутоните */
-}
+/*td.actions {*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    justify-content: center; !* Центрира бутоните по хоризонтала *!*/
+
+/*    gap: 0.5em; !* Разстояние между бутоните *!*/
+/*}*/
 
 
 img {
