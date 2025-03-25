@@ -50,7 +50,7 @@ public class ExceptionAdvice {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("not-found");
         modelAndView.addObject("errorMessage", ex.getMessage());
-
+        modelAndView.addObject("exceptionType", ex.getClass().getSimpleName());
         return modelAndView;
 
     }

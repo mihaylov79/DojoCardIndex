@@ -1,6 +1,11 @@
 /* Основни стилове */
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
 
+:root {
+    --primary-color:#e18e09;
+    --background-color: rgba(0, 0, 0, 0.7);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -29,33 +34,39 @@ body {
 .error-info {
     align-items: start;
     width: 70vw;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--background-color);
     padding: 1.5em;
     border-radius: 0.5em;
-    color: #e18e09;
+    color: var(--primary-color);
     font-size: 1.6em;
     font-family: "Caveat", cursive;
     margin-bottom: 1em;
 }
 
 .additional-info {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--background-color);
     padding: 2em;
     border-radius: 0.5em;
-    /*color: white;*/
+    color: var(--primary-color);
     max-width: 70vw;
     font-family: "Caveat", cursive;
 }
 
+.message h1 {
+    color: var(--primary-color);
+    font-size: 3em;
+    margin-bottom: 0.5em;
+}
+
 .message h2 {
-    color: #e18e09;
+    color: var(--primary-color);
     font-size: 2em;
     margin-bottom: 0.5em;
 }
 
 .message h6 {
     font-size: 1.3em;
-    color: white;
+    color: var(--primary-color);
     margin-bottom: 0.5em;
 }
 .message h5{
@@ -65,24 +76,26 @@ body {
 }
 
 .line {
-    border-top: 2px solid #e18e09;
+    border-top: 1px solid var(--primary-color);
+    border-bottom: 1px solid var(--primary-color);
     width: 50%;
     margin: 0 auto;
 
 }
 
 .additional-info p {
-    font-size: 1em;
-    color: white;
+    font-size: 1.3em;
+    color: var(--primary-color);
+    padding: 0.3em 0;
 }
 
 .additional-info a {
     display: inline-block;
     margin-top: 1em;
-    padding: 0.5em 1.5em;
-    background-color: #e18e09;
-    color: black;
-    font-size: 1.2em;
+    padding: 0.3em 1.3em;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: var(--primary-color);
+    font-size: 1.3em;
     font-weight: bold;
     text-decoration: none;
     border-radius: 0.5em;
@@ -90,6 +103,6 @@ body {
 }
 
 .additional-info a:hover {
-    background-color: white;
+    background-color: var(--primary-color) ;
     color: black;
 }
