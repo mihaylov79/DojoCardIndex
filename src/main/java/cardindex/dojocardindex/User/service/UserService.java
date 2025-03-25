@@ -59,6 +59,10 @@ public class UserService implements UserDetailsService {
             throw new UserNotFoundException();
         }
 
+        if (userByEmail.get().getStatus() == UserStatus.INACTIVE){
+            throw new UserAlreadyExistException("Не можете да регистрирате деактивиран потребител!");
+        }
+
         if (userByEmail.get().getRegistrationStatus() == RegistrationStatus.REGISTERED) {
             throw new UserAlreadyExistException();
         }
@@ -156,7 +160,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("Потребител с електронна поща  [%s] не съществува"));
+        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("Потребител с електронна поща  [%s] не съществува"));
     }
 
     public User getCurrentUser() {
