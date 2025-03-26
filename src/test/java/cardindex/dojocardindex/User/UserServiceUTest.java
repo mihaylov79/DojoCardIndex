@@ -15,10 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -143,6 +145,7 @@ public class UserServiceUTest {
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,() ->userService.register(dto));
+        verify(userRepository, never()).save(any());
 
     }
 
@@ -170,7 +173,7 @@ public class UserServiceUTest {
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(user));
 
         assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
-
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -197,7 +200,7 @@ public class UserServiceUTest {
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(user));
 
         assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
-
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -224,7 +227,7 @@ public class UserServiceUTest {
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(user));
 
         assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
-
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -258,5 +261,20 @@ public class UserServiceUTest {
                         user.getRegistrationStatus() == RegistrationStatus.PENDING));
 
     }
+
+   @Test
+    void given_ExistingUsersInDatabase_when_getAllUsers_then_returnAllUsersInDB(){
+
+       List<User> dbUsers = List.of(new User(), new User());
+
+
+       when(userRepository.findAll(Sort.by(Sort.Order.desc("registrationStatus"),Sort.Order.desc("status")))).thenReturn(dbUsers);
+
+       List<User>users = userService.getAllUsers();
+
+       assertEquals(2,users.size());
+
+
+   }
 
 }
