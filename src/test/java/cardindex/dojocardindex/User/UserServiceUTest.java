@@ -7,8 +7,10 @@ import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import cardindex.dojocardindex.security.CustomUserDetails;
+import cardindex.dojocardindex.web.dto.CreateUserRequest;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.dto.RegisterRequest;
+import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -276,5 +278,163 @@ public class UserServiceUTest {
 
 
    }
+
+   @Test
+    void given_invalidUserId_when_approveRequest_then_throw_userNotFoundException(){
+
+        UUID userId = UUID.randomUUID();
+
+        assertThrows(UserNotFoundException.class,()->userService.getUserById(userId));
+
+   }
+
+   @Test
+    void given_existingUser_when_approveRequest_then_updateRegistrationStatusAndSendNotification(){
+
+       UUID userId = UUID.randomUUID();
+        User existingUser = User.builder()
+                .id(userId)
+                .email("ivan@example.com")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .registrationStatus(RegistrationStatus.PENDING)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+       when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+
+        userService.approveRequest(userId);
+
+        verify(userRepository,times(1)).save(Mockito.argThat(user -> user.getRegistrationStatus()== RegistrationStatus.REGISTERED));
+        verify(notificationService,times(1)).saveNotificationPreference(userId,true,existingUser.getEmail());
+        verify(notificationService,times(1)).sendNotification(userId,existingUser.getFirstName(),existingUser.getLastName(),"Одобрена заявка за регистрация","Вашата заявка за регистрация беше потвърдена.Вече можете да влезете в профила си.");
+
+   }
+
+    @Test
+    void given_existingUser_when_denyRequest_then_updateRegistrationStatusAndSaveUserToDb(){
+
+        UUID userId = UUID.randomUUID();
+        User existingUser = User.builder()
+                .id(userId)
+                .email("ivan@example.com")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .registrationStatus(RegistrationStatus.PENDING)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+
+        userService.denyRequest(userId);
+
+        verify(userRepository,times(1)).save(Mockito.argThat(user -> user.getRegistrationStatus()== RegistrationStatus.NOT_REGISTERED));
+
+    }
+
+
+    @Test
+    void given_ExistingUser_whenEditUserProfileByAdmin_then_DetailsAreChangedAndSavedToDatabase(){
+
+        UUID userId = UUID.randomUUID();
+        UserEditAdminRequest dto = UserEditAdminRequest.builder()
+                .userPhone("0888888889")
+                .birthDate(LocalDate.parse("1980-05-03"))
+                .role(UserRole.ADMIN)
+                .isCompetitor(false)
+                .status(UserStatus.ACTIVE)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .reachedDegree(Degree.NONE)
+                .ageGroup(AgeGroup.M)
+                .height(180)
+                .weight(75)
+                .medicalExamsPassed(LocalDate.parse("2025-02-05"))
+                .contactPerson("Georgi Ivanov")
+                .contactPersonPhone("0888888860")
+                .build();
+
+        User user = User.builder()
+                .id(userId)
+                .userPhone("0888888886")
+                .birthDate(LocalDate.parse("1995-05-03"))
+                .role(UserRole.ADMIN)
+                .isCompetitor(true)
+                .status(UserStatus.ACTIVE)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .reachedDegree(Degree.KYU_4)
+                .ageGroup(AgeGroup.CH14)
+                .height(175)
+                .weight(70)
+                .medicalExamsPassed(LocalDate.parse("2025-01-05"))
+                .contactPerson("Gergana Ivanova")
+                .contactPersonPhone("0888888882")
+                .build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.editUserProfileByAdmin(userId,dto);
+
+
+        verify(userRepository, times(1)).save(Mockito.argThat(savedUser ->
+                        savedUser.getUserPhone().equals(dto.getUserPhone()) &&
+                        savedUser.getBirthDate().equals(dto.getBirthDate()) &&
+                        savedUser.getRole().equals(dto.getRole()) &&
+                        savedUser.getIsCompetitor()==(dto.getIsCompetitor()) &&
+                        savedUser.getStatus().equals(dto.getStatus()) &&
+                        savedUser.getRegistrationStatus().equals(dto.getRegistrationStatus()) &&
+                        savedUser.getReachedDegree().equals(dto.getReachedDegree()) &&
+                        savedUser.getAgeGroup().equals(dto.getAgeGroup()) &&
+                        savedUser.getHeight() == dto.getHeight() &&
+                        savedUser.getWeight() == dto.getWeight() &&
+                        savedUser.getMedicalExamsPassed().equals(dto.getMedicalExamsPassed()) &&
+                        savedUser.getContactPerson().equals(dto.getContactPerson()) &&
+                        savedUser.getContactPersonPhone().equals(dto.getContactPersonPhone())
+        ));
+
+    }
+
+
+    @Test
+    void given_NonExistingUser_createNewUser_then_newUserAddedAndSavedToDatabase(){
+
+        UUID userId = UUID.randomUUID();
+        CreateUserRequest dto = CreateUserRequest.builder()
+                .email("ivan@home.bg")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .userPhone("0888888888")
+                .profilePicture("www.pictureData.com")
+                .birthDate(LocalDate.parse("1980-05-03"))
+                .role(UserRole.ADMIN)
+                .isCompetitor(false)
+                .reachedDegree(Degree.NONE)
+                .ageGroup(AgeGroup.M)
+                .height(180)
+                .weight(75)
+                .contactPerson("Georgi Ivanov")
+                .build();
+
+        User user = User.builder().id(userId).build();
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
+
+        userService.createNewUser(dto);
+
+        verify(userRepository, times(1)).save(Mockito.argThat(savedUser ->
+                        savedUser.getEmail().equals(dto.getEmail()) &&
+                        savedUser.getFirstName().equals(dto.getFirstName()) &&
+                        savedUser.getLastName().equals(dto.getLastName()) &&
+                        savedUser.getUserPhone().equals(dto.getUserPhone()) &&
+                        savedUser.getProfilePicture().equals(dto.getProfilePicture()) &&
+                        savedUser.getBirthDate().equals(dto.getBirthDate()) &&
+                        savedUser.getRole().equals(dto.getRole()) &&
+                        savedUser.getIsCompetitor() == dto.getIsCompetitor() &&
+                        savedUser.getReachedDegree().equals(dto.getReachedDegree()) &&
+                        savedUser.getAgeGroup().equals(dto.getAgeGroup()) &&
+                        savedUser.getHeight()==(dto.getHeight()) &&
+                        savedUser.getWeight()==(dto.getWeight()) &&
+                        savedUser.getContactPerson().equals(dto.getContactPerson())
+        ));
+
+    }
+
 
 }

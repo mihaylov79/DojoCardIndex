@@ -3,14 +3,20 @@ package cardindex.dojocardindex.web.dto;
 import cardindex.dojocardindex.User.models.*;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDate;
+@Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateUserRequest {
 
     @NotNull
@@ -52,6 +58,7 @@ public class CreateUserRequest {
 
     private int weight;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate medicalExamsPassed;
 
     private String contactPerson;

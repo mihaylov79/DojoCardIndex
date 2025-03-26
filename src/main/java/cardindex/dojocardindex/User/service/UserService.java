@@ -154,7 +154,7 @@ public class UserService implements UserDetailsService {
                 .weight(userEditAdminRequest.getWeight())
                 .medicalExamsPassed(userEditAdminRequest.getMedicalExamsPassed())
                 .contactPerson(userEditAdminRequest.getContactPerson())
-                .contactPersonPhone(userEditAdminRequest.getUserPhone())
+                .contactPersonPhone(userEditAdminRequest.getContactPersonPhone())
                 .build();
 
         userRepository.save(user);

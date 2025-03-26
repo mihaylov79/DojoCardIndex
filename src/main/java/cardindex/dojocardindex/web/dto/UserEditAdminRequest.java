@@ -1,12 +1,8 @@
 package cardindex.dojocardindex.web.dto;
 
 import cardindex.dojocardindex.User.models.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -41,11 +37,14 @@ public class UserEditAdminRequest {
 
     private String contactPerson;
 
-    @Size(min = 10, max = 15)
+    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
     private String contactPersonPhone;
 
 
     public boolean getIsCompetitor() {
         return isCompetitor;
     }
+
 }
+
+
