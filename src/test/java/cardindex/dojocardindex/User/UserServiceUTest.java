@@ -3,6 +3,7 @@ package cardindex.dojocardindex.User;
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.exceptions.EmailAlreadyInUseException;
 import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
@@ -436,5 +437,54 @@ public class UserServiceUTest {
 
     }
 
+    @Test
+    void givenExistingUser_when_createNewUser_then_throwEmailAlreadyExistException(){
+
+        String email = "ivan@home.bg";
+        CreateUserRequest userRequest = CreateUserRequest.builder().email(email).build();
+        User user = User.builder().email(email).build();
+
+        when(userRepository.findByEmail(userRequest.getEmail())).thenReturn(Optional.of(user));
+
+        assertThrows(EmailAlreadyInUseException.class,()->userService.createNewUser(userRequest));
+        verify(userRepository, never()).save(user);
+
+    }
+
+    @Test
+    void given_ExistingUserWithStatusActive_when_modifyAccStatus_then_userAccountStatusBecameInactive(){
+
+        UUID userId = UUID.randomUUID();
+
+        User user = User.builder()
+                .id(userId).status(UserStatus.ACTIVE)
+                .build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.modifyAccStatus(userId);
+
+
+        verify(userRepository,times(1)).save(Mockito.argThat(savedUser ->
+                savedUser.getStatus().equals(UserStatus.INACTIVE)
+                ));
+    }
+
+    @Test
+    void given_ExistingUserWithStatusInactive_when_modifyAccStatus_then_userAccountStatusBecameActive(){
+
+        UUID userId = UUID.randomUUID();
+
+        User user = User.builder()
+                .id(userId).status(UserStatus.INACTIVE)
+                .build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.modifyAccStatus(userId);
+
+
+        verify(userRepository,times(1)).save(Mockito.argThat(savedUser ->
+                savedUser.getStatus().equals(UserStatus.ACTIVE)
+        ));
+    }
 
 }

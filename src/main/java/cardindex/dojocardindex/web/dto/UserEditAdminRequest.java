@@ -33,6 +33,7 @@ public class UserEditAdminRequest {
 
     private int weight;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate medicalExamsPassed;
 
     private String contactPerson;
