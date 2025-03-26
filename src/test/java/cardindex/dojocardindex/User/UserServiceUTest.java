@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -157,6 +158,7 @@ public class UserServiceUTest {
 
         User user = User.builder()
                 .id(UUID.randomUUID())
+                .email("ivan@home.bg")
                 .password("123321")
                 .firstName("Ivan")
                 .lastName("Ivanov")
@@ -183,6 +185,7 @@ public class UserServiceUTest {
 
         User user = User.builder()
                 .id(UUID.randomUUID())
+                .email("ivan@home.bg")
                 .password("123321")
                 .firstName("Ivan")
                 .lastName("Ivanov")
@@ -209,6 +212,7 @@ public class UserServiceUTest {
 
         User user = User.builder()
                 .id(UUID.randomUUID())
+                .email("ivan@home.bg")
                 .password("123321")
                 .firstName("Ivan")
                 .lastName("Ivanov")
@@ -223,5 +227,36 @@ public class UserServiceUTest {
 
     }
 
+    @Test
+    void given_ExistingUserIsNOT_REGISTERED_when_register_then_registerUser(){
+
+        RegisterRequest dto = RegisterRequest.builder()
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .build();
+
+        User existingUser = User.builder()
+                .id(UUID.randomUUID())
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .registrationStatus(RegistrationStatus.NOT_REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.encode(dto.getPassword())).thenReturn("encodedPassword");
+        userService.register(dto);
+
+        verify(userRepository, times(1)).save(Mockito.argThat(user ->
+                user.getEmail().equals(dto.getEmail()) &&
+                        user.getPassword().equals("encodedPassword") &&
+                        user.getRegistrationStatus() == RegistrationStatus.PENDING));
+
+    }
 
 }

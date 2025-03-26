@@ -54,27 +54,22 @@ public class UserService implements UserDetailsService {
     }
 
     public void register(RegisterRequest registerRequest){
-        Optional<User>userByEmail = userRepository.findByEmail(registerRequest.getEmail());
+        User user = userRepository.findByEmail(registerRequest.getEmail())
+                .orElseThrow(UserNotFoundException::new);
 
-        if (userByEmail.isEmpty()){
-            throw new UserNotFoundException();
-        }
-
-        if (userByEmail.get().getStatus() == UserStatus.INACTIVE){
+        if (user.getStatus() == UserStatus.INACTIVE){
             throw new UserAlreadyExistException("Не можете да регистрирате деактивиран потребител!");
         }
 
-        if (userByEmail.get().getRegistrationStatus() == RegistrationStatus.REGISTERED) {
+        if (user.getRegistrationStatus() == RegistrationStatus.REGISTERED) {
             throw new UserAlreadyExistException();
         }
 
-        if (userByEmail.get().getRegistrationStatus() == RegistrationStatus.PENDING){
+        if (user.getRegistrationStatus() == RegistrationStatus.PENDING){
             throw new UserAlreadyExistException("Този потребител е регистриран , но изчаква потвърждение от Администратор.");
         }
 
-        User user = userRepository.getByEmail(registerRequest.getEmail());
-
-        if(userByEmail.get().getRegistrationStatus() == RegistrationStatus.NOT_REGISTERED) {
+        if(user.getRegistrationStatus() == RegistrationStatus.NOT_REGISTERED) {
             user = user.toBuilder()
                     .password(passwordEncoder.encode(registerRequest.getPassword()))
                     .firstName(registerRequest.getFirstName())
