@@ -17,11 +17,12 @@
     <div class="form">
         <form th:action="@{/admin/add-user}" th:method="POST" class="register" th:object="${createUserRequest}">
             <h2>Нов потребител</h2>
+            <span th:text="${emailAlreadyInUse}" class="errors"></span>
 
             <div class="field">
                 <label for="email">Електронна поща</label>
                 <input type="email" id="email" th:field="*{email}" placeholder="" required>
-                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="errors"></span>
             </div>
 
             <!-- <div class="field">

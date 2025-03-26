@@ -25,6 +25,15 @@ public class ExceptionAdvice {
         redirectAttributes.addFlashAttribute("userAlreadyExistMessage",exception.getMessage());
         return "redirect:/register";
     }
+
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public String handleEmailAlreadyInUse(Exception exception, RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("emailAlreadyInUse",exception.getMessage());
+
+        return "redirect:/admin/add-user";
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({EventNotFoundException.class,
                        MessageNotFoundException.class,

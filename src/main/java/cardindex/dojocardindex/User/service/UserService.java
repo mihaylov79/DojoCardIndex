@@ -7,6 +7,7 @@ import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.Utils.PasswordGenerator;
+import cardindex.dojocardindex.exceptions.EmailAlreadyInUseException;
 import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
@@ -92,6 +93,11 @@ public class UserService implements UserDetailsService {
 
     public void createNewUser(CreateUserRequest createUserRequest){
 
+        Optional<User>userByEmail = userRepository.findByEmail(createUserRequest.getEmail());
+
+        if (userByEmail.isPresent()){
+            throw new EmailAlreadyInUseException();
+        }
 
         String generatedPassword = PasswordGenerator.generateRandomPassword(12);
 

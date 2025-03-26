@@ -1,15 +1,14 @@
 package cardindex.dojocardindex.User;
 
-import cardindex.dojocardindex.User.models.RegistrationStatus;
-import cardindex.dojocardindex.User.models.User;
-import cardindex.dojocardindex.User.models.UserRole;
-import cardindex.dojocardindex.User.models.UserStatus;
+import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
+import cardindex.dojocardindex.web.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -128,7 +127,99 @@ public class UserServiceUTest {
         assertEquals("ROLE_ADMIN", result.getAuthorities().iterator().next().getAuthority());
 
 
+    }
 
+    @Test
+    void given_NonExistingUser_when_register_then_throwUserNotFoundException(){
+
+        RegisterRequest dto = RegisterRequest.builder()
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .build();
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class,() ->userService.register(dto));
+
+    }
+
+    @Test
+    void given_ExistingUserIsINACTIVE_when_register_then_ThrowUserAlreadyExistException(){
+
+        RegisterRequest dto = RegisterRequest.builder()
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .build();
+
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .registrationStatus(RegistrationStatus.NOT_REGISTERED)
+                .status(UserStatus.INACTIVE)
+                .build();
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(user));
+
+        assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
+
+    }
+
+    @Test
+    void given_ExistingUserIsREGISTERED_when_register_then_throwUserAlreadyExistException(){
+
+        RegisterRequest dto = RegisterRequest.builder()
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .build();
+
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(user));
+
+        assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
+
+    }
+
+    @Test
+    void given_ExistingUserIsPENDING_when_register_then_throwUserAlreadyExistException(){
+
+        RegisterRequest dto = RegisterRequest.builder()
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .build();
+
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .registrationStatus(RegistrationStatus.PENDING)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(user));
+
+        assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
 
     }
 
