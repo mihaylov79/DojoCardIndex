@@ -5,6 +5,10 @@ import cardindex.dojocardindex.Event.models.EventType;
 import cardindex.dojocardindex.Event.models.Requirements;
 import cardindex.dojocardindex.Event.repository.EventRepository;
 import cardindex.dojocardindex.Event.service.EventService;
+import cardindex.dojocardindex.User.models.Degree;
+import cardindex.dojocardindex.User.models.RegistrationStatus;
+import cardindex.dojocardindex.User.models.User;
+import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.EventNotFoundException;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
@@ -17,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -148,6 +153,143 @@ public class EventServiceUTest {
 
     }
 
+    @Test
+    void given_Event_when_setWinners_then_FirstPlaceWinnerForEventIsSet(){
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        event.getUsers().add(user);
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        eventService.setWinner(eventId,userId,1);
+
+        verify(eventRepository,times(1)).save(any(Event.class));
+        assert event.getFirstPlaceWinner()!=null;
+    }
+
+    @Test
+    void given_Event_when_setWinners_then_SecondPlaceWinnerForEventIsSet(){
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        event.getUsers().add(user);
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        eventService.setWinner(eventId,userId,2);
+
+        verify(eventRepository,times(1)).save(any(Event.class));
+        assert event.getSecondPlaceWinner()!=null;
+    }
+
+    @Test
+    void given_Event_when_setWinners_then_ThirdPlaceWinnerForEventIsSet(){
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        event.getUsers().add(user);
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        eventService.setWinner(eventId,userId,3);
+
+        verify(eventRepository,times(1)).save(any(Event.class));
+        assert event.getThirdPlaceWinner()!=null;
+    }
+
+    @Test
+    void given_EventWithEmptyUsersList_when_setWinners_then_ThrowIllegalArgumentException(){
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        assertThrows(IllegalArgumentException.class,() -> eventService.setWinner(eventId,userId,3));
+        verify(eventRepository,never()).save(any(Event.class));
 
 
+    }
+
+    @Test
+    void given_Event_when_setWinnersForInvalidPlace_then_ThrowIllegalArgumentException(){
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        event.getUsers().add(user);
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+
+        assertThrows(IllegalArgumentException.class,() -> eventService.setWinner(eventId,userId,4));
+        verify(eventRepository,never()).save(any(Event.class));
+
+    }
+
+    @Test
+    void given_EventOfNonTournamentType_when_setWinners_then_ThrowIllegalStateException(){
+
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.SEMINAR);
+
+        event.getUsers().add(user);
+
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+
+
+        assertThrows(IllegalStateException.class,() -> eventService.setWinner(event.getId(),user.getId(),1));
+        verify(eventRepository,never()).save(any(Event.class));
+    }
+
+
+
+
+    private User createTestUser() {
+        return User.builder()
+                .id(UUID.randomUUID())
+                .email("ivan@home.bg")
+                .password("123321")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+    }
+
+    private Event createTestEvent(EventType type) {
+        return Event.builder()
+                .id(UUID.randomUUID())
+                .type(type)
+                .users(new HashSet<User>())
+                .closed(false)
+                .build();
+
+    }
 }
