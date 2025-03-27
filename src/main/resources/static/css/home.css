@@ -28,15 +28,18 @@
     background-color: var(--bg-color);
     align-items: end;
     margin: 2em 0;
-    width: 16vw;
+    width: 17vw;
 }
 
 .admin-title{
     font: 1.5em var(--font-family);
+    background-color: rgba(0, 0, 0, 1);
+    padding: 0.3em 2.2em;
     display: flex;
     font-weight: bold;
     color: var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
+    border-top: 2px solid var(--primary-color);
     margin-bottom: 0.5em;
 }
 
