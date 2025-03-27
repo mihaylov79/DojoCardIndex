@@ -267,6 +267,44 @@ public class EventServiceUTest {
         verify(eventRepository,never()).save(any(Event.class));
     }
 
+    @Test
+    void given_EventWithSetWinners_when_resetWinners_EventWinnersAreRemovedAndEventIsSavedInDb(){
+
+        User user = createTestUser();
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        event.setFirstPlaceWinner(user);
+
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+
+        eventService.resetWinners(event.getId());
+
+        verify(eventRepository,times(1)).save(Mockito.argThat(savedEvent ->
+                savedEvent.getFirstPlaceWinner() == null
+                ));
+    }
+
+    @Test
+    void given_EventFromNonTournamentType_when_resetWinners_then_ThrowIllegalStateException(){
+
+        Event event = createTestEvent(EventType.SEMINAR);
+
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+
+        assertThrows(IllegalStateException.class, ()->eventService.resetWinners(event.getId()));
+        verify(eventRepository,never()).save(any(Event.class));
+    }
+
+    @Test
+    void given_Event_when_saveEvent_then_EventSavedToDb(){
+
+        Event event = createTestEvent(EventType.TOURNAMENT);
+
+        eventService.saveEvent(event);
+
+        verify(eventRepository, times(1)).save(event);
+    }
+
 
 
 
