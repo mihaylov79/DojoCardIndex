@@ -68,10 +68,8 @@ public class IndexController {
 
     @PostMapping("/register")
     public ModelAndView registerUser(@Valid RegisterRequest registerRequest, BindingResult result){
-        System.out.println("Методът registerUser се изпълнява!");
 
         if (result.hasErrors()) {
-            System.out.println("Грешки при валидацията: " + result.getAllErrors());
             return new ModelAndView("register");
         }
 

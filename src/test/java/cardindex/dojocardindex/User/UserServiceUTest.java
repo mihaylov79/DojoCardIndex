@@ -271,7 +271,11 @@ public class UserServiceUTest {
        List<User> dbUsers = List.of(new User(), new User());
 
 
-       when(userRepository.findAll(Sort.by(Sort.Order.desc("registrationStatus"),Sort.Order.desc("status")))).thenReturn(dbUsers);
+       when(userRepository.findAll(Sort.by(
+               Sort.Order.asc("status"),
+               Sort.Order.desc("registrationStatus"),
+               Sort.Order.asc("firstName"),
+               Sort.Order.asc("lastName")))).thenReturn(dbUsers);
 
        List<User>users = userService.getAllUsers();
 
