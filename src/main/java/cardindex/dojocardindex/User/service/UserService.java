@@ -161,7 +161,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("Потребител с електронна поща  [%s] не съществува"));
+        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("Потребител с електронна поща %s не съществува".formatted(email)));
     }
 
     public User getCurrentUser() {
@@ -225,7 +225,11 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAllUsers(){
-        return userRepository.findAll(Sort.by(Sort.Order.desc("registrationStatus"),Sort.Order.desc("status")));
+        return userRepository.findAll(Sort.by(
+                                        Sort.Order.asc("status"),
+                                        Sort.Order.desc("registrationStatus"),
+                                        Sort.Order.asc("firstName"),
+                                        Sort.Order.asc("lastName")));
     }
 
     public List<User> getAllActiveUsers() {

@@ -18,8 +18,7 @@ import java.nio.file.AccessDeniedException;
 public class ExceptionAdvice {
 
 
-    @ExceptionHandler({UserAlreadyExistException.class,
-                       UserNotFoundException.class})
+    @ExceptionHandler(UserAlreadyExistException.class)
     public String handleUserAlreadyExist(Exception exception, RedirectAttributes redirectAttributes){
 
         redirectAttributes.addFlashAttribute("userAlreadyExistMessage",exception.getMessage());
@@ -34,11 +33,20 @@ public class ExceptionAdvice {
         return "redirect:/admin/add-user";
     }
 
+    @ExceptionHandler(MessageCanNotBeSentToUserException.class)
+    public String handleMessageCannotBeSentToUser(Exception exception,RedirectAttributes redirectAttributes){
+
+        redirectAttributes.addFlashAttribute("messageCanNotBeSentToUser",exception.getMessage());
+
+        return "redirect:/messages/send";
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({EventNotFoundException.class,
                        MessageNotFoundException.class,
                        RequestNotFoundException.class,
-                       RequestAlreadyExistException.class})
+                       RequestAlreadyExistException.class,
+                       UserNotFoundException.class})
     public ModelAndView handleBadRequestException(Exception exception){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");

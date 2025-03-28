@@ -21,6 +21,7 @@
         <label for="recipient">Получател:</label>
         <input type="text" id="recipient" name="recipient" th:field="*{recipient}" required>
         <span class="errors" th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}"></span>
+        <span th:text="${messageCanNotBeSentToUser}" class="errors"></span>
 
         <label for="content">Съобщение:</label>
         <textarea id="content" name="content" maxlength="500" placeholder="Вашето съобщение..." required th:field="*{content}"></textarea>
