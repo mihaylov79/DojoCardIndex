@@ -20,13 +20,14 @@
     <form th:action="@{/messages/send}" th:method="POST" th:object="${sendMessageRequest}">
         <label for="recipient">Получател:</label>
         <input type="text" id="recipient" name="recipient" th:field="*{recipient}" required>
-        <span class="errors" th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}">Вашата фамилия</span>
+        <span class="errors" th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}"></span>
 
         <label for="content">Съобщение:</label>
         <textarea id="content" name="content" maxlength="500" placeholder="Вашето съобщение..." required th:field="*{content}"></textarea>
         <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
         <button type="submit">Изпрати</button>
     </form>
+    <a href="/home">Назад</a>
 </div>
 </body>
 </html>

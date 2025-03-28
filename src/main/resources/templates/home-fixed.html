@@ -68,9 +68,10 @@
                         <td th:text="${message.sender.firstName + ' ' + message.sender.lastName}"></td> <!-- Изпращач -->
                         <td th:text="${message.content}"></td> <!-- Съдържание -->
                         <td class="action-buttons">
-                            <a th:href="@{/messages/reply/{id}(id=${message.id})}">
-                                <button>Отговори</button>
-                            </a>
+                            <button th:attr="onclick=|location.href='/messages/reply/' + '${message.id}'|">Отговори</button>
+<!--                            <a th:href="@{/messages/reply/{id}(id=${message.id})}">-->
+<!--                                <button>Отговори</button>-->
+<!--                            </a>-->
                             <a th:href="@{/messages/remove/{id}(id=${message.id})}">
                                 <button>Изчисти</button>
                             </a>
@@ -115,7 +116,7 @@
                 <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>
                 <li><a th:href="@{/events/new}">Добавяне на събитие</a></li>
                 <li><a th:href="@{/events/requests/pending}">Чакащи заявки за участие</a></li>
-                <li><a th:href="@{/events/requests/non-pending}">Обработени заявки за участие</a></li>
+                <li><a th:href="@{/events/requests/not-pending}">Обработени заявки за участие</a></li>
             </ul>
         </div>
     </div>

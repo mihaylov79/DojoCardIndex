@@ -51,7 +51,8 @@ td.actions {
 }
 
 button {
-    background-color: var(--primary-color);
+    background-color: black;
+    color: #e18e09;
     padding: 0.3em 0.6em;
     margin: 0.2em;
     border-radius: 0.3em;
@@ -61,7 +62,8 @@ button {
 }
 
 button:hover {
-    opacity: 0.8;
+    background-color: #e18e09;
+    color: black;
 }
 
 button.reject {

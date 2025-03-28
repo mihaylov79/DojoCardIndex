@@ -113,11 +113,14 @@ caption {
 }
 
 button {
-    background-color: var(--primary-color);
-    padding: 0.1em;
+    background-color: black;
+    /*border: 1px solid var(--primary-color);*/
+    /*padding: 0.1em;*/
     margin: 0.1em;
+    padding: 0.2em 0.4em;
     border-radius: 0.3em;
     font: 1.3vw var(--font-family);
+    color: var(--primary-color);
     cursor: pointer;
     border: none;
 }
@@ -134,7 +137,8 @@ button {
 
 
 button:hover {
-    opacity: 0.8;
+    background-color: #e18e09;
+    color: black;
 }
 
 
@@ -173,6 +177,8 @@ th img {
     }
 }
 
+
+
 @media (max-width: 768px) {
     table, caption {
         font-size: 2.3vw;
@@ -191,4 +197,5 @@ th img {
     caption {
         font-size: 5.5vw;
     }
+
 }
