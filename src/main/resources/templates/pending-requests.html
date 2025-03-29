@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="60">
     <title>Чакащи заявки</title>
     <link rel="stylesheet" href="/css/default.css">
     <link rel="stylesheet" href="/css/pending-requests.css">
@@ -30,8 +31,8 @@
         </tr>
         <tr th:each="request : ${requests}">
             <td th:text="${request.event.eventDescription}">Име на събитието</td>
-            <td th:text="${#temporals.format(request.event.startDate, 'dd.MM.yyyy HH:mm')}">Начало</td>
-            <td th:text="${#temporals.format(request.event.endDate, 'dd.MM.yyyy HH:mm')}">Край</td>
+            <td th:text="${#temporals.format(request.event.startDate, 'dd.MM.yyyy')}">Начало</td>
+            <td th:text="${#temporals.format(request.event.endDate, 'dd.MM.yyyy')}">Край</td>
             <td th:text="${request.event.requirements.description}">Изисквания</td>
             <td th:text="${request.user.firstName}">Име</td>
             <td th:text="${request.user.lastName}">Фамилия</td>

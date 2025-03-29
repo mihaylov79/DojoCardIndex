@@ -32,8 +32,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers("/", "/register").permitAll()  // Разрешаваме достъп до /, /login и /register
-                                .anyRequest().authenticated() // всички останали пътища изискват аутентикация
+                                .requestMatchers("/", "/register").permitAll()  // Разрешавa достъп до /, /register
+                                .anyRequest().authenticated() // всички останали изискват аутентикация
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
@@ -45,7 +45,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                        .logoutSuccessUrl("/") // URL за излизане
+                        .logoutSuccessUrl("/")
                 );
 
         return http.build();
@@ -59,7 +59,7 @@ public class SecurityConfig {
 
                 User admin = User.builder()
                         .email("admin@example.com")
-                        .password(passwordEncoder.encode("admin123"))
+                        .password(passwordEncoder.encode("admin321"))
                         .role(UserRole.ADMIN)
                         .status(UserStatus.ACTIVE)
                         .registrationStatus(RegistrationStatus.REGISTERED)
