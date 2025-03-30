@@ -72,22 +72,22 @@ public class IndexControllerApiTest {
 
     }
 
-//    @Test
-//    @WithMockUser
-//    void getRequestToRegisterEndpoint_shouldReturnRegisterView() throws Exception {
-//
-//        MockHttpServletRequestBuilder request = get("/register");
-//
-//        mockMvc.perform(request)
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("register"))
-//                .andExpect(model().attributeExists("registerRequest"));
-//    }
+    @Test
+    @WithMockUser
+    void getRequestToRegisterEndpoint_shouldReturnRegisterView() throws Exception {
+
+        MockHttpServletRequestBuilder request = get("/register");
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("register"))
+                .andExpect(model().attributeExists("registerRequest"));
+    }
 
 //    @Test
 //    void getRequestToLoginEndpoint_shouldReturnLoginView() throws Exception {
 //
-//        MockHttpServletRequestBuilder request = get("/login");
+//        MockHttpServletRequestBuilder request = get("http://localhost:8080/login").with(csrf());
 //
 //        mockMvc.perform(request)
 //                .andExpect(status().isOk())
