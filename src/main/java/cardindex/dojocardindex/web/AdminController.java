@@ -50,7 +50,6 @@ public class AdminController {
         User user = userService.getUserById(details.getId());
 
         if (result.hasErrors()){
-            System.out.println("Грешки при валидация: " + result.getAllErrors());
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("addUser");
             modelAndView.addObject("user", user);

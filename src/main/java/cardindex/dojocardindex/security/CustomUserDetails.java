@@ -17,7 +17,6 @@ import java.util.UUID;
 @Data
 @Getter
 @AllArgsConstructor
-
 public class CustomUserDetails implements UserDetails {
 
     private UUID id;
