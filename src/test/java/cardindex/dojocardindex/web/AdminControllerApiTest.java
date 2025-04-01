@@ -476,5 +476,154 @@ public class AdminControllerApiTest {
         verify(userService, times(1)).getUserById(targetUserId);
     }
 
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void getEditUserDetailsByAdminPage_NonExistingUser_ShouldReturnError() throws Exception {
+
+        UUID nonExistingId = UUID.randomUUID();
+        when(userService.getUserById(nonExistingId)).thenReturn(null);
+
+        mockMvc.perform(get("/users/details/edit/" + nonExistingId))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void editUserDetailsByAdmin_ValidRequest_ShouldRedirect() throws Exception {
+
+        UUID adminId = UUID.randomUUID();
+        UUID targetUserId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = new CustomUserDetails(
+                adminId,
+                "admin@test.com",
+                "encodedPassword",
+                UserRole.ADMIN,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE
+        );
+
+        User adminUser = User.builder()
+                .id(adminId)
+                .email("admin@test.com")
+                .reachedDegree(Degree.NONE)
+                .role(UserRole.ADMIN)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        User targetUser = User.builder()
+                .id(targetUserId)
+                .email("user@test.com")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .role(UserRole.MEMBER)
+                .isCompetitor(true)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .userPhone("0876989898")
+                .contactPersonPhone("0877788778")
+                .build();
+
+
+        when(userService.getUserById(adminId)).thenReturn(adminUser);
+        when(userService.getUserById(targetUserId)).thenReturn(targetUser);
+        doNothing().when(userService).editUserProfileByAdmin(any(), any());
+
+        MockHttpServletRequestBuilder request = post("/admin/users/details/edit/{id}", targetUserId)
+                .with(user(adminDetails))
+                .formField("userPhone","0877321123")
+                .formField("birthDate","1982-05-04")
+                .formField("isCompetitor","true")
+                .formField("reachedDegree", "NONE")
+                .formField("ageGroup","M")
+                .formField("height","180")
+                .formField("weight","80")
+                .formField("contactPerson","Georgi Ivanov")
+                .formField("contactPersonPhone","0875888666")
+                .formField("role", "MEMBER") // Добавете всички полета от UserEditAdminRequest
+                .formField("registrationStatus", "REGISTERED")
+                .formField("status", "ACTIVE")
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users/list"))
+                .andExpect(model().attributeExists("user"));
+
+        verify(userService, times(1)).editUserProfileByAdmin(eq(targetUserId), any());
+    }
+
+    @Test
+    public void editUserDetailsByAdmin_InvalidRequest_ShouldReturnEditView() throws Exception {
+        UUID adminId = UUID.randomUUID();
+        UUID targetUserId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = new CustomUserDetails(
+                adminId,
+                "admin@test.com",
+                "encodedPassword",
+                UserRole.ADMIN,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE
+        );
+
+        User adminUser = User.builder()
+                .id(adminId)
+                .email("admin@test.com")
+                .reachedDegree(Degree.NONE)
+                .role(UserRole.ADMIN)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        User targetUser = User.builder()
+                .id(targetUserId)
+                .email("user@test.com")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .reachedDegree(Degree.NONE)
+                .role(UserRole.MEMBER)
+                .isCompetitor(true)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .userPhone("0876989898")
+                .contactPersonPhone("0877788778")
+                .build();
+
+
+        // Мокване на услугите
+        when(userService.getUserById(adminId)).thenReturn(adminUser);
+        when(userService.getUserById(targetUserId)).thenReturn(targetUser);
+
+        MockHttpServletRequestBuilder request = post("/admin/users/details/edit/{id}", targetUserId)
+                .with(user(adminDetails))
+                .formField("userPhone","")
+                .formField("birthDate","1982-05-04")
+                .formField("isCompetitor","true")
+                .formField("reachedDegree", "NONE")
+                .formField("ageGroup","M")
+                .formField("height","180")
+                .formField("weight","80")
+                .formField("contactPerson","Georgi Ivanov")
+                .formField("contactPersonPhone","")
+                .formField("role", "MEMBER") // Добавете всички полета от UserEditAdminRequest
+                .formField("registrationStatus", "REGISTERED")
+                .formField("status", "ACTIVE")
+                .with(csrf());
+
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin-user-edit"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("adminUser"))
+                .andExpect(model().attributeExists("userEditAdminRequest"))
+                .andExpect(model().attributeHasFieldErrors("userEditAdminRequest",
+                        "contactPersonPhone","userPhone"));
+
+        verify(userService, never()).editUserProfileByAdmin(any(), any());
+    }
+
 
 }
