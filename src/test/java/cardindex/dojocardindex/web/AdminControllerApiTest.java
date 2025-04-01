@@ -200,5 +200,52 @@ public class AdminControllerApiTest {
                 .andExpect(model().attribute("registerRequests", mockRequests));
     }
 
+    @Test
+    public void approveRegisterRequest_WithAdminRole_ShouldApproveRequestAndRedirect() throws Exception {
+        // Подготовка на тестови данни
+        UUID adminId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = new CustomUserDetails(
+                adminId,
+                "admin@example.com",
+                "password",
+                UserRole.ADMIN,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE
+        );
+
+        User adminUser = User.builder()
+                .id(adminId)
+                .email("admin@example.com")
+                .role(UserRole.ADMIN)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        User requestUser = User.builder()
+                .id(requestId)
+                .email("user@test.com")
+                .role(UserRole.MEMBER)
+                .registrationStatus(RegistrationStatus.PENDING)
+                .status(UserStatus.INACTIVE)
+                .build();
+
+        when(userService.getUserById(adminId)).thenReturn(adminUser);
+        when(userService.getUserById(requestId)).thenReturn(requestUser);
+        doNothing().when(userService).approveRequest(requestId);
+
+        mockMvc.perform(post("/admin/register-requests/approve")
+                        .param("id", requestId.toString())
+                        .with(user(adminDetails))
+                        .with(csrf())) // Добавяне на CSRF токен
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/register-requests"))
+                .andExpect(model().attributeExists("currentUser"));
+
+        verify(userService, times(1)).approveRequest(requestId);
+    }
+
+
 
 }
