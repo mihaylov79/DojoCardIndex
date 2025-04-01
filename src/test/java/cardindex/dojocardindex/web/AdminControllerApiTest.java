@@ -4,6 +4,8 @@ import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreateUserRequest;
+import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
+import cardindex.dojocardindex.web.mapper.DTOMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,11 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -202,7 +203,7 @@ public class AdminControllerApiTest {
 
     @Test
     public void approveRegisterRequest_WithAdminRole_ShouldApproveRequestAndRedirect() throws Exception {
-        // Подготовка на тестови данни
+
         UUID adminId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
 
@@ -228,7 +229,7 @@ public class AdminControllerApiTest {
                 .email("user@test.com")
                 .role(UserRole.MEMBER)
                 .registrationStatus(RegistrationStatus.PENDING)
-                .status(UserStatus.INACTIVE)
+                .status(UserStatus.ACTIVE)
                 .build();
 
         when(userService.getUserById(adminId)).thenReturn(adminUser);
@@ -238,7 +239,7 @@ public class AdminControllerApiTest {
         mockMvc.perform(post("/admin/register-requests/approve")
                         .param("id", requestId.toString())
                         .with(user(adminDetails))
-                        .with(csrf())) // Добавяне на CSRF токен
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/register-requests"))
                 .andExpect(model().attributeExists("currentUser"));
@@ -246,6 +247,234 @@ public class AdminControllerApiTest {
         verify(userService, times(1)).approveRequest(requestId);
     }
 
+
+
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void denyRegisterRequest_AdminRole_ShouldDenyAndRedirect() throws Exception {
+        // Arrange
+        UUID adminId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = new CustomUserDetails(
+                adminId, "admin@test.com", "pass",
+                UserRole.ADMIN, RegistrationStatus.REGISTERED, UserStatus.ACTIVE);
+
+        User adminUser = User.builder()
+                .id(adminId)
+                .email("admin@test.com")
+                .role(UserRole.ADMIN)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        User requestUser = User.builder()
+                .id(requestId)
+                .email("user@test.com")
+                .role(UserRole.MEMBER)
+                .registrationStatus(RegistrationStatus.PENDING)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        when(userService.getUserById(adminId)).thenReturn(adminUser);
+        when(userService.getUserById(requestId)).thenReturn(requestUser);
+        doNothing().when(userService).denyRequest(requestId);
+
+
+        mockMvc.perform(post("/admin/register-requests/deny")
+                        .param("id", requestId.toString())
+                        .with(user(adminDetails))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/register-requests"))
+                .andExpect(model().attributeExists("currentUser"));
+
+        verify(userService, times(1)).denyRequest(requestId);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void denyRegisterRequest_InvalidId_ShouldReturnError() throws Exception {
+        // Act & Assert
+        mockMvc.perform(post("/admin/register-requests/deny")
+                        .param("id", "invalid-uuid")
+                        .with(csrf()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void getAllUsersPage_AdminRole_ShouldReturnViewWithUsers() throws Exception {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+
+        CustomUserDetails userDetails = new CustomUserDetails(
+                userId,
+                "admin@test.com",
+                "encodedPassword",
+                UserRole.ADMIN,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE
+        );
+
+        User mockUser = User.builder()
+                .id(userId)
+                .email("admin@test.com")
+                .role(UserRole.ADMIN)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        List<User> mockUsers = Arrays.asList(
+                User.builder().id(UUID.randomUUID())
+                        .email("user1@test.com")
+                        .role(UserRole.MEMBER)
+                        .registrationStatus(RegistrationStatus.REGISTERED)
+                        .status(UserStatus.ACTIVE)
+                        .build(),
+                User.builder().id(UUID.randomUUID()).email("user2@test.com")
+                        .role(UserRole.MEMBER)
+                        .registrationStatus(RegistrationStatus.REGISTERED)
+                        .status(UserStatus.ACTIVE)
+                        .build()
+        );
+
+        Map<UUID, Integer> mockAges = new HashMap<>();
+        mockAges.put(mockUsers.get(0).getId(), 25);
+        mockAges.put(mockUsers.get(1).getId(), 30);
+
+        when(userService.getUserById(userId)).thenReturn(mockUser);
+        when(userService.getAllUsers()).thenReturn(mockUsers);
+        when(userService.getUserAges(mockUsers)).thenReturn(mockAges);
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        MockHttpServletRequestBuilder request = get("/admin/users/list/all-users").with(user(userDetails));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("all-users-list"))
+                .andExpect(model().attribute("user",mockUser))
+                .andExpect(model().attributeExists("allUsers"))
+                .andExpect(model().attributeExists("userAges"))
+                .andExpect(model().attribute("allUsers", mockUsers))
+                .andExpect(model().attribute("userAges", mockAges));
+
+        verify(userService, times(1)).getUserById(userId);
+        verify(userService, times(1)).getAllUsers();
+        verify(userService, times(1)).getUserAges(mockUsers);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void modifyUserStatus_AdminRole_ShouldModifyAndRedirectBack() throws Exception {
+
+        UUID adminId = UUID.randomUUID();
+        UUID targetUserId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = new CustomUserDetails(
+                adminId,
+                "admin@test.com",
+                "encodedPassword",
+                UserRole.ADMIN,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE
+        );
+
+        User adminUser = User.builder()
+                .id(adminId)
+                .email("admin@test.com")
+                .role(UserRole.ADMIN)
+                .reachedDegree(Degree.NONE)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        when(userService.getUserById(adminId)).thenReturn(adminUser);
+        doNothing().when(userService).modifyAccStatus(targetUserId);
+
+        String refererUrl = "/previous/page";
+
+        mockMvc.perform(post("/admin/users/modify-status")
+                        .with(user(adminDetails))
+                        .param("id", targetUserId.toString())
+                        .header("Referer", refererUrl)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(refererUrl))
+                .andExpect(model().attributeExists("currentUser"));
+
+        verify(userService, times(1)).modifyAccStatus(targetUserId);
+        verify(userService, times(1)).getUserById(adminId);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void modifyUserStatus_InvalidId_ShouldReturnError() throws Exception {
+        mockMvc.perform(post("/admin/users/modify-status")
+                        .param("id", "invalid-uuid")
+                        .with(csrf()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void getEditUserDetailsByAdminPage_AdminRole_ShouldReturnEditView() throws Exception {
+
+        UUID adminId = UUID.randomUUID();
+        UUID targetUserId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = new CustomUserDetails(
+                adminId,
+                "admin@test.com",
+                "encodedPassword",
+                UserRole.ADMIN,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE
+        );
+
+        User adminUser = User.builder()
+                .id(adminId)
+                .email("admin@test.com")
+                .role(UserRole.ADMIN)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        User targetUser = User.builder()
+                .id(targetUserId)
+                .email("user@test.com")
+                .firstName("John")
+                .lastName("Doe")
+                .role(UserRole.MEMBER)
+                .registrationStatus(RegistrationStatus.REGISTERED)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        UserEditAdminRequest expectedRequest = DTOMapper.mapUserToUserEditAdminRequest(targetUser);
+
+        when(userService.getUserById(adminId)).thenReturn(adminUser);
+        when(userService.getUserById(targetUserId)).thenReturn(targetUser);
+
+        mockMvc.perform(get("/admin/users/details/edit/" + targetUserId)
+                        .with(user(adminDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin-user-edit"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("adminUser"))
+                .andExpect(model().attributeExists("userEditAdminRequest"))
+                .andExpect(model().attribute("user", targetUser))
+                .andExpect(model().attribute("adminUser", adminUser))
+                .andExpect(model().attribute("userEditAdminRequest", expectedRequest));
+
+        verify(userService, times(1)).getUserById(adminId);
+        verify(userService, times(1)).getUserById(targetUserId);
+    }
 
 
 }
