@@ -40,7 +40,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+//@SpringBootTest
+//@AutoConfigureMockMvc
 @WebMvcTest(IndexController.class)
 public class IndexControllerApiTest {
 
@@ -94,9 +95,8 @@ public class IndexControllerApiTest {
 //                .andExpect(view().name("login"))
 //                .andExpect(model().attributeExists("loginRequest"));
 //    }
-
+//
 //    @Test
-//    @WithMockUser
 //    void getRequestToLoginEndpointWithParameter_shouldReturnLoginViewAndErrorAttribute() throws Exception {
 //
 //        MockHttpServletRequestBuilder request = get("/login").param("error","");
@@ -106,21 +106,7 @@ public class IndexControllerApiTest {
 //                .andExpect(view().name("login"))
 //                .andExpect(model().attributeExists("loginRequest","errorMessage"));
 //    }
-
-//    @Test
-//    void postRequestToLoginEndpointWithParameter_shouldReturnLoginViewAndErrorAttribute() throws Exception {
 //
-//        MockHttpServletRequestBuilder request = post("/login")
-//                .formField("firstName","Iva")
-//                .formField("lastName","Ivanovа")
-//                .formField("email","iva@home.bg")
-//                .formField("password",(new BCryptPasswordEncoder().encode("123321"))).with(csrf());
-//
-//        mockMvc.perform(request)
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/login"));
-//        verify(userService,times(1)).register(any());
-//    }
 
     @Test
     @WithMockUser
@@ -265,10 +251,9 @@ public class IndexControllerApiTest {
 
 
 //    @Test
-//    @WithMockUser
-//    void getNonAuthenticatedRequestToHome_returnHomeView() throws Exception {
+//    void getNonAuthenticatedRequestToHome_redirectToLogin() throws Exception {
 //
-//        MockHttpServletRequestBuilder requestBuilder = get("http://localhost/home");
+//        MockHttpServletRequestBuilder requestBuilder = get("http://localhost:8080/home");
 //
 //        mockMvc.perform(requestBuilder)
 //                .andExpect(status().is3xxRedirection())
