@@ -20,11 +20,11 @@ public class AuthenticationSuccessListener {
 
     @EventListener
     public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {
-        // Вземаме текущия потребител от SecurityContext
+        // Вземам текущия потребител от SecurityContext
         String email = event.getAuthentication().getName();
         User user = userService.findUserByEmail(email);
 
-        // Извикваме метода за проверка на предпочитанията за известия
+        // Извиквам метода за проверка на предпочитанията за известия
         notificationService.checkNotificationPreference(user.getId(), user.getEmail());
     }
 }
