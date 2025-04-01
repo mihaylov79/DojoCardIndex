@@ -108,11 +108,29 @@ public class EventParticipationServiceUTest {
         }
 
 
+    @Test
+    void getAllNotPendingRequests_ShouldReturnEmptyListWhenNoMatchingRequests() {
+        // Arrange
+        when(requestRepository.findAllByStatusIsNot(RequestStatus.PENDING))
+                .thenReturn(List.of());
+
+        // Act
+        List<EventParticipationRequest> result = eventParticipationService.getAllNotPendingRequests();
+
+        // Assert
+        assertTrue(result.isEmpty());
+    }
+
+
+
+
         private Event createEvent(LocalDate endDate) {
 
             return Event.builder()
-                    .endDate(endDate).build();
+                    .endDate(endDate)
+                    .build();
         }
+
 
         private EventParticipationRequest createRequest(User user, Event event,
                                                         RequestStatus status, LocalDateTime created) {

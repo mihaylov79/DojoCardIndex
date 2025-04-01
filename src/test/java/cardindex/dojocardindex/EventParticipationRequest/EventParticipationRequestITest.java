@@ -36,8 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -161,6 +160,59 @@ public class EventParticipationRequestITest {
         EventParticipationRequest updatedRequest = requestRepository.findById(request.getId()).orElseThrow();
 
         assertEquals(RequestStatus.REJECTED, updatedRequest.getStatus());
+
+    }
+
+    @Test
+    void test_unApprovedRequest_happyPath(){
+
+        createTestUserWithSecurityContext();
+
+        Event event = Event.builder()
+                .type(EventType.TOURNAMENT)
+                .EventDescription("Тест Турнир")
+                .startDate(LocalDate.parse("05-05-2025",DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .endDate(LocalDate.parse("06-05-2025",DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .location("Каспичан")
+                .requirements(Requirements.NONE)
+                .users(new LinkedHashSet<>())
+                .closed(false)
+                .build();
+
+        eventRepository.save(event);
+
+        EventParticipationRequest request = EventParticipationRequest.builder()
+                .event(event)
+                .user(userRepository.getByEmail("user1@examplez.com"))
+                .status(RequestStatus.PENDING)
+                .created(LocalDateTime.now())
+                .build();
+
+        requestRepository.save(request);
+
+        User user = userRepository.getByEmail("user1@examplez.com");
+
+        user = user.toBuilder()
+                .events(new LinkedHashSet<>())
+                .build();
+        userRepository.save(user);
+
+
+        participationService.approveRequest(request.getId(),user);
+
+
+        participationService.unApproveRequest(event,user,user);
+
+        Event updatedEvent = eventRepository.findById(event.getId()).orElseThrow();
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow();
+        EventParticipationRequest updatedRequest = requestRepository.findById(request.getId()).orElseThrow();
+
+        assertSame(RequestStatus.PENDING, updatedRequest.getStatus());
+        assertNull(updatedRequest.getReason());
+       assertEquals(user,updatedRequest.getUser());
+        assertEquals(user,updatedRequest.getProcessedBy());
+        assertTrue(updatedEvent.getUsers().isEmpty());
+        assertTrue(updatedUser.getEvents().isEmpty());
 
     }
 
