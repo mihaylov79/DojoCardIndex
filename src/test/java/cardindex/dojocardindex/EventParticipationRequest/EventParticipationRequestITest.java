@@ -132,6 +132,38 @@ public class EventParticipationRequestITest {
 
     }
 
+    @Test
+    void testRejectRequest_happyPath(){
+
+        createTestUserWithSecurityContext();
+
+        Event event = Event.builder()
+                .type(EventType.TOURNAMENT)
+                .EventDescription("Тест Турнир")
+                .startDate(LocalDate.parse("05-05-2025",DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .endDate(LocalDate.parse("06-05-2025",DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .location("Каспичан")
+                .requirements(Requirements.NONE)
+                .users(new LinkedHashSet<>())
+                .closed(false)
+                .build();
+
+        eventRepository.save(event);
+
+
+        participationService.submitRequest(userService.findUserByEmail("user1@examplez.com").getId(),event.getId());
+
+        EventParticipationRequest request = requestRepository.findByUserAndEvent(userService.findUserByEmail("user1@examplez.com"),event).get();
+
+        participationService.rejectRequest(request.getId(),
+                                           userService.findUserByEmail("user1@examplez.com"),"Проба" );
+
+        EventParticipationRequest updatedRequest = requestRepository.findById(request.getId()).orElseThrow();
+
+        assertEquals(RequestStatus.REJECTED, updatedRequest.getStatus());
+
+    }
+
 
 
     @AfterEach
