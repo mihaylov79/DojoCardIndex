@@ -108,7 +108,6 @@ public class AdminControllerApiTest {
                 UserStatus.ACTIVE
         );
 
-        // 2. Подготовка на заявката
         CreateUserRequest request = new CreateUserRequest();
         request.setEmail("test@example.com");
         request.setFirstName("Иван");
@@ -125,13 +124,10 @@ public class AdminControllerApiTest {
         request.setContactPerson("Георги Иванов");
         request.setContactPersonPhone("0877322122");
 
-
-        // 3. Мокване на услугите
         User mockUser = User.builder().id(userId).build();
         when(userService.getUserById(userId)).thenReturn(mockUser);
         doNothing().when(userService).createNewUser(any(CreateUserRequest.class));
 
-        // 4. Настройка на Security Context
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,
@@ -139,7 +135,6 @@ public class AdminControllerApiTest {
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        // 5. Изпълнение и проверки
         mockMvc.perform(post("/admin/add-user")
                         .with(user(userDetails))
                         .with(csrf())
@@ -147,10 +142,8 @@ public class AdminControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/home"));
 
-        // 6. Допълнителна проверка за извикване на услугата
         verify(userService, times(1)).createNewUser(any(CreateUserRequest.class));
 
-        // 7. Почистване
         SecurityContextHolder.clearContext();
     }
 
