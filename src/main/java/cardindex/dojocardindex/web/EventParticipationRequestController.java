@@ -118,7 +118,6 @@ public class EventParticipationRequestController {
 
         return modelAndView;
     }
-    //TODO Да добавя оправя двата метода за reject
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/reject/{id}")
