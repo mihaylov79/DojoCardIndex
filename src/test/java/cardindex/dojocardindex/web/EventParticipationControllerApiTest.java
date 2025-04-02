@@ -21,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -196,6 +197,115 @@ public class EventParticipationControllerApiTest {
 
         verify(requestService).unApproveRequest(event, targetUser, adminUser);
     }
+
+    @Test
+    public void getRejectRequestPage_ShouldReturnRejectPage_WhenAdmin() throws Exception {
+
+        UUID requestId = UUID.randomUUID();
+        CustomUserDetails adminDetails = createCustomUserDetails(UUID.randomUUID());
+
+        User adminUser = User.builder()
+                .id(adminDetails.getId())
+                .email(adminDetails.getEmail())
+                .role(adminDetails.getRole())
+                .registrationStatus(adminDetails.getRegistrationStatus())
+                .status(adminDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        Event event = Event.builder()
+                .id(UUID.randomUUID())
+                .type(EventType.TOURNAMENT)
+                .EventDescription("Tестов турнир")
+                .startDate(LocalDate.parse("2025-05-05",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .endDate(LocalDate.parse("2025-05-06",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .location("Каспичан")
+                .closed(false)
+                .build();
+
+
+        EventParticipationRequest request = EventParticipationRequest.builder()
+                .id(requestId)
+                .status(RequestStatus.PENDING)
+                .created(LocalDateTime.now())
+                .event(event)
+                .user(User.builder().id(UUID.randomUUID()).build())
+                .build();
+
+        when(userService.getUserById(adminDetails.getId())).thenReturn(adminUser);
+        when(requestService.getRequestById(requestId)).thenReturn(request);
+
+        mockMvc.perform(get("/events/requests/reject/{id}", requestId).with(user(adminDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("request-reject"))
+                .andExpect(model().attributeExists("currentUser"))
+                .andExpect(model().attributeExists("request"))
+                .andExpect(model().attribute("request", request));
+    }
+
+    @Test
+    public void getRejectRequestPage_ShouldReturnUnAuthorized_WhenNotAuthenticated() throws Exception {
+
+        UUID requestId = UUID.randomUUID();
+
+        mockMvc.perform(get("/events/requests/reject/{id}", requestId))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void rejectUserRequest_ShouldRejectAndRedirect_WhenAdmin() throws Exception {
+
+        UUID requestId = UUID.randomUUID();
+        String rejectionReason = "Тест";
+
+        CustomUserDetails adminDetails = createCustomUserDetails(UUID.randomUUID());
+
+        User adminUser = User.builder()
+                .id(adminDetails.getId())
+                .email(adminDetails.getEmail())
+                .role(adminDetails.getRole())
+                .registrationStatus(adminDetails.getRegistrationStatus())
+                .status(adminDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        Event event = Event.builder()
+                .id(UUID.randomUUID())
+                .type(EventType.TOURNAMENT)
+                .EventDescription("Tестов турнир")
+                .startDate(LocalDate.parse("2025-05-05",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .endDate(LocalDate.parse("2025-05-06",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .location("Каспичан")
+                .closed(false)
+                .build();
+
+
+        EventParticipationRequest request = EventParticipationRequest.builder()
+                .id(requestId)
+                .status(RequestStatus.PENDING)
+                .created(LocalDateTime.now())
+                .event(event)
+                .user(User.builder().id(UUID.randomUUID()).build())
+                .build();
+
+        when(userService.getUserById(any())).thenReturn(adminUser);
+        when(requestService.getRequestById(requestId)).thenReturn(request);
+        doNothing().when(requestService).rejectRequest(requestId, adminUser, rejectionReason);
+
+        // Act & Assert
+        mockMvc.perform(put("/events/requests/reject/{id}", requestId)
+                        .param("reason", rejectionReason)
+                        .with(user(adminDetails))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/events/requests/pending"))
+                .andExpect(model().attributeExists("currentUser"))
+                .andExpect(model().attributeExists("request"));
+
+        verify(requestService).rejectRequest(requestId, adminUser, rejectionReason);
+    }
+
+
 
 
     private static CustomUserDetails createCustomUserDetails(UUID userId) {
