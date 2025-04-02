@@ -9,6 +9,7 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.exceptions.MessageCanNotBeSentToUserException;
 import cardindex.dojocardindex.exceptions.MessageNotFoundException;
 import cardindex.dojocardindex.web.dto.SendMessageRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.config.ScheduledTaskHolder;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class MessageService {
 
@@ -74,6 +76,24 @@ public class MessageService {
 
         messageRepository.save(message);
 
+
+    }
+
+    public void sendMessageToUserId(UUID userId, String messageContent){
+        //Няма нужда да проверявам получателят - ако е зареден в листа с регистрирани потребители
+        //значи условията за статус-ACTIVE и статус на регистрация-REGISTERED са изпълнени.
+        User sender = userService.getCurrentUser();
+        User recipient = userService.getUserById(userId);
+
+        Message message = Message.builder()
+                .sender(sender)
+                .recipient(recipient)
+                .content(messageContent)
+                .created(LocalDateTime.now())
+                .isRead(false)
+                .build();
+
+        messageRepository.save(message);
 
     }
 

@@ -91,6 +91,27 @@ public class MessageController {
 
     }
 
+    @GetMapping("/messages/send/{userId}")
+    public ModelAndView getSendMessageToUserIdPage(@PathVariable UUID userId,@AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+        User recipient = userService.getUserById(userId);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("send-message-toId");
+        modelAndView.addObject("recipient",recipient);
+        modelAndView.addObject("currentUser",currentUser);
+        return modelAndView;
+    }
+
+    @PostMapping("/messages/send/{userId}")
+    public ModelAndView sendMessageToUserId(@PathVariable UUID userId,@RequestParam String messageContent,@AuthenticationPrincipal CustomUserDetails details){
+
+        messageService.sendMessageToUserId(userId,messageContent);
+
+        return new ModelAndView("redirect:/users/list");
+    }
+
     @GetMapping("/messages/remove/{id}")
     public ModelAndView removeReceivedMessage(@PathVariable UUID id,
                                       @AuthenticationPrincipal CustomUserDetails details){

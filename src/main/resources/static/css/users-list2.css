@@ -61,7 +61,11 @@ th, td {
 
 /*    gap: 0.5em; !* Разстояние между бутоните *!*/
 /*}*/
-
+td.actions{
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+}
 
 img {
     max-width: 100px;

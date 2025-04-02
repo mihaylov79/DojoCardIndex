@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,18 +66,19 @@
                 <td class="actions">
                     <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).ACTIVE}"
                           th:action="@{/admin/users/modify-status}"
-                          th:method="POST">
+                          th:method="POST" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
                         <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да ДЕАКТИВИРАТЕ този потребител ?');">Деактивирай</button>
                     </form>
                     <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).INACTIVE}"
                           th:action="@{/admin/users/modify-status}"
-                          th:method="POST">
+                          th:method="POST" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
                         <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit">Активирай</button>
                     </form>
 
-                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|">Редактиране</button>
+                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Редактиране</button>
+                    <button th:attr="onclick=|location.href='/messages/send/' + '${user.id}'|">Съобщение</button>
 
                     
                 </td>
