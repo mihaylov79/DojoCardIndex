@@ -11,6 +11,7 @@ import cardindex.dojocardindex.EventParticipationRequest.service.EventParticipat
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -52,7 +53,7 @@ public class EventParticipationControllerApiTest {
     public void getPendingRequests_ShouldReturnViewWithRequests() throws Exception {
         // Arrange
         UUID userId = UUID.randomUUID();
-        CustomUserDetails userDetails = createCustomUserDetails(userId);
+        CustomUserDetails userDetails = createAdminUserDetails(userId);
 
         User mockUser =  User.builder()
                 .id(userId)
@@ -110,7 +111,7 @@ public class EventParticipationControllerApiTest {
     public void approveRequest_ShouldWorkWithAdminRole() throws Exception {
 
         UUID requestId = UUID.randomUUID();
-        CustomUserDetails adminDetails = createCustomUserDetails(UUID.randomUUID());
+        CustomUserDetails adminDetails = createAdminUserDetails(UUID.randomUUID());
 
         User adminUser = User.builder()
                 .id(adminDetails.getId())
@@ -145,7 +146,7 @@ public class EventParticipationControllerApiTest {
         // Arrange
         UUID eventId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        CustomUserDetails adminDetails = createCustomUserDetails(userId);
+        CustomUserDetails adminDetails = createAdminUserDetails(userId);
 
         User adminUser = User.builder()
                 .id(adminDetails.getId())
@@ -199,7 +200,7 @@ public class EventParticipationControllerApiTest {
     public void getRejectRequestPage_ShouldReturnRejectPage_WhenAdmin() throws Exception {
 
         UUID requestId = UUID.randomUUID();
-        CustomUserDetails adminDetails = createCustomUserDetails(UUID.randomUUID());
+        CustomUserDetails adminDetails = createAdminUserDetails(UUID.randomUUID());
 
         User adminUser = User.builder()
                 .id(adminDetails.getId())
@@ -263,7 +264,7 @@ public class EventParticipationControllerApiTest {
         UUID requestId = UUID.randomUUID();
         String rejectionReason = "Тест";
 
-        CustomUserDetails adminDetails = createCustomUserDetails(UUID.randomUUID());
+        CustomUserDetails adminDetails = createAdminUserDetails(UUID.randomUUID());
 
         User adminUser = User.builder()
                 .id(adminDetails.getId())
@@ -319,7 +320,7 @@ public class EventParticipationControllerApiTest {
 
     @Test
     public void rejectUserRequest_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
-        
+
         UUID requestId = UUID.randomUUID();
 
         mockMvc.perform(put("/events/requests/reject/{id}", requestId)
@@ -332,7 +333,7 @@ public class EventParticipationControllerApiTest {
     public void getNotPendingRequestsPage_ShouldReturnViewWithRequests_WhenAdmin() throws Exception {
 
         UUID userId = UUID.randomUUID();
-        CustomUserDetails adminDetails = createCustomUserDetails(userId);
+        CustomUserDetails adminDetails = createAdminUserDetails(userId);
 
         User mockUser = User.builder()
                 .id(adminDetails.getId())
@@ -409,10 +410,251 @@ public class EventParticipationControllerApiTest {
                 .andExpect(model().attribute("userAges", mockUserAges));
     }
 
+    @Test
+    public void getUserRequestsPage_ShouldReturnAllRequestTypes() throws Exception {
+
+        UUID userId = UUID.randomUUID();
+        CustomUserDetails userDetails = new CustomUserDetails(
+                userId,
+                "user2@example.com",
+                "password",
+                UserRole.MEMBER,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE);
+
+        User currentUser = User.builder()
+                .id(userDetails.getId())
+                .email(userDetails.getEmail())
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .role(userDetails.getRole())
+                .registrationStatus(userDetails.getRegistrationStatus())
+                .status(userDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        Event event1 = Event.builder().id(UUID.randomUUID()).EventDescription("Event 1").build();
+        Event event2 = Event.builder().id(UUID.randomUUID()).EventDescription("Event 2").build();
+        Event event3 = Event.builder().id(UUID.randomUUID()).EventDescription("Event 3").build();
+
+        List<EventParticipationRequest> pendingRequests = List.of(
+                EventParticipationRequest.builder()
+                        .id(UUID.randomUUID())
+                        .user(currentUser)
+                        .status(RequestStatus.PENDING)
+                        .event(event1)
+                        .build()
+        );
+
+        List<EventParticipationRequest> approvedRequests = List.of(
+                EventParticipationRequest.builder()
+                        .id(UUID.randomUUID())
+                        .status(RequestStatus.APPROVED)
+                        .user(currentUser)
+                        .event(event2)
+                        .build()
+        );
+
+        List<EventParticipationRequest> rejectedRequests = List.of(
+                EventParticipationRequest.builder()
+                        .id(UUID.randomUUID())
+                        .status(RequestStatus.REJECTED)
+                        .user(currentUser)
+                        .reason("КМЦ")
+                        .event(event3)
+                        .build()
+        );
+
+        when(userService.getUserById(userDetails.getId())).thenReturn(currentUser);
+        when(requestService.getRequestsBuUserId(userDetails.getId(), RequestStatus.PENDING))
+                .thenReturn(pendingRequests);
+        when(requestService.getRequestsBuUserId(userDetails.getId(), RequestStatus.APPROVED))
+                .thenReturn(approvedRequests);
+        when(requestService.getRequestsBuUserId(userDetails.getId(), RequestStatus.REJECTED))
+                .thenReturn(rejectedRequests);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                )
+        );
+
+
+        mockMvc.perform(get("/events/requests/{userId}", userDetails.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user-partisipation-requests"))
+                .andExpect(model().attributeExists("currentUser"))
+                .andExpect(model().attributeExists("pendingRequest"))
+                .andExpect(model().attributeExists("approvedRequest"))
+                .andExpect(model().attributeExists("rejectedRequest"))
+                .andExpect(model().attribute("pendingRequest", pendingRequests))
+                .andExpect(model().attribute("approvedRequest", approvedRequests))
+                .andExpect(model().attribute("rejectedRequest", rejectedRequests));
+    }
+
+    @Test
+
+    public void getUserRequestsPage_ShouldHandleEmptyLists() throws Exception {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+        CustomUserDetails userDetails = createTestUserDetails(userId);
+
+        User currentUser = User.builder()
+                .id(userDetails.getId())
+                .email(userDetails.getEmail())
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .role(userDetails.getRole())
+                .registrationStatus(userDetails.getRegistrationStatus())
+                .status(userDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        when(userService.getUserById(userDetails.getId())).thenReturn(currentUser);
+        when(requestService.getRequestsBuUserId(any(), any())).thenReturn(Collections.emptyList());
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                )
+        );
+
+        mockMvc.perform(get("/events/requests/{userId}", userDetails.getId()).with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("pendingRequest", Collections.emptyList()))
+                .andExpect(model().attribute("approvedRequest", Collections.emptyList()))
+                .andExpect(model().attribute("rejectedRequest", Collections.emptyList()));
+    }
 
 
 
-    private static CustomUserDetails createCustomUserDetails(UUID userId) {
+    @Test
+    public void submitParticipationRequest_ShouldSubmitAndRedirect_WhenAuthenticated() throws Exception {
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId =UUID.randomUUID();
+        CustomUserDetails userDetails = createTestUserDetails(userId);
+
+        User mockUser = User.builder()
+                .id(userDetails.getId())
+                .email(userDetails.getEmail())
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .role(userDetails.getRole())
+                .registrationStatus(userDetails.getRegistrationStatus())
+                .status(userDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        when(userService.getUserById(userDetails.getId())).thenReturn(mockUser);
+        doNothing().when(requestService).submitRequest(userDetails.getId(), eventId);
+
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                )
+        );
+
+        mockMvc.perform(post("/events/requests/submit/{id}", eventId)
+                        .with(user(userDetails))
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/events"))
+                .andExpect(model().attributeExists("user"));
+
+        verify(requestService).submitRequest(userDetails.getId(), eventId);
+    }
+
+    @Test
+    public void submitParticipationRequest_ShouldReturnUnauthorized_WhenUnauthenticated() throws Exception {
+        // Arrange
+        UUID eventId = UUID.randomUUID();
+        SecurityContextHolder.clearContext();
+
+        // Act & Assert
+        mockMvc.perform(post("/events/requests/submit/{id}", eventId)
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+
+    @Test
+    public void getEventDetails_ShouldReturnEventDetails_WhenAuthenticated() throws Exception {
+
+        UUID eventId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        CustomUserDetails userDetails = createTestUserDetails(userId);
+
+        Event mockEvent = Event.builder()
+                .id(UUID.randomUUID())
+                .type(EventType.TOURNAMENT)
+                .EventDescription("Tестов турнир")
+                .startDate(LocalDate.parse("2025-05-05",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .endDate(LocalDate.parse("2025-05-06",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .requirements(Requirements.NONE)
+                .users(new LinkedHashSet<>())
+                .location("Каспичан")
+                .closed(false)
+                .build();
+
+        User mockUser = User.builder()
+                .id(userDetails.getId())
+                .email(userDetails.getEmail())
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .role(userDetails.getRole())
+                .registrationStatus(userDetails.getRegistrationStatus())
+                .status(userDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        mockEvent.getUsers().add(mockUser);
+
+        when(eventService.getEventById(eventId)).thenReturn(mockEvent);
+        when(userService.getUserById(userDetails.getId())).thenReturn(mockUser);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                )
+        );
+
+        mockMvc.perform(get("/events/requests/{eventId}/event-details", eventId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("event-details"))
+                .andExpect(model().attributeExists("event"))
+                .andExpect(model().attributeExists("currentUser"))
+                .andExpect(model().attribute("event", mockEvent))
+                .andExpect(model().attribute("currentUser", mockUser));
+    }
+
+    @Test
+    public void getEventDetails_ShouldReturnUnauthorized_WhenUnauthenticated() throws Exception {
+
+        UUID eventId = UUID.randomUUID();
+        SecurityContextHolder.clearContext();
+
+        mockMvc.perform(get("/events/requests/{eventId}/event-details", eventId))
+                .andExpect(status().isUnauthorized());
+
+    }
+
+
+    @AfterEach
+    public void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
+
+    private static CustomUserDetails createAdminUserDetails(UUID userId) {
         return new CustomUserDetails(
                 userId,
                 "admin@example.com",
@@ -421,6 +663,16 @@ public class EventParticipationControllerApiTest {
                 RegistrationStatus.REGISTERED,
                 UserStatus.ACTIVE);
 
+    }
+
+    private static CustomUserDetails createTestUserDetails(UUID userId) {
+        return new CustomUserDetails(
+                userId,
+                "user2@example.com",
+                "password",
+                UserRole.MEMBER,
+                RegistrationStatus.REGISTERED,
+                UserStatus.ACTIVE);
     }
 
 }
