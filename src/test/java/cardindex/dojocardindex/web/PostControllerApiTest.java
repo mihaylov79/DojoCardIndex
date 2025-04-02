@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -188,6 +189,41 @@ public class PostControllerApiTest {
                 .andExpect(model().attributeExists("createPostRequest"))
                 .andExpect(model().hasErrors());
     }
+
+    @Test
+    public void testClosePost_WithAdminRole_ShouldSuccessfullyClosePost() throws Exception {
+
+        UUID postId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        CustomUserDetails adminDetails = createAdminUserDetails(userId);
+
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                adminDetails,
+                null,
+                adminDetails.getAuthorities());
+
+
+        User mockUser = User.builder()
+                .id(adminDetails.getId())
+                .email(adminDetails.getEmail())
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .role(adminDetails.getRole())
+                .registrationStatus(adminDetails.getRegistrationStatus())
+                .status(adminDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        when(userService.getUserById(userId)).thenReturn(mockUser);
+
+        mockMvc.perform(post("/posts/close/" + postId)
+                        .with(authentication(auth)).with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/posts"));
+    }
+
 
 
 
