@@ -23,10 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
@@ -235,6 +232,14 @@ public class EventParticipationControllerApiTest {
         when(userService.getUserById(adminDetails.getId())).thenReturn(adminUser);
         when(requestService.getRequestById(requestId)).thenReturn(request);
 
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        adminDetails,
+                        null,
+                        adminDetails.getAuthorities()
+                )
+        );
+
         mockMvc.perform(get("/events/requests/reject/{id}", requestId).with(user(adminDetails)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("request-reject"))
@@ -292,7 +297,14 @@ public class EventParticipationControllerApiTest {
         when(requestService.getRequestById(requestId)).thenReturn(request);
         doNothing().when(requestService).rejectRequest(requestId, adminUser, rejectionReason);
 
-        // Act & Assert
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        adminDetails,
+                        null,
+                        adminDetails.getAuthorities()
+                )
+        );
+
         mockMvc.perform(put("/events/requests/reject/{id}", requestId)
                         .param("reason", rejectionReason)
                         .with(user(adminDetails))
@@ -303,6 +315,98 @@ public class EventParticipationControllerApiTest {
                 .andExpect(model().attributeExists("request"));
 
         verify(requestService).rejectRequest(requestId, adminUser, rejectionReason);
+    }
+
+    @Test
+    public void rejectUserRequest_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
+        
+        UUID requestId = UUID.randomUUID();
+
+        mockMvc.perform(put("/events/requests/reject/{id}", requestId)
+                        .param("reason", "any reason")
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void getNotPendingRequestsPage_ShouldReturnViewWithRequests_WhenAdmin() throws Exception {
+
+        UUID userId = UUID.randomUUID();
+        CustomUserDetails adminDetails = createCustomUserDetails(userId);
+
+        User mockUser = User.builder()
+                .id(adminDetails.getId())
+                .email(adminDetails.getEmail())
+                .role(adminDetails.getRole())
+                .registrationStatus(adminDetails.getRegistrationStatus())
+                .status(adminDetails.getUserStatus())
+                .reachedDegree(Degree.NONE)
+                .build();
+
+        Event event = Event.builder()
+                .id(UUID.randomUUID())
+                .type(EventType.TOURNAMENT)
+                .EventDescription("Tестов турнир")
+                .startDate(LocalDate.parse("2025-05-05",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .endDate(LocalDate.parse("2025-05-06",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .requirements(Requirements.NONE)
+                .location("Каспичан")
+                .closed(false)
+                .build();
+
+        User requestUser1 = User.builder()
+                .id(UUID.randomUUID())
+                .birthDate(LocalDate.now().minusYears(25))
+                .build();
+
+        User requestUser2 = User.builder()
+                .id(UUID.randomUUID())
+                .birthDate(LocalDate.now().minusYears(30))
+                .build();
+
+        EventParticipationRequest request1 = EventParticipationRequest.builder()
+                .id(UUID.randomUUID())
+                .status(RequestStatus.APPROVED)
+                .user(requestUser1)
+                .processedBy(mockUser)
+                .event(event)
+                .build();
+
+        EventParticipationRequest request2 = EventParticipationRequest.builder()
+                .id(UUID.randomUUID())
+                .status(RequestStatus.REJECTED)
+                .user(requestUser2)
+                .processedBy(mockUser)
+                .event(event)
+                .build();
+
+        List<EventParticipationRequest> mockRequests = Arrays.asList(request1, request2);
+        Map<UUID, Integer> mockUserAges = Map.of(
+                requestUser1.getId(), 25,
+                requestUser2.getId(), 30
+        );
+
+        when(userService.getUserById(userId)).thenReturn(mockUser);
+        when(requestService.getAllNotPendingRequests()).thenReturn(mockRequests);
+        when(userService.getUserAges(anyList())).thenReturn(mockUserAges);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        adminDetails,
+                        null,
+                        adminDetails.getAuthorities()
+                )
+        );
+
+
+        mockMvc.perform(get("/events/requests/not-pending"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("not-pending"))
+                .andExpect(model().attributeExists("notPendingRequests"))
+                .andExpect(model().attributeExists("userAges"))
+                .andExpect(model().attributeExists("currentUser"))
+                .andExpect(model().attribute("notPendingRequests", mockRequests))
+                .andExpect(model().attribute("userAges", mockUserAges));
     }
 
 
