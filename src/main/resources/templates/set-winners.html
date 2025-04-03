@@ -23,7 +23,7 @@
     <form th:action="@{/events/{eventId}/set-winner(eventId=${event.id})}" th:method="POST">
         <label>Първо място:</label>
         <select name="userId">
-            <option value="">-- Избери победител --</option>
+            <option value="" th:disabled="${event.firstPlaceWinner != null}">-- Избери победител --</option>
             <option th:each="user : ${users}"
                     th:value="${user.id}"
                     th:text="${user.firstName} + ' ' + ${user.lastName}"
@@ -38,7 +38,7 @@
     <form th:action="@{/events/{eventId}/set-winner(eventId=${event.id})}" method="post">
         <label>Второ място:</label>
         <select name="userId">
-            <option value="">-- Избери победител --</option>
+            <option value="" th:disabled="${event.secondPlaceWinner != null}">-- Избери победител --</option>
             <option th:each="user : ${users}"
                     th:value="${user.id}"
                     th:text="${user.firstName} + ' ' + ${user.lastName}"
@@ -53,7 +53,7 @@
     <form th:action="@{/events/{eventId}/set-winner(eventId=${event.id})}" method="post">
         <label>Трето място:</label>
         <select name="userId">
-            <option value="">-- Избери победител --</option>
+            <option value="" th:disabled="${event.thirdPlaceWinner != null}">-- Избери победител --</option>
             <option th:each="user : ${users}"
                     th:value="${user.id}"
                     th:text="${user.firstName} + ' ' + ${user.lastName}"
