@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -67,13 +68,18 @@ public class IndexController {
     }
 
     @PostMapping("/register")
-    public ModelAndView registerUser(@Valid RegisterRequest registerRequest, BindingResult result){
+    public ModelAndView registerUser(@Valid RegisterRequest registerRequest,
+                                            BindingResult result,
+                                            RedirectAttributes redirectAttributes){
 
         if (result.hasErrors()) {
             return new ModelAndView("register");
         }
 
         userService.register(registerRequest);
+
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Вашата регистрация е изпратена към администратор. При одобрение ще получите уведомителен имейл.");
 
         return new ModelAndView("redirect:/login");
 

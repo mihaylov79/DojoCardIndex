@@ -7,14 +7,12 @@ import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.SendMessageRequest;
+import cardindex.dojocardindex.web.dto.ShortMessageRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -80,34 +78,46 @@ public class MessageController {
                                      @RequestParam String content,
                                      @AuthenticationPrincipal CustomUserDetails details){
 
+
         User user = userService.getUserById(details.getId());
 
         messageService.replyMessage(responseToMessageId, content);
 
-        ModelAndView modelAndView = new ModelAndView("redirect:/home");
-        modelAndView.addObject(user);
 
-        return modelAndView;
+        return new ModelAndView("redirect:/home");
 
     }
 
     @GetMapping("/messages/send/{userId}")
-    public ModelAndView getSendMessageToUserIdPage(@PathVariable UUID userId,@AuthenticationPrincipal CustomUserDetails details){
+    public ModelAndView getSendMessageToUserIdPage(@PathVariable UUID userId,
+                                                   @AuthenticationPrincipal CustomUserDetails details) {
 
         User currentUser = userService.getUserById(details.getId());
         User recipient = userService.getUserById(userId);
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("send-message-toId");
-        modelAndView.addObject("recipient",recipient);
-        modelAndView.addObject("currentUser",currentUser);
+        ModelAndView modelAndView = new ModelAndView("send-message-toId");
+        modelAndView.addObject("recipient", recipient);
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("messageRequest", new ShortMessageRequest()); // 🔹 Добавяме празен DTO
+
         return modelAndView;
     }
 
     @PostMapping("/messages/send/{userId}")
-    public ModelAndView sendMessageToUserId(@PathVariable UUID userId,@RequestParam String messageContent,@AuthenticationPrincipal CustomUserDetails details){
+    public ModelAndView sendMessageToUserId(@PathVariable UUID userId,
+                                            @Valid @ModelAttribute("messageRequest") ShortMessageRequest messageRequest,
+                                            BindingResult result,
+                                            @AuthenticationPrincipal CustomUserDetails details){
 
-        messageService.sendMessageToUserId(userId,messageContent);
+        if (result.hasErrors()) {
+            ModelAndView modelAndView = new ModelAndView("send-message-toId");
+            modelAndView.addObject("messageRequest",messageRequest);
+            modelAndView.addObject("currentUser", userService.getUserById(details.getId()));
+            modelAndView.addObject("recipient", userService.getUserById(userId));
+            return modelAndView;
+        }
+
+        messageService.sendMessageToUserId(userId,messageRequest.getMessageContent());
 
         return new ModelAndView("redirect:/users/list");
     }

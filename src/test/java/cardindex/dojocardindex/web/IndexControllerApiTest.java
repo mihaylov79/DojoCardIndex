@@ -85,28 +85,6 @@ public class IndexControllerApiTest {
                 .andExpect(model().attributeExists("registerRequest"));
     }
 
-//    @Test
-//    void getRequestToLoginEndpoint_shouldReturnLoginView() throws Exception {
-//
-//        MockHttpServletRequestBuilder request = get("http://localhost:8080/login").with(csrf());
-//
-//        mockMvc.perform(request)
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("login"))
-//                .andExpect(model().attributeExists("loginRequest"));
-//    }
-//
-//    @Test
-//    void getRequestToLoginEndpointWithParameter_shouldReturnLoginViewAndErrorAttribute() throws Exception {
-//
-//        MockHttpServletRequestBuilder request = get("/login").param("error","");
-//
-//        mockMvc.perform(request)
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("login"))
-//                .andExpect(model().attributeExists("loginRequest","errorMessage"));
-//    }
-//
 
     @Test
     @WithMockUser
@@ -133,7 +111,7 @@ public class IndexControllerApiTest {
     }
 
     @Test
-    void PostRequestToRegisterEndpointWithErrors_registerUser_WithInvalidDara_shouldRedirectRegister() throws Exception {
+    void PostRequestToRegisterEndpointWithErrors_registerUser_WithInvalidData_shouldRedirectRegister() throws Exception {
 
         User existingUser = getTestUser(UUID.randomUUID(),RegistrationStatus.NOT_REGISTERED,UserRole.MEMBER);
 
@@ -155,38 +133,7 @@ public class IndexControllerApiTest {
         verify(userService, never()).register(any());
     }
 
-//    @Test
-//    void getAuthenticatedRequestToHome_returnHomeView() throws Exception {
-//        UUID userId = UUID.randomUUID();
-//        CustomUserDetails userDetails = new CustomUserDetails(
-//                 userId,
-//                "test@example.com",
-//                "321123",
-//                UserRole.MEMBER,
-//                RegistrationStatus.REGISTERED,
-//                UserStatus.ACTIVE);
-//
-//        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-//        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails,"3332221",userDetails.getAuthorities()));
-//        SecurityContextHolder.setContext(securityContext);
-//
-//        User existingUser = getTestUser(userId,RegistrationStatus.REGISTERED,UserRole.MEMBER);
-//
-//        when(userService.findUserByEmail("test@example.com"))
-//                .thenReturn(existingUser);
-//
-//        MockHttpServletRequestBuilder requestBuilder = get("/home")
-//                .with(user(userDetails));
-//
-//        mockMvc.perform(requestBuilder)
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("home-fixed"));
-//
-//
-//        verify(userService,never()).getUserById(any());
-//
-//
-//    }
+
 
     @Test
     void getHomePage_withAuthenticatedUser_shouldReturnHomePage() throws Exception {
@@ -250,18 +197,6 @@ public class IndexControllerApiTest {
 
 
 
-//    @Test
-//    void getNonAuthenticatedRequestToHome_redirectToLogin() throws Exception {
-//
-//        MockHttpServletRequestBuilder requestBuilder = get("http://localhost:8080/home");
-//
-//        mockMvc.perform(requestBuilder)
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("http://localhost:8080/login"));
-//
-//        verify(userService,never()).getUserById(any());
-//
-//    }
 
     private static User getTestUser(UUID userId,RegistrationStatus registrationStatus,UserRole userRole) {
         return User.builder()

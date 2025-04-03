@@ -1,11 +1,11 @@
-/* Основни стилове */
+
 :root {
     --primary-color: #e18e09;
     --bg-color: rgba(0, 0, 0, 0.7);
     --font-family: "Caveat", cursive;
 }
 
-/* Оформление на таблицата */
+
 .table-container {
     margin: 1em auto;
     width: 90%;
@@ -24,9 +24,7 @@ table {
 }
 
 caption {
-    /*display: flex;*/
-    /*flex-wrap: nowrap;*/
-    /*width: 100%;*/
+
     justify-content: space-between;
     text-align: end;
     font: 1.5vw var(--font-family);
@@ -36,11 +34,6 @@ caption {
     border-radius: 0.3em;
 }
 
-/*caption > div {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    width: 100%;*/
-/*}*/
 
 tr {
     background-color: var(--bg-color);
@@ -64,7 +57,7 @@ th, td {
 td.actions{
     display: flex;
     flex-direction: column;
-    /*justify-content: center;*/
+    justify-content: center;
 }
 
 img {
@@ -73,11 +66,11 @@ img {
     border-radius: 0.3em;
 }
 
-/* Стилове за бутоните */
+
 button {
     background-color: black;
     color: #e18e09;
-    padding: 0.2em;
+    padding: 0.2em 0.5em;
     margin: 0.2em;
     border-radius: 0.3em;
     font: 1.2vw var(--font-family);
@@ -90,7 +83,7 @@ button:hover {
     color: black;
 }
 
-/* Отзивчив (responsive) дизайн */
+
 @media (max-width: 1024px) {
     .table-container {
         width: 95%;

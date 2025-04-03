@@ -17,6 +17,9 @@
 
     <div class="form">
         <form class="login" th:action="@{/login}" th:method="POST" th:object="${loginRequest}" >
+            <div th:if="${successMessage}" class="alert-info">
+                <p th:text="${successMessage}"></p>
+            </div>
             <h2>Вход</h2>
             
             <div class="field">

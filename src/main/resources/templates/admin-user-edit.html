@@ -18,13 +18,14 @@
     <form class="edit-profile" th:action="@{'/admin/users/details/edit/' + ${user.id}}" th:method="POST" th:object="${userEditAdminRequest}">
         <input type="hidden" name="id" th:value="${user.id}"/>
         <h2>Редактиране</h2>
+        <h4 class="acc-holder" th:text="'Потребител: ' + ${user.firstName} + ' ' + ${user.lastName}"></h4>
 
 
 
         <div class="field">
             <label for="field-userPhone">Телефон</label>
             <input type="text" id="field-userPhone" th:field="*{userPhone}" placeholder="">
-            <span th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}"></span>
+            <span class="errors" th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}"></span>
         </div>
 
         <div class="field">
@@ -37,7 +38,7 @@
             <label for="field-role">Роля</label>
             <select id="field-role" th:field="*{role}">
                 <option th:each="role : ${T(cardindex.dojocardindex.User.models.UserRole).values()}" th:value="${role}" th:text="${role.description}" value="USER"></option>
-                <!--                    <option value="ADMIN">Администратор</option>-->
+
             </select>
         </div>
 
@@ -45,7 +46,6 @@
             <label for="status">Статус</label>
             <select id="status" th:field="*{status}">
                 <option th:each="status : ${T(cardindex.dojocardindex.User.models.UserStatus).values()}" th:value="${status}" th:text="${status.description}" value="ACTIVE">Очакващ</option>
-                <option value="REGISTERED">Регистриран</option>
             </select>
         </div>
 
@@ -79,21 +79,22 @@
 
         <div class="field">
             <label for="field-ageGroup">Възрастова група</label>
-            <input type="text" id="field-ageGroup" th:field="*{ageGroup}" placeholder="">
-            <span th:if="${#fields.hasErrors('ageGroup')}" th:errors="*{ageGroup}"></span>
+            <select id="field-ageGroup" th:field="*{ageGroup}">
+            <option th:each="agrGroup : ${T(cardindex.dojocardindex.User.models.AgeGroup).values()}" th:value="${agrGroup}" th:text="${agrGroup.description}" value=""></option>
+            </select>
         </div>
 
 
         <div class="field">
             <label for="field-height">Височина (см)</label>
             <input type="number" id="field-height" th:field="*{height}" placeholder="" min="0">
-            <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
+            <span class="errors" th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
         </div>
 
         <div class="field">
             <label for="field-weight">Тегло (кг)</label>
             <input type="number" id="field-weight" th:field="*{weight}" placeholder="" min="0">
-            <span th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></span>
+            <span class="errors" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></span>
         </div>
 
         <div class="field">
@@ -104,7 +105,7 @@
         <div class="field">
             <label for="field-contactPersonPhone">Телефон на лице за контакт</label>
             <input type="text" id="field-contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">
-            <span th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"></span>
+            <span class="errors" th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"></span>
         </div>
 
         <input type="submit" class="button save" value="Запази">

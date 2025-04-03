@@ -8,6 +8,14 @@ h2 {
     color: #e18e09;
 }
 
+.alert-info {
+    text-align: start;
+    color: limegreen;
+    font: 1.1em Caveat;
+    margin-bottom: 1em;
+
+}
+
 form {
     font: 1.6em "Caveat";
     margin: 0 auto;

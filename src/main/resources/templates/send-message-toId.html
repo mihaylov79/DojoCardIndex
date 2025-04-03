@@ -17,10 +17,11 @@
 </header>
 <div class="container-replay">
     <h2 th:text="'Съобщение до ' + ${recipient.firstName} + ' ' + ${recipient.lastName}">Съобщение до ...</h2>
-    <form class="replay" th:action="@{/messages/send/{userid}(userid=${recipient.id})}" th:method="POST">
-<!--        <input type="hidden" name="responseToMessageId" th:value="${message.id}" />-->
+    <form class="replay" th:action="@{/messages/send/{userid}(userid=${recipient.id})}" th:object="${messageRequest}" th:method="POST">
         <label>Съобщение:</label>
         <textarea name="messageContent" placeholder="Вашето съобщение..." required></textarea>
+        <div th:if="${#fields.hasErrors('messageContent')}"
+             th:errors="*{messageContent}" class="errors"></div>
         <button type="submit">Изпрати</button>
     </form>
     <a href="/users/list">Назад</a>
