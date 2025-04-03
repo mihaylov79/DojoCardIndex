@@ -128,13 +128,13 @@ public class EventService {
                               BiConsumer<User, Integer> setPlaceCount) {
 
         if (oldWinner != null) {
-            setPlaceCount.accept(oldWinner, getPlaceCount.apply(oldWinner) - 1);
+            int newCount = Math.max(0, getPlaceCount.apply(oldWinner) - 1);
+            setPlaceCount.accept(oldWinner, newCount);
         }
 
         if (newWinner != null) {
             setPlaceCount.accept(newWinner, getPlaceCount.apply(newWinner) + 1);
         }
-
 
         int placeCount = getPlaceCount.apply(newWinner);
         assert newWinner != null;
@@ -146,6 +146,7 @@ public class EventService {
             event.setThirdPlaceWinner(newWinner);
         }
     }
+
 
     @Transactional
     public void resetWinners(UUID eventId) {
@@ -172,10 +173,13 @@ public class EventService {
     private void resetWinner(Event event, User winner,
                              Function<User, Integer> getPlaceCount,
                              BiConsumer<User, Integer> setPlaceCount) {
+
         if (winner != null) {
-            setPlaceCount.accept(winner, getPlaceCount.apply(winner) - 1);
+            int newCount = Math.max(0, getPlaceCount.apply(winner) - 1);
+            setPlaceCount.accept(winner, newCount);
         }
     }
+
 
     public void saveEvent(Event event){
         eventRepository.save(event);
