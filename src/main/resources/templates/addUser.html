@@ -81,13 +81,12 @@
                 <span class="errors" th:if="${#fields.hasErrors('isCompetitor')}" th:errors="*{isCompetitor}"></span>
             </div>
 
-<!--            <div class="field">-->
-<!--                <label for="status">Статус</label>-->
-<!--                <select id="status" th:field="*{status}">-->
-<!--                    <option value="PENDING">Очакващ</option>-->
-<!--                    <option value="REGISTERED">Регистриран</option>-->
-<!--                </select>-->
-<!--            </div>-->
+            <div class="field">
+                <label for="field-ageGroup">Възрастова група</label>
+                <select id="field-ageGroup" th:field="*{ageGroup}">
+                    <option th:each="agrGroup : ${T(cardindex.dojocardindex.User.models.AgeGroup).values()}" th:value="${agrGroup}" th:text="${agrGroup.description}" value=""></option>
+                </select>
+            </div>
 
             <div class="field">
                 <label for="interests">Интереси</label>

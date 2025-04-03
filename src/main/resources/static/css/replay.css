@@ -16,7 +16,7 @@ margin-top: 5em;
 }
 
 .container-replay{
-    height: 58vh;
+    height: 63vh;
 }
 
 label{
@@ -48,7 +48,7 @@ form {
 
 textarea {
     width:35vw;
-    height: 25vh;
+    height: 27vh;
     display: flex;
     align-items: center;
     background-color: #e18e09;
@@ -57,6 +57,7 @@ textarea {
     color: white;
     border-radius: 0.5em;
     margin: 0.5em;
+    border: none;
 }
 
 button{
@@ -67,7 +68,8 @@ button{
     margin: 1em;
     font:1.3vw "Caveat";
     font-weight: bold;
-    border-radius: 0.8em;
+    border-radius: 0.5em;
+    border: none;
     
 }
 

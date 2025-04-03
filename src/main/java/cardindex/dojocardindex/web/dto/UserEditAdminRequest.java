@@ -36,6 +36,7 @@ public class UserEditAdminRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate medicalExamsPassed;
 
+    @Size(max = 30, message = "Името не трябва да надвишава 30 символа.")
     private String contactPerson;
 
     @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")

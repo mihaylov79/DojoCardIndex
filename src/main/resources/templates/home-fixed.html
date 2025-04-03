@@ -70,9 +70,6 @@
                         <td th:text="${message.content}"></td> <!-- Съдържание -->
                         <td class="action-buttons">
                             <button th:attr="onclick=|location.href='/messages/reply/' + '${message.id}'|">Отговори</button>
-<!--                            <a th:href="@{/messages/reply/{id}(id=${message.id})}">-->
-<!--                                <button>Отговори</button>-->
-<!--                            </a>-->
                             <a th:href="@{/messages/remove/{id}(id=${message.id})}">
                                 <button>Изчисти</button>
                             </a>

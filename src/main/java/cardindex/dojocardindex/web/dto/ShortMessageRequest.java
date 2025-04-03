@@ -7,6 +7,6 @@ import lombok.Data;
 public class ShortMessageRequest {
 
 
-    @Size(min = 1,max = 300, message = "Съобщението не може да бъде празно поле или да надвишава 300 символа.")
+    @Size(min = 2,max = 300, message = "Съобщението не може да бъде празно поле или да надвишава 300 символа.")
     private String messageContent;
 }

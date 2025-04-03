@@ -1,4 +1,4 @@
-<!-- reply.html - Страница за отговор на съобщение -->
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -17,11 +17,13 @@
     </header>
     <div class="container-replay">
             <h2 th:text="'Отговор на съобщение от ' + ${message.sender.firstName} + ' ' + ${message.sender.lastName}">Отговор на съобщение от ...</h2>
-            <form class="replay" th:action="@{/messages/reply}" th:method="POST">
-                <input type="hidden" name="responseToMessageId" th:value="${message.id}" />
+            <form class="replay" th:action="@{/messages/reply/{messageId}(messageId=${message.id})}" th:method="POST" th:object="${messageReplyRequest}">
                 <label>Съобщение:</label>
                 <p th:text="${message.content}"></p>
-                <textarea name="content" placeholder="Вашият отговор..." required th:text="'Отговор: '"></textarea>
+                <label>
+                    <textarea th:field="*{messageContent}" placeholder="Вашият отговор..." required></textarea>
+                </label>
+                <p th:if="${#fields.hasErrors('messageContent')}" th:errors="*{messageContent}" class="errors"></p>
                 <button type="submit">Изпрати</button>
             </form>
     <a href="/home">Назад</a>

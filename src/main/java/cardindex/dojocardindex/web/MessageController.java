@@ -6,6 +6,7 @@ import cardindex.dojocardindex.Message.models.Message;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
+import cardindex.dojocardindex.web.dto.MessageReplyRequest;
 import cardindex.dojocardindex.web.dto.SendMessageRequest;
 import cardindex.dojocardindex.web.dto.ShortMessageRequest;
 import jakarta.validation.Valid;
@@ -69,20 +70,28 @@ public class MessageController {
         modelAndView.setViewName("message-reply");
         modelAndView.addObject("user",user);
         modelAndView.addObject("message", originalMessage);
+        modelAndView.addObject("messageReplyRequest", new MessageReplyRequest());
 
         return modelAndView;
 
     }
-    @PostMapping("/messages/reply")
-    public ModelAndView replyMessage(@RequestParam UUID responseToMessageId,
-                                     @RequestParam String content,
+    @PostMapping("/messages/reply/{messageId}")
+    public ModelAndView replyMessage(@PathVariable UUID messageId,
+                                     @ModelAttribute @Valid MessageReplyRequest messageReplyRequest,
+                                     BindingResult result,
                                      @AuthenticationPrincipal CustomUserDetails details){
 
+        User currentUser = userService.getUserById(details.getId());
 
-        User user = userService.getUserById(details.getId());
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView("message-reply");
+            modelAndView.addObject("messageReplyRequest",messageReplyRequest);
+            modelAndView.addObject("message",messageService.findMessageById(messageId));
+            modelAndView.addObject("currentUser",currentUser);
+            return modelAndView;
+        }
 
-        messageService.replyMessage(responseToMessageId, content);
-
+        messageService.replyMessage(messageId, messageReplyRequest.getMessageContent());
 
         return new ModelAndView("redirect:/home");
 
