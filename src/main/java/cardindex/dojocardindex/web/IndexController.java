@@ -12,6 +12,7 @@ import cardindex.dojocardindex.web.dto.RegisterRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -100,6 +101,11 @@ public class IndexController {
         modelAndView.addObject("events",events);
 
         return modelAndView;
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/status")
+    public String getStatusPage() {
+        return "monitoring";  // Това ще сървира status.html от resources/templates
     }
 
 

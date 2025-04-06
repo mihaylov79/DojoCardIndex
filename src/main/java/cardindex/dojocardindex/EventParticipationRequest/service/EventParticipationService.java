@@ -12,6 +12,7 @@ import cardindex.dojocardindex.exceptions.EventClosedException;
 import cardindex.dojocardindex.exceptions.RequestAlreadyExistException;
 import cardindex.dojocardindex.exceptions.RequestNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-
+@Slf4j
 @Service
 public class EventParticipationService {
 
@@ -96,7 +97,14 @@ public class EventParticipationService {
         userService.saveUser(user);
 
         String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше одобрена. За повече информация посетете профилната си страница.".formatted(event.getEventDescription(),event.getLocation(),event.getStartDate());
-        notificationService.sendNotification(user.getId(),user.getFirstName(), user.getLastName(), "Одобрена заявка за участие",emailBody);
+
+        try {
+            notificationService.sendNotification(user.getId(), user.getFirstName(), user.getLastName(), "Одобрена заявка за участие", emailBody);
+        } catch (Exception e) {
+
+            log.error("Грешка при изпращане на известие за потребител {}: {}", user.getId(), e.getMessage(), e);
+
+        }
 
 
 
@@ -119,9 +127,21 @@ public class EventParticipationService {
         requestRepository.save(request);
 
         String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s - беше отхвърлена. За повече информация проверете меню Заявки на профилната си страница.".formatted(request.getEvent().getEventDescription(),
-                                                                                                                                                                      request.getEvent().getLocation(),
-                                                                                                                                                                      request.getEvent().getStartDate());
-        notificationService.sendNotification(request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getFirstName(),"Отхвърлена заявка за участие",emailBody);
+                                                                                                                                                                                      request.getEvent().getLocation(),
+                                                                                                                                                                                      request.getEvent().getStartDate());
+        try {
+            notificationService.sendNotification(
+                    request.getUser().getId(),
+                    request.getUser().getFirstName(),
+                    request.getUser().getLastName(),
+                    "Отхвърлена заявка за участие",
+                    emailBody
+            );
+        } catch (Exception e) {
+
+            log.error("Грешка при изпращане на известие за потребител {}: {}", request.getUser().getId(), e.getMessage(), e);
+
+        }
     }
 
     public void unApproveRequest(Event event, User user, User currentUser) {
@@ -152,7 +172,14 @@ public class EventParticipationService {
         userService.saveUser(user);
 
         String emailBody = "Вашата заявка за участие в %s - %s с начална дата: %s беше върната за преразглеждане. Ще бъдете уведомени с мейл за по нататъшно развитие.".formatted(request.getEvent().getEventDescription(),request.getEvent().getLocation(),request.getEvent().getStartDate());
-        notificationService.sendNotification(user.getId(),user.getFirstName(),user.getLastName(), "Върната заявка за участие",emailBody);
+
+        try {
+            notificationService.sendNotification(user.getId(), user.getFirstName(), user.getLastName(), "Върната заявка за участие", emailBody);
+        } catch (Exception e) {
+
+            log.error("Грешка при изпращане на известие за потребител {}: {}", user.getId(), e.getMessage(), e);
+
+        }
 
     }
 

@@ -115,6 +115,7 @@
                 <li><a th:href="@{/events/new}">Добавяне на събитие</a></li>
                 <li><a th:href="@{/events/requests/pending}">Чакащи заявки за участие</a></li>
                 <li><a th:href="@{/events/requests/not-pending}">Обработени заявки за участие</a></li>
+                <li><a th:href="@{/status}" sec:authorize="hasRole('ADMIN')">Състояние на системата</a></li>
             </ul>
         </div>
     </div>

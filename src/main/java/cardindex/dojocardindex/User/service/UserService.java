@@ -17,6 +17,7 @@ import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.dto.RegisterRequest;
 import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Builder(toBuilder = true)
 @Service
 public class UserService implements UserDetailsService {
@@ -205,12 +206,19 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
-        // заявка към mail-svc за задаване настройки за мейл известията.(default = true)
-        notificationService.saveNotificationPreference(userId,true, user.getEmail());
+        try {
+            // заявка към mail-svc за задаване настройки за мейл известията (default = true)
+            notificationService.saveNotificationPreference(userId, true, user.getEmail());
 
-        // изпращаме известие на потребителя за успещна регистрация
-        String emailContent = "Вашата заявка за регистрация беше потвърдена.Вече можете да влезете в профила си.";
-        notificationService.sendNotification(userId,user.getFirstName(), user.getLastName(), "Одобрена заявка за регистрация",emailContent);
+            // изпращаме известие на потребителя за успешна регистрация
+            String emailContent = "Вашата заявка за регистрация беше потвърдена. Вече можете да влезете в профила си.";
+            notificationService.sendNotification(userId, user.getFirstName(), user.getLastName(), "Одобрена заявка за регистрация", emailContent);
+
+        } catch (Exception e) {
+            // логваме грешката, ако не успеем да изпратим мейл или да запишем настройките
+            log.error("Грешка при изпращане на мейл известие или запазване на настройките за мейл известията за потребител с ID: {}", userId, e);
+
+        }
     }
 
     public void denyRequest(UUID userId){
