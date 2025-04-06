@@ -17,7 +17,6 @@ import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.dto.RegisterRequest;
 import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-@Slf4j
+
 @Builder(toBuilder = true)
 @Service
 public class UserService implements UserDetailsService {
