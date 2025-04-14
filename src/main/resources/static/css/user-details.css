@@ -34,11 +34,8 @@
 }
 .info-column table {
     width: 100%;
+
 }
-/*th, td {*/
-/*    text-align: left;*/
-/*    padding: 4px 8px;*/
-/*}*/
 
 table {
     margin: 0 auto;
@@ -52,9 +49,12 @@ table {
 }
 
 tr, td, th {
+    width: 80%;
+    display: flex;
     padding: 0.3em 0.3em;
-    text-align: center;
+    text-align: end;
     border-radius: 0.3em;
+    justify-content: end;
 }
 
 .back-btn{
@@ -76,20 +76,11 @@ button {
     border-radius: 0.3em;
     font-family: "Caveat", sans-serif;
     border: none;
+    margin-right: 0.25em;
+    margin-left: 0.25em;
 }
 
 button:hover{
     background: #e18e09;
     color: black;
 }
-
-/*tr {*/
-/*    background-color: var(--bg-color);*/
-/*    border-radius: 0.3em;*/
-/*}*/
-
-/*.profile-container{*/
-/*    margin: 0 auto;*/
-/*    width: 60vw;*/
-/*    background-color: var(--bg-color) ;*/
-/*}*/

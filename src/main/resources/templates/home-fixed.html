@@ -29,6 +29,7 @@
                             <button onclick="location.href='/notifications'">Известия</button>
                             <button th:attr="onclick=|location.href='/events/requests/' + '${user.id}'|">Заявки</button>
                             <button onclick="location.href='/users/list'">Потребители</button>
+                            <button onclick="location.href='/users/details/edit/password'">Нова парола</button>
 
                         </td>
                     </tr>
@@ -108,7 +109,7 @@
             <ul>
                 <li><a th:href="@{/admin/add-user}">Добави нов потребител</a></li>
                 <li><a th:href="@{/users/list}">Регистрирани потребители</a></li>
-<!--                <li><a th:href="@{/users/list}">Активни потребители</a></li>-->
+                <li><a th:href="@{/users/list/active}">Активни потребители</a></li>
                 <li><a th:href="@{/admin/users/list/all-users}">Всички потребители</a></li>
                 <li><a th:href="@{/admin/register-requests}">Заявки за регистрация</a></li>
                 <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>

@@ -3,9 +3,11 @@ package cardindex.dojocardindex.web;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
+import cardindex.dojocardindex.web.dto.ChangePasswordRequest;
 import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.mapper.DTOMapper;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -128,6 +130,55 @@ public class UserController {
 
         return modelAndView;
 
+    }
+
+    @GetMapping("/users/details/edit/password")
+    public ModelAndView getPassWordChangePage(@AuthenticationPrincipal CustomUserDetails details) {
+
+        User user = userService.getUserById(details.getId());
+
+        ModelAndView modelAndView = new ModelAndView("password-change");
+        modelAndView.addObject(user);
+        modelAndView.addObject("changePasswordRequest", new ChangePasswordRequest());
+
+        return modelAndView;
+    }
+
+
+    @PutMapping("/users/details/edit/password")
+    public ModelAndView changeUserPassword(@AuthenticationPrincipal CustomUserDetails details,
+                                           @Valid ChangePasswordRequest changePasswordRequest,
+                                           BindingResult result) {
+
+        User user = userService.getUserById(details.getId());
+
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView("password-change");
+            modelAndView.addObject(user);
+
+            return modelAndView;
+        }
+
+        userService.changePassword(changePasswordRequest,user.getEmail());
+        ModelAndView modelAndView = new ModelAndView("redirect:/home");
+        modelAndView.addObject(user);
+
+        return modelAndView;
+    }
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/users/list/active")
+    public ModelAndView getActiveUsersListPag(@AuthenticationPrincipal CustomUserDetails details){
+
+        User currentuser = userService.getUserById(details.getId());
+         List<User>active = userService.getActiveUsersList();
+         Map<UUID,Integer> userAges = userService.getUserAges(active);
+
+        ModelAndView modelAndView = new ModelAndView("active-users");
+        modelAndView.addObject("currentUser",currentuser);
+        modelAndView.addObject("active",active);
+        modelAndView.addObject("userAges",userAges);
+
+        return modelAndView;
     }
 
 }

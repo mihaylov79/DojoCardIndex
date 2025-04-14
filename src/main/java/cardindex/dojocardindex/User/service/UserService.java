@@ -10,12 +10,10 @@ import cardindex.dojocardindex.Utils.PasswordGenerator;
 import cardindex.dojocardindex.exceptions.EmailAlreadyInUseException;
 import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
+import cardindex.dojocardindex.exceptions.WrongPasswordException;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import cardindex.dojocardindex.security.CustomUserDetails;
-import cardindex.dojocardindex.web.dto.CreateUserRequest;
-import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
-import cardindex.dojocardindex.web.dto.RegisterRequest;
-import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
+import cardindex.dojocardindex.web.dto.*;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,6 +227,42 @@ public class UserService implements UserDetailsService {
                 .build();
 
         userRepository.save(user);
+
+
+    }
+
+    public void changePassword(ChangePasswordRequest request, String email){
+
+        String oldPassword = request.getOldPassword();
+        String newPassword = request.getNewPassword();
+
+        User user = getCurrentUser();
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())){
+            throw new WrongPasswordException();
+        }
+
+        if (oldPassword.equals(newPassword)){
+            throw new WrongPasswordException("Новата парола трябва да е различна от настоящата!");
+        }
+
+        user = user.toBuilder()
+                .password(passwordEncoder.encode(newPassword))
+                .build();
+
+        userRepository.save(user);
+
+        try{
+//            notificationService.checkNotificationPreference(user.getId(), user.getEmail());
+
+            String emailContent = "Паролата на Вашия потребителски профил беще успешно променена.";
+            notificationService.sendNotification(user.getId(),user.getFirstName(), user.getLastName(),"Сменена парола", emailContent);
+        }catch (Exception e) {
+
+            log.error("Грешка при изпращане на за променена парола за потребител с ID: {}", user.getId(), e);
+        }
+
+
     }
 
     public List<User> getAllUsers(){
@@ -239,6 +273,13 @@ public class UserService implements UserDetailsService {
                                         Sort.Order.asc("lastName")));
     }
 
+    public List<User> getActiveUsersList(){
+        return  userRepository.findAllByStatus(UserStatus.ACTIVE,
+                                                Sort.by("firstName")
+                                                .and(Sort.by("lastName")
+                                                .and(Sort.by("status"))));
+    }
+
     public List<User> getAllActiveUsers() {
 
         return userRepository.findByStatusAndRegistrationStatus(UserStatus.ACTIVE,RegistrationStatus.REGISTERED);
@@ -247,6 +288,11 @@ public class UserService implements UserDetailsService {
     public List<User> getRegisterRequests() {
 
         return userRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
+    }
+
+    public List<User>getRecipients(UUID senderId){
+
+        return userRepository.findAllByIdIsNotAndRegistrationStatusAndStatus(senderId,RegistrationStatus.REGISTERED,UserStatus.ACTIVE);
     }
 
 

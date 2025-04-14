@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -33,10 +34,11 @@ public class MessageController {
     public ModelAndView getSendMessagePage (@AuthenticationPrincipal CustomUserDetails details){
 
         User user = userService.getUserById(details.getId());
+        List<User>recipients = userService.getRecipients(details.getId());
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("send-message");
+        ModelAndView modelAndView = new ModelAndView("new-message");
         modelAndView.addObject("user",user);
+        modelAndView.addObject("recipients",recipients);
         modelAndView.addObject("sendMessageRequest", new SendMessageRequest());
 
         return modelAndView;
@@ -46,11 +48,12 @@ public class MessageController {
     public ModelAndView sendMessage(@AuthenticationPrincipal CustomUserDetails details, @Valid SendMessageRequest sendMessageRequest, BindingResult result){
 
         User user = userService.getUserById(details.getId());
+        List<User>recipients = userService.getRecipients(details.getId());
 
         if (result.hasErrors()){
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("send-message");
+            ModelAndView modelAndView = new ModelAndView("new-message");
             modelAndView.addObject("user",user);
+            modelAndView.addObject("recipients",recipients);
             return modelAndView;
         }
 

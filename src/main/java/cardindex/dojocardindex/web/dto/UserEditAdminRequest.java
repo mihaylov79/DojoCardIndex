@@ -47,6 +47,14 @@ public class UserEditAdminRequest {
         return isCompetitor;
     }
 
+    public void setUserPhone(String userPhone) {
+        this.userPhone = (userPhone.isBlank()) ? null :userPhone;
+    }
+
+    public void setContactPersonPhone(String contactPersonPhone) {
+        this.contactPersonPhone = (contactPersonPhone.isBlank()) ? null : contactPersonPhone;
+    }
+
 }
 
 

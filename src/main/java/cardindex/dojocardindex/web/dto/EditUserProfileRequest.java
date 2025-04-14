@@ -28,7 +28,7 @@ public class EditUserProfileRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
-    @Size(max = 500)
+    @Size(max = 500, message = "Това поле не може да съдържа повече от 500 символа")
     private String interests;
 
     @Positive(message = "Въведената стойност трябва да бъде цяло, положително число")
@@ -41,5 +41,13 @@ public class EditUserProfileRequest {
 
     @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
     private String contactPersonPhone;
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = (userPhone.isBlank()) ? null :userPhone;
+    }
+
+    public void setContactPersonPhone(String contactPersonPhone) {
+        this.contactPersonPhone = (contactPersonPhone.isBlank()) ? null : contactPersonPhone;
+    }
 
 }

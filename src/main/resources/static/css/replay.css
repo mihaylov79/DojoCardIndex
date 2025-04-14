@@ -60,6 +60,17 @@ textarea {
     border: none;
 }
 
+select {
+    width:35vw;
+    background-color: #e18e09;
+    opacity: 0.8;
+    font:1.5vw "Caveat";
+    color: white;
+    border-radius: 0.5em;
+    border: none;
+    padding: 0.25em 0.5em;
+}
+
 button{
     color: #e18e09;
     background-color: rgb(0,0,0,0.6);
