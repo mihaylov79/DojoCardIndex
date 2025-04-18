@@ -6,12 +6,15 @@ import cardindex.dojocardindex.Event.models.EventType;
 import cardindex.dojocardindex.Event.repository.EventRepository;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.Utils.BackgroundPageEvent;
 import cardindex.dojocardindex.exceptions.EventNotFoundException;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
 import cardindex.dojocardindex.web.dto.EditEventRequest;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.draw.LineSeparator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -243,8 +246,11 @@ public class EventService {
         response.setHeader("Content-Disposition", "attachment; filename=event_" + eventId + ".pdf");
 
         Document document = new Document(PageSize.A4);
+
         try {
-            PdfWriter.getInstance(document,response.getOutputStream());
+            Image background = Image.getInstance("src/main/resources/static/images/KAN_PDF_BACKGROUND.jpg");
+            PdfWriter  writer =PdfWriter.getInstance(document,response.getOutputStream());
+            writer.setPageEvent(new BackgroundPageEvent(background,0.3f));
         } catch (IOException e) {
             log.error("Генерирането на PDF файл за събитие: {} беще неуспешно!",eventId,e);
             //TODO Да създаам ExportIOException - който да улавям когато възникне проблем
@@ -265,9 +271,22 @@ public class EventService {
         BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
         Font font = new Font(baseFont,10,Font.NORMAL);
         Font headerFont = new Font(baseFont, 8, Font.BOLD);
+        Font logoFont = new Font(baseFont, 22,Font.BOLDITALIC,new Color(61,133,198));
+        Font titleFont = new Font(baseFont, 16, Font.BOLD);
+        Font subtitleFont = new Font(baseFont, 10, Font.BOLD);
+        Paragraph paragraph = (new Paragraph("\"ДРАГОН ДОДЖО ДСД - Асеновград\"",logoFont));
+        paragraph.setAlignment(Element.ALIGN_CENTER);
+        document.add(paragraph);
 
-        Font titleFont = new Font(Font.COURIER, 16, Font.BOLD);
-        Font subtitleFont = new Font(Font.COURIER, 10, Font.BOLD);
+        LineSeparator lineSeparator = new LineSeparator();
+        lineSeparator.setPercentage(75f);
+        lineSeparator.setLineColor(new Color(61,133,198));
+        lineSeparator.setAlignment(Element.ALIGN_CENTER);
+        lineSeparator.setOffset(-6f);
+        lineSeparator.setLineWidth(4f);
+        document.add(lineSeparator);
+            
+        document.add(Chunk.NEWLINE);
         document.add(new Paragraph("Събитие: " + event.getEventDescription(),titleFont));
         document.add(new Paragraph("Начало: " + event.getStartDate(),subtitleFont));
         document.add(new Paragraph("Място: " + event.getLocation(),subtitleFont));
@@ -421,7 +440,7 @@ public class EventService {
     private PdfPCell createHeaderCell(String content , Font font) {
 
         PdfPCell cell = new PdfPCell(new Phrase(content, font));
-        cell.setBackgroundColor(new Color(200,200,255));
+        cell.setBackgroundColor(new Color(186,210,232));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
