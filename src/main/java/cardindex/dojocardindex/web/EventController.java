@@ -8,6 +8,7 @@ import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
 import cardindex.dojocardindex.web.dto.EditEventRequest;
 import cardindex.dojocardindex.web.mapper.DTOMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -180,6 +181,25 @@ public class EventController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/{eventId}/details/view")
+    public ModelAndView getEventDetailsView(@PathVariable UUID eventId,
+                                        @AuthenticationPrincipal CustomUserDetails details) {
+
+        Event event = eventService.getEventById(eventId);
+
+        List<User> eventUsers = event.getUsers().stream().toList();
+        Map<UUID, Integer> userAges = userService.getUserAges(eventUsers);
+
+        ModelAndView modelAndView = new ModelAndView("event-details-export");
+
+        User currentUser = userService.getUserById(details.getId());
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("event", event);
+        modelAndView.addObject("userAges",userAges);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @PostMapping("/{eventId}/reset-winners")
     public ModelAndView resetWinners(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails details) {
 
@@ -191,6 +211,18 @@ public class EventController {
         modelAndView.addObject("successMessage", "Победителите са нулирани успешно!");
 
         return modelAndView;
+    }
+
+    @GetMapping("/tournaments/export/csv/{eventId}")
+    public void EventCsvExport(@PathVariable UUID eventId, HttpServletResponse response) {
+
+        eventService.exportEventDetailsAsCsv(eventId,response);
+    }
+
+    @GetMapping("/tournaments/export/pdf/{eventId}")
+    public void EventPdfExport(@PathVariable UUID eventId, HttpServletResponse response) {
+
+        eventService.exportEventDetailsAsPDF(eventId,response);
     }
 
 }

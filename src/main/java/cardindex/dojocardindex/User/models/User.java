@@ -3,6 +3,7 @@ package cardindex.dojocardindex.User.models;
 import cardindex.dojocardindex.Comment.models.Comment;
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.EventParticipationRequest.model.EventParticipationRequest;
+import cardindex.dojocardindex.ForgottenPasswordToken.models.ForgottenPasswordToken;
 import cardindex.dojocardindex.Post.models.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -98,6 +99,9 @@ public class User {
     @Column
     private int rating;
 
+    @OneToOne(mappedBy = "user",orphanRemoval = true, cascade = CascadeType.ALL)
+    private ForgottenPasswordToken resetToken;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_events",
@@ -123,7 +127,7 @@ public class User {
     }
 
 
-    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests, Set<EventParticipationRequest> processedRequests) {
+    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, ForgottenPasswordToken resetToken, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests, Set<EventParticipationRequest> processedRequests) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -148,11 +152,16 @@ public class User {
         this.achievedSecondPlaces = achievedSecondPlaces;
         this.achievedThirdPlaces = achievedThirdPlaces;
         this.rating = rating;
+        this.resetToken = resetToken;
         this.events = events;
         this.comments = comments;
         this.posts = posts;
         this.requests = requests;
         this.processedRequests = processedRequests;
+    }
+
+    public void setResetToken(ForgottenPasswordToken resetToken) {
+        this.resetToken = resetToken;
     }
 
     public UUID getId() {

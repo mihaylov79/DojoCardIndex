@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.exceptions.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +26,23 @@ public class ExceptionAdvice {
         return "redirect:/register";
     }
 
+    @ExceptionHandler({PasswordDoesNotMatchException.class,
+                      IllegalTokenException.class})
+    public String handleForgottenPasswordExceptions(Exception exception,
+                                                    RedirectAttributes redirectAttributes,
+                                                    HttpServletRequest request){
+
+        redirectAttributes.addFlashAttribute("exceptionMessage", exception.getMessage());
+
+        String token = request.getParameter("token");
+        if (token != null) {
+            return "redirect:/forgotten-password/reset?token=" + token;
+        }
+
+        return "redirect:/forgotten-password";
+    }
+
+
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public String handleEmailAlreadyInUse(Exception exception, RedirectAttributes redirectAttributes) {
 
@@ -46,7 +64,8 @@ public class ExceptionAdvice {
                        MessageNotFoundException.class,
                        RequestNotFoundException.class,
                        RequestAlreadyExistException.class,
-                       UserNotFoundException.class})
+                       UserNotFoundException.class,
+                       IllegalUserStatusException.class})
     public ModelAndView handleBadRequestException(Exception exception){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");

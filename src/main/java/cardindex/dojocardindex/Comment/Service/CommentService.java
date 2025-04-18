@@ -28,7 +28,6 @@ public class CommentService {
         this.postService = postService;
     }
 
-    //TODO Да преценя дали ще ползвам boolean removed или директно ще трия когато искам да премахна коментар
     public void addComment(UUID postId, User user, CreateCommentRequest createCommentRequest){
         Post post = postService.getPostById(postId);
 

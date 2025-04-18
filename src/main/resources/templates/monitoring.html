@@ -2,153 +2,222 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Състояние и показатели на системата</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 30px;
+            background-color: #f0f2f5;
         }
+
+        button {
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 20px;
+            gap: 20px;
+            justify-content: center;
         }
+
         .box {
-            width: 45%;
+            width: 400px;
+            background: #fff;
+            border-radius: 10px;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+
         h2 {
             margin-top: 0;
+            color: #444;
         }
-        pre {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-            white-space: pre-wrap;
+
+        .status-up {
+            color: green;
+            font-weight: bold;
         }
+
+        .status-down {
+            color: red;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4caf50;
+        }
+
+        ul {
+            padding-left: 20px;
+            list-style-type: square;
+        }
+
         .error {
             color: red;
+            font-weight: bold;
         }
     </style>
-
 </head>
 <body>
-<button onclick="window.location.href='/home'" style="
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-">
-    ⬅ Към профилната страница
-</button>
-<!--<header>-->
-<!--    <th:block th:insert="~{fragments/nav :: nav}"></th:block>-->
-<!--</header>-->
 
-<h1>Actuator Health & Metrics</h1>
+<button onclick="window.location.href='/home'">⬅ Към профилната страница</button>
+
+<h1>Състояние и показатели на системата</h1>
 
 <div class="container">
-    <!-- Info -->
-    <div class="box">
-        <h2>Info</h2>
-        <div id="info-status">Loading...</div>
-    </div>
-
-    <!-- CPU Usage -->
-    <div class="box">
-        <h2>CPU Usage</h2>
-        <div id="cpu-usage">Loading...</div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Health -->
-    <div class="box">
-        <h2>Health</h2>
-        <div id="health-status">Loading...</div>
-    </div>
-
-    <!-- JVM Memory Used -->
-    <div class="box">
-        <h2>JVM Memory Used</h2>
-        <div id="jvm-memory">Loading...</div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Hikari Active Connections -->
-    <div class="box">
-        <h2>Hikari Active Connections</h2>
-        <div id="hikari-active">Loading...</div>
-    </div>
-
-    <!-- Hikari Idle Connections -->
-    <div class="box">
-        <h2>Hikari Idle Connections</h2>
-        <div id="hikari-idle">Loading...</div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- HTTP Requests -->
-    <div class="box">
-        <h2>HTTP Requests</h2>
-        <div id="http-requests">Loading...</div>
-    </div>
-
-    <!-- GC Pause -->
-    <div class="box">
-        <h2>GC Pause</h2>
-        <div id="gc-pause">Loading...</div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Tomcat Active Sessions -->
-    <div class="box">
-        <h2>Tomcat Active Sessions</h2>
-        <div id="tomcat-sessions">Loading...</div>
-    </div>
+    <div class="box"><h2>Информация</h2><div id="info-status">Зареждане...</div></div>
+    <div class="box"><h2>CPU Използване</h2><div id="cpu-usage">Зареждане...</div></div>
+    <div class="box"><h2>Здраве</h2><div id="health-status">Зареждане...</div></div>
+    <div class="box"><h2>JVM Памет (HEAP)</h2><div id="jvm-memory">Зареждане...</div></div>
+    <div class="box"><h2>Hikari Активни</h2><div id="hikari-active">Зареждане...</div></div>
+    <div class="box"><h2>Hikari Неактивни</h2><div id="hikari-idle">Зареждане...</div></div>
+    <div class="box"><h2>HTTP Заявки</h2><div id="http-requests">Зареждане...</div></div>
+    <div class="box"><h2>GC Пауза</h2><div id="gc-pause">Зареждане...</div></div>
+    <div class="box"><h2>Tomcat Сесии</h2><div id="tomcat-sessions">Зареждане...</div></div>
 </div>
 
 <script>
-    // Функция за извикване на API ендпойнт
-    async function fetchActuatorData(url, elementId) {
+    async function fetchInfo() {
         try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('API не отговори правилно.');
-            }
-            const data = await response.json();
-            document.getElementById(elementId).innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-        } catch (error) {
-            document.getElementById(elementId).innerHTML = `<span class="error">Грешка: ${error.message}</span>`;
+            const res = await fetch('http://localhost:8080/actuator/info');
+            const data = await res.json();
+            const name = data.app?.name || "неизвестно";
+            const version = data.app?.version || "неизвестна";
+            document.getElementById('info-status').innerHTML = `
+                <p><strong>Име:</strong> ${name}</p>
+                <p><strong>Версия:</strong> ${version}</p>
+            `;
+        } catch (e) {
+            document.getElementById('info-status').innerHTML = `<span class="error">Грешка: ${e.message}</span>`;
         }
     }
 
-    // Извикване на всички метрики
-    fetchActuatorData('http://localhost:8080/actuator/health', 'health-status');
-    fetchActuatorData('http://localhost:8080/actuator/info', 'info-status');
-    // fetchActuatorData('http://localhost:8080/actuator/metrics/disk.free', 'disk-free');
-    // fetchActuatorData('http://localhost:8080/actuator/metrics/disk.total', 'disk-total');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/hikaricp.connections.active', 'hikari-active');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/hikaricp.connections.idle', 'hikari-idle');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/http.server.requests', 'http-requests');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/tomcat.sessions.active.current', 'tomcat-sessions');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/system.cpu.usage', 'cpu-usage');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/jvm.gc.pause', 'gc-pause');
-    fetchActuatorData('http://localhost:8080/actuator/metrics/jvm.memory.used', 'jvm-memory');
+    async function fetchHealth() {
+        try {
+            const res = await fetch('http://localhost:8080/actuator/health');
+            const data = await res.json();
+            const status = data.status;
+            const components = data.components || {};
+            const diskSpace = components.diskSpace?.details || {};
+            const statusClass = status === "UP" ? "status-up" : "status-down";
+
+            let html = `<p>Общо състояние: <span class="${statusClass}">${status}</span></p>`;
+            if (diskSpace.total) {
+                html += `
+                    <p><strong>Дисково пространство:</strong></p>
+                    <ul>
+                        <li>Свободно: ${(diskSpace.free / (1024 * 1024 * 1024)).toFixed(2)} GB</li>
+                        <li>Използвано: ${((diskSpace.total - diskSpace.free) / (1024 * 1024 * 1024)).toFixed(2)} GB</li>
+                        <li>Общо: ${(diskSpace.total / (1024 * 1024 * 1024)).toFixed(2)} GB</li>
+                    </ul>
+                `;
+            }
+
+            html += "<p><strong>Компоненти:</strong></p><ul>";
+            for (let [key, value] of Object.entries(components)) {
+                html += `<li>${key}: ${value.status}</li>`;
+            }
+            html += "</ul>";
+
+            document.getElementById('health-status').innerHTML = html;
+        } catch (e) {
+            document.getElementById('health-status').innerHTML = `<span class="error">Грешка: ${e.message}</span>`;
+        }
+    }
+
+    async function fetchCpuUsage() {
+        try {
+            const res = await fetch('http://localhost:8080/actuator/metrics/system.cpu.usage');
+            const data = await res.json();
+            const value = data.measurements[0].value;
+            const percent = (value * 100).toFixed(1);
+
+            document.getElementById('cpu-usage').innerHTML = `
+                <p>${percent}% използване</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percent}%"></div>
+                </div>
+            `;
+        } catch (e) {
+            document.getElementById('cpu-usage').innerHTML = `<span class="error">Грешка: ${e.message}</span>`;
+        }
+    }
+
+    async function fetchJvmMemory() {
+        try {
+            const usedRes = await fetch('http://localhost:8080/actuator/metrics/jvm.memory.used');
+            const maxRes = await fetch('http://localhost:8080/actuator/metrics/jvm.memory.max');
+            const used = (await usedRes.json()).measurements[0].value;
+            const max = (await maxRes.json()).measurements[0].value;
+            const free = max - used;
+
+            document.getElementById('jvm-memory').innerHTML = `
+                <ul>
+                    <li>Използвана: ${(used / 1024 / 1024).toFixed(2)} MB</li>
+                    <li>Свободна: ${(free / 1024 / 1024).toFixed(2)} MB</li>
+                    <li>Общо: ${(max / 1024 / 1024).toFixed(2)} MB</li>
+                </ul>
+            `;
+        } catch (e) {
+            document.getElementById('jvm-memory').innerHTML = `<span class="error">Грешка: ${e.message}</span>`;
+        }
+    }
+
+    async function fetchSimpleMetric(url, elementId, unit = "") {
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            const value = data.measurements[0].value;
+            document.getElementById(elementId).innerHTML = `${value.toFixed(2)} ${unit}`;
+        } catch (e) {
+            document.getElementById(elementId).innerHTML = `<span class="error">Грешка: ${e.message}</span>`;
+        }
+    }
+
+    async function fetchHttpRequests() {
+        try {
+            const res = await fetch('http://localhost:8080/actuator/metrics/http.server.requests');
+            const data = await res.json();
+            const count = data.measurements.find(m => m.statistic === "count")?.value || 0;
+            document.getElementById('http-requests').innerHTML = `${count.toFixed(0)} заявки`;
+        } catch (e) {
+            document.getElementById('http-requests').innerHTML = `<span class="error">Грешка: ${e.message}</span>`;
+        }
+    }
+
+    // Зареждане на метриките
+    fetchInfo();
+    fetchHealth();
+    fetchCpuUsage();
+    fetchJvmMemory();
+    fetchSimpleMetric('http://localhost:8080/actuator/metrics/hikaricp.connections.active', 'hikari-active');
+    fetchSimpleMetric('http://localhost:8080/actuator/metrics/hikaricp.connections.idle', 'hikari-idle');
+    fetchHttpRequests();
+    fetchSimpleMetric('http://localhost:8080/actuator/metrics/jvm.gc.pause', 'gc-pause', 'ms');
+    fetchSimpleMetric('http://localhost:8080/actuator/metrics/tomcat.sessions.active.current', 'tomcat-sessions');
 </script>
+
 </body>
 </html>

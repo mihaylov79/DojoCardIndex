@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/", "/register").permitAll()  // Разрешавa достъп до /, /register
+                                .requestMatchers("/forgotten-password/**").permitAll()
+                                .requestMatchers("/forgotten-password/reset").permitAll()
                                 .requestMatchers("/actuator/**").hasRole("ADMIN")
                                 .anyRequest().authenticated() // всички останали изискват аутентикация
                 )

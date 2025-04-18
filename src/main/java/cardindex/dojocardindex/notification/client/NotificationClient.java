@@ -5,6 +5,7 @@ import cardindex.dojocardindex.notification.client.dto.Notification;
 import cardindex.dojocardindex.notification.client.dto.NotificationPreferenceRequest;
 import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
 import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
+import cardindex.dojocardindex.web.dto.ForgottenPasswordRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +33,8 @@ public interface NotificationClient {
 
     @DeleteMapping
     ResponseEntity<Void> clearNotificationHistory(@RequestParam(name = "recipientId") UUID recipientId);
+
+    @PostMapping("/forgotten-password")
+    ResponseEntity<Void>sendForgottenPasswordEmail(@RequestBody ForgottenPasswordRequest request);
 
 }

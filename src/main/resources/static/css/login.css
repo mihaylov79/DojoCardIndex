@@ -124,3 +124,18 @@ input[type="submit"]:hover {
     translate: 0 1.8em;
 
 }
+
+button{
+    display: block;
+    width: 100%;
+    color: #e18e09;
+    background-color: black;
+    border: none;
+    padding: 0.2em 0.5em;
+    outline: none;
+    font: 1em "Caveat";
+}
+button:hover {
+    color: black;
+    background-color: #e18e09;
+}
