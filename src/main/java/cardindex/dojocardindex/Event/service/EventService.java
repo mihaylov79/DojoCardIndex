@@ -288,7 +288,7 @@ public class EventService {
 
         document.add(Chunk.NEWLINE);
         document.add(new Paragraph("Събитие: " + event.getEventDescription(),titleFont));
-        document.add(new Paragraph(" 'Начало: " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
+        document.add(new Paragraph(" Начало: " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
         document.add(new Paragraph("Място: " + event.getLocation(),subtitleFont));
         document.add(Chunk.NEWLINE);
         document.add(new Paragraph("Списък с участниците от Драгон Доджо ДСД:",font));
