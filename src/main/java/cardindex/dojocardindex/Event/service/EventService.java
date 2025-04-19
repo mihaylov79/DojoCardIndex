@@ -271,7 +271,7 @@ public class EventService {
         BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
         Font font = new Font(baseFont,10,Font.NORMAL);
         Font headerFont = new Font(baseFont, 8, Font.BOLD);
-        Font logoFont = new Font(baseFont, 22,Font.BOLDITALIC,new Color(61,133,198));
+        Font logoFont = new Font(baseFont, 22,Font.BOLDITALIC);
         Font titleFont = new Font(baseFont, 16, Font.BOLD);
         Font subtitleFont = new Font(baseFont, 10, Font.BOLD);
         Paragraph paragraph = (new Paragraph("\"ДРАГОН ДОДЖО ДСД - Асеновград\"",logoFont));
@@ -280,15 +280,15 @@ public class EventService {
 
         LineSeparator lineSeparator = new LineSeparator();
         lineSeparator.setPercentage(75f);
-        lineSeparator.setLineColor(new Color(61,133,198));
+//        lineSeparator.setLineColor(new Color(61,133,198));
         lineSeparator.setAlignment(Element.ALIGN_CENTER);
-        lineSeparator.setOffset(-6f);
-        lineSeparator.setLineWidth(4f);
+        lineSeparator.setOffset(-9f);
+        lineSeparator.setLineWidth(3f);
         document.add(lineSeparator);
-            
+
         document.add(Chunk.NEWLINE);
         document.add(new Paragraph("Събитие: " + event.getEventDescription(),titleFont));
-        document.add(new Paragraph("Начало: " + event.getStartDate(),subtitleFont));
+        document.add(new Paragraph(" 'Начало: " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
         document.add(new Paragraph("Място: " + event.getLocation(),subtitleFont));
         document.add(Chunk.NEWLINE);
         document.add(new Paragraph("Списък с участниците от Драгон Доджо ДСД:",font));
@@ -407,8 +407,8 @@ public class EventService {
                 PdfPCell cell2 = createCell(u.getLastName(), font);
                 PdfPCell cell3 = createCell(birthdateFormatter, font);
                 PdfPCell cell4 = createCell(ageGroupDescription, font);
-                PdfPCell cell5 = createCell(String.valueOf(u.getWeight()), font);
-                PdfPCell cell6 = createCell(String.valueOf(userService.calculateAge(u.getBirthDate())), font);
+                PdfPCell cell5 = createCell((u.getWeight() + " кг."), font);
+                PdfPCell cell6 = createCell((userService.calculateAge(u.getBirthDate()) + " г."), font);
                 PdfPCell cell7 = createCell(u.getReachedDegree().getDescription(), font);
                 PdfPCell cell8 = createCell(medicalExamFormatter, font);
 
