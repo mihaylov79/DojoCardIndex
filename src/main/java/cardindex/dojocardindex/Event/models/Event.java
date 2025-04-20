@@ -44,6 +44,9 @@ public class Event {
     @Column
     private boolean closed;
 
+    @Column
+    private boolean result;
+
     @ManyToMany(mappedBy = "events",fetch = FetchType.EAGER)
     private Set<User>users = new LinkedHashSet<>();
 
@@ -64,7 +67,7 @@ public class Event {
 
     }
 
-    public Event(UUID id, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, String location, Requirements requirements, boolean closed, Set<User> users, User firstPlaceWinner, User secondPlaceWinner, User thirdPlaceWinner) {
+    public Event(UUID id, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, String location, Requirements requirements, boolean closed, boolean result, Set<User> users, User firstPlaceWinner, User secondPlaceWinner, User thirdPlaceWinner) {
         this.id = id;
         this.type = type;
         EventDescription = eventDescription;
@@ -73,6 +76,7 @@ public class Event {
         this.location = location;
         this.requirements = requirements;
         this.closed = closed;
+        this.result = result;
         this.users = users;
         this.firstPlaceWinner = firstPlaceWinner;
         this.secondPlaceWinner = secondPlaceWinner;

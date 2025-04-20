@@ -2,6 +2,7 @@ package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.service.EventService;
+import cardindex.dojocardindex.User.models.Degree;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
@@ -170,14 +171,35 @@ public class EventController {
         List<User> eventUsers = event.getUsers().stream().toList();
         Map<UUID, Integer> userAges = userService.getUserAges(eventUsers);
 
-        ModelAndView modelAndView = new ModelAndView("event-details");
+        ModelAndView modelAndView = new ModelAndView("event-details-universal");
 
         User currentUser = userService.getUserById(details.getId());
         modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("event", event);
         modelAndView.addObject("userAges",userAges);
+        modelAndView.addObject("degrees", Degree.values());
         modelAndView.addObject("successMessage", "Победителите са нулирани успешно!");
         return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('TRAINER','ADMIN')")
+    @PutMapping("/{eventId}/update-degree/{userId}")
+    public ModelAndView updateExamUserDegree(@PathVariable UUID eventId,
+                                             @PathVariable UUID userId,
+                                             @RequestParam("newDegree") Degree newDegree){
+
+        eventService.setExamResult(eventId,userId,newDegree);
+
+        return new ModelAndView("redirect:/events/" + eventId + "/details");
+
+    }
+    @PreAuthorize("hasAnyRole('TRAINER','ADMIN')")
+    @PutMapping("/{eventId}/results")
+    public ModelAndView showUpdatedResultsMessage(@PathVariable UUID eventId) {
+
+        eventService.showResultOnUpdateDetailsPage(eventId);
+
+        return new ModelAndView("redirect:/events/" + eventId + "/details");
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
@@ -223,6 +245,11 @@ public class EventController {
     public void EventPdfExport(@PathVariable UUID eventId, HttpServletResponse response) {
 
         eventService.exportEventDetailsAsPDF(eventId,response);
+    }
+
+    @GetMapping("/{eventId}/export/{userId}")
+    public void exportUserExamProtocolPDF(@PathVariable UUID eventId, @PathVariable UUID userId, HttpServletResponse response){
+        eventService.exportPDFExamProtocolForUser(eventId,userId,response);
     }
 
 }

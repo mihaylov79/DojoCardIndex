@@ -4,10 +4,13 @@ package cardindex.dojocardindex.Event.service;
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.models.EventType;
 import cardindex.dojocardindex.Event.repository.EventRepository;
+import cardindex.dojocardindex.User.models.Degree;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.Utils.BackgroundPageEvent;
 import cardindex.dojocardindex.exceptions.EventNotFoundException;
+import cardindex.dojocardindex.exceptions.ExportIOException;
+import cardindex.dojocardindex.exceptions.IllegalEventOperationException;
 import cardindex.dojocardindex.web.dto.CreateEventRequest;
 import cardindex.dojocardindex.web.dto.EditEventRequest;
 import com.lowagie.text.*;
@@ -18,6 +21,7 @@ import com.lowagie.text.pdf.draw.LineSeparator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Sort;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -60,6 +65,7 @@ public class EventService {
                 .location(createEventRequest.getLocation())
                 .requirements(createEventRequest.getRequirements())
                 .closed(false)
+                .result(false)
                 .build();
 
         eventRepository.save(event);
@@ -74,6 +80,55 @@ public class EventService {
         eventRepository.save(event);
 
     }
+
+    public void showResultOnUpdateDetailsPage(UUID eventId){
+        Event event = getEventById(eventId);
+
+        if (event.getUsers().isEmpty()){
+
+            throw new IllegalEventOperationException("Списъкът с участници за това събитие е празен. Няма резултати за визуализация.");
+        }
+
+        if (event.isResult()){
+            throw new IllegalEventOperationException("Събитията вече са публикувани.");
+        }
+
+        event = event.toBuilder()
+                .result(true)
+                .build();
+
+        eventRepository.save(event);
+    }
+
+    public void hideResultOnUpdateDetailsPage(UUID eventId){
+        Event event = getEventById(eventId);
+
+        if (!event.isResult()){
+            throw new IllegalEventOperationException("Резултатите от това събитие все още не са публикувани.");
+        }
+
+        event = event.toBuilder()
+                .result(false)
+                .build();
+
+        eventRepository.save(event);
+    }
+
+    //TODO Да добавя автоматично изпращане на мейл след обновявне на защитената степен!
+    public void setExamResult(UUID eventId,UUID userId, Degree updatedDegree){
+
+        Event event = getEventById(eventId);
+        if (event.isResult()){
+            throw new IllegalEventOperationException("Резултатите за това събитие вече са публикувани. " +
+                    "Необходимо е да свалите резултатите преди да направите тази промяна.");
+        }
+        User user = userService.getUserById(userId);
+        user = user.toBuilder()
+                .reachedDegree(updatedDegree)
+                .build();
+        userService.saveUser(user);
+    }
+
     //TODO Да добавя възможност за задаване на победителите в събитието или в едит или в отделен метод
     public void editEvent(UUID eventId, EditEventRequest editEventRequest){
 
@@ -230,9 +285,8 @@ public class EventService {
             writer.close();
 
         } catch (IOException e) {
-            //TODO Да създаам ExportIOException - който да улавям когато възникне проблем
             log.error("Генерирането на CSV файл за събитие: {} беше неуспешно!", eventId, e);
-            throw new RuntimeException("Генерирането на PDF файл беще неуспешно!");
+            throw new ExportIOException("Генерирането на PDF файл беще неуспешно!");
         }
 
     }
@@ -249,12 +303,11 @@ public class EventService {
 
         try {
             Image background = Image.getInstance("src/main/resources/static/images/KAN_PDF_BACKGROUND.jpg");
-            PdfWriter  writer =PdfWriter.getInstance(document,response.getOutputStream());
+            PdfWriter  writer = PdfWriter.getInstance(document,response.getOutputStream());
             writer.setPageEvent(new BackgroundPageEvent(background,0.3f));
         } catch (IOException e) {
             log.error("Генерирането на PDF файл за събитие: {} беще неуспешно!",eventId,e);
-            //TODO Да създаам ExportIOException - който да улавям когато възникне проблем
-            throw new RuntimeException("Генерирането на PDF файл беще неуспешно!");
+            throw new ExportIOException("Генерирането на PDF файл беще неуспешно!");
         }
         document.open();
 
@@ -274,19 +327,9 @@ public class EventService {
         Font logoFont = new Font(baseFont, 22,Font.BOLDITALIC);
         Font titleFont = new Font(baseFont, 16, Font.BOLD);
         Font subtitleFont = new Font(baseFont, 10, Font.BOLD);
-        Paragraph paragraph = (new Paragraph("\"ДРАГОН ДОДЖО ДСД - Асеновград\"",logoFont));
-        paragraph.setAlignment(Element.ALIGN_CENTER);
-        document.add(paragraph);
+            addDojoName(logoFont, document);
 
-        LineSeparator lineSeparator = new LineSeparator();
-        lineSeparator.setPercentage(75f);
-//        lineSeparator.setLineColor(new Color(61,133,198));
-        lineSeparator.setAlignment(Element.ALIGN_CENTER);
-        lineSeparator.setOffset(-9f);
-        lineSeparator.setLineWidth(3f);
-        document.add(lineSeparator);
-
-        document.add(Chunk.NEWLINE);
+            document.add(Chunk.NEWLINE);
         document.add(new Paragraph("Събитие: " + event.getEventDescription(),titleFont));
         document.add(new Paragraph(" Начало: " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
         document.add(new Paragraph("Място: " + event.getLocation(),subtitleFont));
@@ -297,60 +340,6 @@ public class EventService {
         table.setWidthPercentage(100);
         table.setSpacingBefore(10f);
         table.setSpacingAfter(10f);
-
-
-
-
-//        Stream.of("Име", "Фамилия", "Дата на раждане", "Категория", "Тегло", "Възраст", "Степен", "Мед. преглед")
-//                .forEach(header -> {
-//                    PdfPCell cell = new PdfPCell(new Phrase(header));
-//                    cell.setBackgroundColor(new Color(220, 220, 220));
-//                    cell.setPadding(5);
-//                    table.addCell(cell);
-//                });
-
-
-//        users.forEach(u-> {
-//            table.addCell(u.getFirstName());
-//            table.addCell(u.getLastName());
-//            table.addCell(u.getBirthDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-//            String ageGroupDesc = u.getAgeGroup() != null
-//                    ? u.getAgeGroup().getDescription()
-//                    : "Няма възрастова група";
-//            table.addCell(ageGroupDesc);
-//            table.addCell(String.valueOf(u.getWeight()));
-//            table.addCell(String.valueOf(userService.calculateAge(u.getBirthDate())));
-//            table.addCell(u.getReachedDegree().getDescription());
-//            LocalDate medicalExam = u.getMedicalExamsPassed();
-//            String medicalExamDate = medicalExam != null
-//                    ? medicalExam.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-//                    : "няма информация";
-//            table.addCell(medicalExamDate);
-//
-//        });
-
-//            BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
-//            Font font = new Font(baseFont,10,Font.NORMAL);
-//            Font headerFont = new Font(baseFont, 8, Font.BOLD);
-
-
-
-//            PdfPCell header1 = new PdfPCell(new Phrase("Име", headerFont));
-//            header1.setBackgroundColor(new Color(200, 200, 255));
-//            PdfPCell header2 = new PdfPCell(new Phrase("Фамилия", headerFont));
-//            header2.setBackgroundColor(new Color(200,200,255));
-//            PdfPCell header3 = new PdfPCell(new Phrase("Дата на раждане", headerFont));
-//            header3.setBackgroundColor(new Color(200,200,255));
-//            PdfPCell header4 = new PdfPCell(new Phrase("Група", headerFont));
-//            header4.setBackgroundColor(new Color(200,200,255));
-//            PdfPCell header5 = new PdfPCell(new Phrase("Тегло", headerFont));
-//            header5.setBackgroundColor(new Color(200,200,255));
-//            PdfPCell header6 = new PdfPCell(new Phrase("Години", headerFont));
-//            header6.setBackgroundColor(new Color(200,200,255));
-//            PdfPCell header7 = new PdfPCell(new Phrase("Степен", headerFont));
-//            header7.setBackgroundColor(new Color(200,200,255));
-//            PdfPCell header8 = new PdfPCell(new Phrase("Мед. преглед", headerFont));
-//            header8.setBackgroundColor(new Color(200,200,255));
 
             PdfPCell header1 = createHeaderCell("Име", headerFont);
             PdfPCell header2 = createHeaderCell("Фамилия", headerFont);
@@ -363,38 +352,6 @@ public class EventService {
 
             addCellsToTable(table,header1,header2,header3,header4,header5,header6,header7,header8);
 // Добавяне на заглавията към таблицата
-//            table.addCell(header1);
-//            table.addCell(header2);
-//            table.addCell(header3);
-//            table.addCell(header4);
-//            table.addCell(header5);
-//            table.addCell(header6);
-//            table.addCell(header7);
-//            table.addCell(header8);
-
-//            users.forEach(u -> {
-//                PdfPCell cell1 = new PdfPCell(new Phrase(u.getFirstName(), font));
-//                PdfPCell cell2 = new PdfPCell(new Phrase(u.getLastName(), font));
-//                PdfPCell cell3 = new PdfPCell(new Phrase(u.getBirthDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")), font));
-//                String ageGroupDesc = u.getAgeGroup() != null ? u.getAgeGroup().getDescription() : " - ";
-//                PdfPCell cell4 = new PdfPCell(new Phrase(ageGroupDesc, font));
-//                PdfPCell cell5 = new PdfPCell(new Phrase(String.valueOf(u.getWeight()), font));
-//                PdfPCell cell6 = new PdfPCell(new Phrase(String.valueOf(userService.calculateAge(u.getBirthDate())), font));
-//                PdfPCell cell7 = new PdfPCell(new Phrase(u.getReachedDegree().getDescription(), font));
-//                LocalDate medicalExam = u.getMedicalExamsPassed();
-//                String medicalExamDate = medicalExam != null ? medicalExam.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) : " - ";
-//                PdfPCell cell8 = new PdfPCell(new Phrase(medicalExamDate, font));
-//
-//                addCellsToTable(table,cell1,cell2,cell3,cell4,cell5,cell6,cell7,cell8);
-////                table.addCell(cell1);
-////                table.addCell(cell2);
-////                table.addCell(cell3);
-////                table.addCell(cell4);
-////                table.addCell(cell5);
-////                table.addCell(cell6);
-////                table.addCell(cell7);
-////                table.addCell(cell8);
-//            });
 
             users.forEach(u -> {
 
@@ -426,9 +383,99 @@ public class EventService {
         document.close();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Генерирането на PDF файл за събитие: {} беще неуспешно!",eventId,e);
+            throw new ExportIOException("Генерирането на PDF файл беще неуспешно!");
         }
 
+    }
+
+    public void exportPDFExamProtocolForUser(UUID eventId, UUID userId, HttpServletResponse response) {
+
+        Event event = getEventById(eventId);
+        User user = userService.getUserById(userId);
+
+        response.setContentType("application/pdf");
+        String fileName = URLEncoder.encode(user.getFirstName() + "_" + user.getLastName() + ".pdf", StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
+
+        Document document = new Document(PageSize.A4);
+        try {
+
+        Image imageBackground = Image.getInstance("src/main/resources/static/images/Kan_PDF_background.jpg");
+            PdfWriter writer = PdfWriter.getInstance(document,response.getOutputStream());
+            writer.setPageEvent(new BackgroundPageEvent(imageBackground,0.3f));
+
+        document.open();
+
+            BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf",BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+            Font defaultFont = new Font(baseFont,14,Font.NORMAL);
+            Font nameFont = new Font(baseFont,20,Font.NORMAL);
+            Font logoFont = new Font(baseFont,22,Font.BOLDITALIC);
+            Font titleFont = new Font(baseFont,20,Font.BOLD);
+            Font headerFont = new Font(baseFont,12,Font.BOLD);
+
+            addDojoName(logoFont, document);
+
+            document.add(Chunk.NEWLINE);
+
+            Paragraph protocol = new Paragraph("ИЗПИТЕН ПРОТОКОЛ",titleFont);
+            protocol.setAlignment(Element.ALIGN_CENTER);
+            document.add(protocol);
+            document.add(Chunk.NEWLINE);
+
+            Paragraph name = new Paragraph(user.getFirstName() + " " + user.getLastName(),nameFont);
+            name.setAlignment(Element.ALIGN_CENTER);
+            document.add(name);
+            document.add(new Paragraph("Дата на раждане: " + user.getBirthDate()
+                                    .format(DateTimeFormatter.ofPattern("dd-MM-yyyy ' г.'" + "              " + "Клуб: Драгон Доджо ДСД")),defaultFont));
+            document.add(new Paragraph("Защитена степен: " + user.getReachedDegree().getDescription() + "                              " + "Дата на последен изпит:...............................",defaultFont));
+            document.add(Chunk.NEWLINE);
+
+            PdfPTable table = new PdfPTable(3);
+            PdfPCell header1 = createHeaderCell("KИХОН",headerFont);
+            PdfPCell header2 = createHeaderCell("KATA",headerFont);
+            PdfPCell header3 = createHeaderCell("KУМИТЕ",headerFont);
+
+            addCellsToTable(table,header1,
+                                  header2,
+                                  header3);
+
+            PdfPCell cell1 = createCell("",defaultFont);
+            PdfPCell cell2 = createCell("",defaultFont);
+            PdfPCell cell3 = createCell("",defaultFont);
+
+            cell1.setFixedHeight(250f);
+            cell2.setFixedHeight(250f);
+            cell3.setFixedHeight(250f);
+
+            addCellsToTable(table,cell1,cell2,cell3);
+
+            document.add(table);
+
+            document.add(Chunk.NEWLINE);
+
+            document.add(new Paragraph("дата на изпита: "+ event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy ' г.'")) + "                                        " + "Изпитен резултат:...............",defaultFont));
+
+            document.close();
+
+
+        } catch (IOException e) {
+            log.error("Генерирането на PDF файл за събитие: {} беще неуспешно!",eventId,e);
+            throw new ExportIOException("Генерирането на PDF файл беще неуспешно!");
+        }
+
+    }
+
+    private static void addDojoName(Font logoFont, Document document) {
+        Paragraph clubName = (new Paragraph("\"ДРАГОН ДОДЖО ДСД - Асеновград\"", logoFont));
+        clubName.setAlignment(Element.ALIGN_CENTER);
+        document.add(clubName);
+        LineSeparator line = new LineSeparator();
+        line.setPercentage(75f);
+        line.setAlignment(Element.ALIGN_CENTER);
+        line.setOffset(-9f);
+        line.setLineWidth(3f);
+        document.add(line);
     }
 
     private void addCellsToTable(PdfPTable table, PdfPCell... cells) {

@@ -63,21 +63,32 @@ td {
     font-size: 1.8em;
 }
 
+.buttonz {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    vertical-align: middle;
+
+}
+
 /* Стил за бутоните */
 button {
+    /*width: 6em;*/
     cursor: pointer;
     border-radius: 5px;
     font-size: 0.8em;
-    background: #e18e09;
-    color: black;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #e18e09;
     padding: 0.25em 0.5em;
     margin-bottom: 0.2em;
+    margin-right: 0.4em;
     font-family: "Caveat", sans-serif;
     border: none;
 }
 
 button:hover, button:focus{
-    opacity: 0.8;
+    background: #e18e09;
+    color: black;
 }
 
 .container > a:hover, .container > a:focus {
@@ -93,6 +104,32 @@ button:hover, button:focus{
     border-radius: 0.3em;
     margin-top: 0.3em;
 }
+
+form select {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #e18e09;
+    padding: 0.7em 0.50em;
+    font-size: 14px;
+    border: none;
+    border-radius: 0.3em;
+    margin-right: 4px;
+    width: 90px;
+    vertical-align: middle;
+}
+
+form select option {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #e18e09;
+}
+
+form button {
+    vertical-align: middle;
+    padding: 6px 10px;
+    /*font-size: 16px;*/
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 
 
 /* Медия запитвания за мобилни устройства */

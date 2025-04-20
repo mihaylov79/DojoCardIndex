@@ -4,7 +4,8 @@ public enum EventType {
 
     TOURNAMENT("Турнир"),
     TRAINING_CAMP("Спортен лагер"),
-    SEMINAR("Семинар");
+    SEMINAR("Семинар"),
+    EXAM("Изпит");
 
     private final String description;
 

@@ -65,7 +65,9 @@ public class ExceptionAdvice {
                        RequestNotFoundException.class,
                        RequestAlreadyExistException.class,
                        UserNotFoundException.class,
-                       IllegalUserStatusException.class})
+                       IllegalUserStatusException.class,
+                       ExportIOException.class,
+                       IllegalEventOperationException.class})
     public ModelAndView handleBadRequestException(Exception exception){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");

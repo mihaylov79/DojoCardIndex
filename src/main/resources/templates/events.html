@@ -55,7 +55,7 @@
 
                 <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>
 
-                <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победители</button>
+                <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:if="${event.type.name()} == 'TOURNAMENT'" th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победители</button>
 
                 <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/details'|">Детайли</button>
 
