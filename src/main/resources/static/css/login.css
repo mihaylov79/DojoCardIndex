@@ -51,7 +51,7 @@ input[type="password"] {
     background: rgb(0,0,0,0);
    color:#e18e09;
    border-bottom: 2px solid ;
-    font-size: 1.2em;
+    /*font-size: 1.2em;*/
     line-height: 2;
     font:1.2em "Caveat";
     
@@ -138,4 +138,22 @@ button{
 button:hover {
     color: black;
     background-color: #e18e09;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: -0.5em;
+    margin-bottom: 1.5em;
+}
+
+.forgot-password a {
+    color: #e18e09;
+    font: 1em "Caveat";
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: white;
+    text-decoration: underline;
 }
