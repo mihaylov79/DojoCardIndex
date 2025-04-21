@@ -35,6 +35,10 @@
                 <p></p>
               <span th:if="${errorMessage}" th:text="${errorMessage}" class="credentials-error"></span>
             </div>
+
+            <div class="forgot-password">
+                <a th:href="@{/forgotten-password}">Забравена парола?</a>
+            </div>
         
             <input type="submit" class="button login" value="Вход">
           </form>
