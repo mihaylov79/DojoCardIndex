@@ -23,6 +23,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class IndexController {
@@ -93,12 +95,16 @@ public class IndexController {
 
         List<Message> unreadMessages = messageService.getReceivedMessagesByUser(user.getId());
         List<Event> events = eventService.getUpcomingEvents();
+        List<User>examRenewalList = userService.medicalExamRenewalUsersList();
+        Map<UUID,Long>daysLeft = userService.daysLeftToListNextExam(examRenewalList);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home-fixed");
         modelAndView.addObject("user", user);
         modelAndView.addObject("messages", unreadMessages);
         modelAndView.addObject("events",events);
+        modelAndView.addObject("examRenewalList", examRenewalList);
+        modelAndView.addObject("daysLeft",daysLeft);
 
         return modelAndView;
     }

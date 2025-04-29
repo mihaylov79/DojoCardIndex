@@ -112,7 +112,7 @@
     </table>
     <table class="noWinners" th:unless="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
         <tr>
-            <td>Няма зададени победители !</td>
+            <td>Все още няма резултати от това събитие!</td>
         </tr>
     </table>
     <table class="reset" th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
@@ -128,7 +128,12 @@
         </tr>
     </table>
 
+<!--    <div class="buttonz">-->
+<!--        <button th:attr="onclick=|location.href='/events'|">Експорт</button>-->
+<!--        <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/details' + '/view'|">Експорт</button>-->
+<!--    </div>-->
     <a class="back" th:href="@{/events}">⬅ Назад към списъка със събития</a>
+    <a class="back" th:href="@{/events/{eventId}/details/view(eventId=${event.id})}">Експорт</a>
 </div>
 
 </body>

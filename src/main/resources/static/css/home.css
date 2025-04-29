@@ -160,6 +160,18 @@ th img {
     color: #e18e09;
 }
 
+.text-red {
+    color: red;
+}
+
+.tick {
+
+    padding: 0.3em;
+    font: 1.2vw var(--font-family);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
@@ -174,6 +186,10 @@ th img {
 
     table, caption {
         font-size: 2.3vw;
+    }
+
+    .tick {
+        font-size: 2vw;
     }
 }
 

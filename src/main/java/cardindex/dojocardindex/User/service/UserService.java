@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,10 +30,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Builder(toBuilder = true)
@@ -263,6 +262,59 @@ public class UserService implements UserDetailsService {
         }
 
 
+    }
+
+    public boolean checkMedicalExamExpiration(User user){
+
+        if (user.getMedicalExamsPassed() == null){
+            return true;
+        }
+
+        LocalDate expiationDate = user.getMedicalExamsPassed().plusYears(1).minusMonths(1);
+
+        return !LocalDate.now().isBefore(expiationDate);
+    }
+
+    public List<User> medicalExamRenewalUsersList(){
+
+        return getAllActiveUsers().stream().filter(this::checkMedicalExamExpiration).sorted(Comparator
+                                                            .comparing(User::getMedicalExamsPassed,
+                                                                    Comparator.nullsLast(Comparator.naturalOrder())))
+                .toList();
+    }
+
+    public Map<UUID,Long> daysLeftToListNextExam(List<User> users){
+
+        return users.stream().distinct()
+                .collect(Collectors.toMap(User::getId,user -> daysLeftToUserNextExam(user.getMedicalExamsPassed())));
+    }
+
+    public Long daysLeftToUserNextExam(LocalDate lastMedicalExam){
+
+        if (lastMedicalExam == null){
+            return 0L;
+        }
+        return ChronoUnit.DAYS.between(LocalDate.now(), lastMedicalExam.plusYears(1));
+    }
+
+    @Scheduled(cron = "0 0 0 * * MON ")
+    public void notifyMedicalExamExpiration(){
+
+        List<User>notificationList = getAllActiveUsers().stream()
+                                                        .filter(user-> user.getMedicalExamsPassed() != null)
+                                                        .filter(this::checkMedicalExamExpiration)
+                                                        .filter(user -> LocalDate.now().isBefore(user.getMedicalExamsPassed().plusYears(1)))
+                                                        .toList();
+
+        notificationList.forEach(user -> {
+            String content = "Наближава време за подновяване на медицинският Ви преглед! До %s трябва да преминете прегледа. Моля уведомете треньорите за този мейл.".formatted(user.getMedicalExamsPassed().plusYears(1));
+            try {
+                notificationService.sendNotification(user.getId(), user.getFirstName(), user.getLastName(), "Предстоящи медицински прегледи!",content);
+            } catch (Exception e) {
+                log.error("{} не беше предупреден за предстоящ медицински прегред поради неуспешно изпращане на мейл-а",user.getEmail(),e);
+            }
+
+        });
     }
 
     public List<User> getAllUsers(){

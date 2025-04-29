@@ -102,6 +102,56 @@
                     </tbody>
                 </table>
             </div>
+            <div class="user-events">
+
+                <table>
+                    <caption>Предстоящи мед. прегледи<div class="tick"><label>
+                        <input type="checkbox" id="competitorFilterCheckbox" onclick="filterCompetitors()">
+                        Покажи само състезателите
+                    </label></div></caption>
+
+
+                    <thead>
+                        <tr>
+                            <th>Име</th>
+                            <th>Ел.Поща</th>
+                            <th>Състезателен статус</th>
+                            <th>Последен преглед</th>
+                            <th>Дни до следващият преглед</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="renewalUser : ${examRenewalList}">
+                        <td th:text="|${renewalUser.firstName} ${renewalUser.lastName}|"></td>
+                        <td th:text="${renewalUser.email}"></td>
+                        <td th:text="${renewalUser.isCompetitor} ? 'Състезател' : '-'"></td>
+                        <td th:text="${renewalUser.medicalExamsPassed == null ? 'Преминете преглед!' : #temporals.format(renewalUser.medicalExamsPassed, 'dd-MM-yyyy ''г.''')}" th:classappend="${renewalUser.medicalExamsPassed == null} ? 'text-red' : ''"></td>
+                        <td th:text="${daysLeft[renewalUser.id]}" th:classappend="${daysLeft[renewalUser.id] <= 0} ? 'text-red' : ''"></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                function filterCompetitors() {
+                    const checkbox = document.getElementById('competitorFilterCheckbox');
+                    const rows = document.querySelectorAll('.user-events tbody tr');
+
+                    rows.forEach(row => {
+                        const statusCell = row.querySelector('td:nth-child(3)'); // 3-та колона е статусът
+                        const isCompetitor = statusCell.textContent.trim() === 'Състезател';
+
+                        if (checkbox.checked) {
+                            // Показвай само състезатели
+                            row.style.display = isCompetitor ? '' : 'none';
+                        } else {
+                            // Показвай всички
+                            row.style.display = '';
+                        }
+                    });
+                }
+            </script>
+
         </div>
 
         <div class="admin-menu" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
