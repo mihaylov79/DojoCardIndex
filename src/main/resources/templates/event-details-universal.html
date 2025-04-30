@@ -40,8 +40,10 @@
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.reachedDegree.description}"></td>
             <td th:text="${user.birthDate == null} or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>
-            <td class="buttonz" th:if="${event.type.name() == 'EXAM'}">
-                <form sec:authorize="hasAnyRole('ADMIN','TRAINER')"
+            <td class="buttonz">
+                <!-- Падащо меню за степен и Запази (само при EXAM) -->
+                <form th:if="${event.type.name() == 'EXAM'}"
+                      sec:authorize="hasAnyRole('ADMIN','TRAINER')"
                       th:action="@{/events/{eventId}/update-degree/{userId}(eventId=${event.id}, userId=${user.id})}"
                       th:method="PUT">
                     <select name="newDegree">
@@ -53,21 +55,23 @@
                     </select>
                     <button type="submit">Запази</button>
                 </form>
-<!--            </td>-->
-<!--            <td>-->
-                <form sec:authorize="hasAnyRole('ADMIN','TRAINER')"
+
+                <!-- Бутон Експорт (само при EXAM) -->
+                <form th:if="${event.type.name() == 'EXAM'}"
+                      sec:authorize="hasAnyRole('ADMIN','TRAINER')"
                       th:action="@{/events/{eventId}/export/{userId}(eventId=${event.id}, userId=${user.id})}"
                       th:method="GET">
-
                     <button type="submit">Експорт</button>
                 </form>
-<!--            </td>-->
-<!--            <td>-->
-                <form sec:authorize="hasAnyRole('ADMIN','TRAINER')" th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}" th:method="PUT">
-                    <input type="hidden" name="_method" value="put"/>
+
+                <!-- Бутон Отпиши (за всички събития) -->
+                <form sec:authorize="hasAnyRole('ADMIN','TRAINER')"
+                      th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}"
+                      th:method="PUT">
                     <button type="submit">Отпиши</button>
                 </form>
             </td>
+
         </tr>
         </tbody>
     </table>

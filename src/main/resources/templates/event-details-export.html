@@ -35,7 +35,7 @@
             <td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]} +' г'"></td>
 <!--            td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]}"-->
             <td th:text="${participant.reachedDegree.description}"></td>
-            <td th:text="${#dates.format(participant.medicalExamsPassed, 'dd.MM.yyyy')}"></td>
+            <td th:text="${participant.medicalExamsPassed != null ? #temporals.format(participant.medicalExamsPassed, 'dd.MM.yyyy') : '-'}"></td>
         </tr>
         </tbody>
     </table>
