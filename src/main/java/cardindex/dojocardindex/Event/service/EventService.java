@@ -34,9 +34,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -344,63 +344,173 @@ public class EventService {
 
         BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
         Font font = new Font(baseFont,10,Font.NORMAL);
-        Font headerFont = new Font(baseFont, 8, Font.BOLD);
+        Font headerFont = new Font(baseFont, 10, Font.BOLD);
         Font logoFont = new Font(baseFont, 22,Font.BOLDITALIC);
         Font titleFont = new Font(baseFont, 16, Font.BOLD);
-        Font subtitleFont = new Font(baseFont, 10, Font.BOLD);
-            addDojoName(logoFont, document);
+        Font subtitleFont = new Font(baseFont, 11, Font.BOLD);
+        Font disclaimerFont = new Font(baseFont, 10, Font.NORMAL,Color.red);
+        Font footerFont = new Font(baseFont, 8, Font.ITALIC);
+//            addDojoName(logoFont, document);
 
-            document.add(Chunk.NEWLINE);
-        document.add(new Paragraph("Събитие: " + event.getEventDescription(),titleFont));
-        document.add(new Paragraph(" Начало: " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
-        document.add(new Paragraph("Място: " + event.getLocation(),subtitleFont));
+            PdfPTable headerTable = new PdfPTable(2);
+            headerTable.setWidthPercentage(100);
+            headerTable.setSpacingBefore(10f);
+            headerTable.setSpacingAfter(10f);
+            headerTable.setWidths(new float[]{1f, 3f});
+
+            PdfPCell kanLogo =  new PdfPCell();
+            kanLogo.setColspan(2);
+//            kanLogo.setBorder(Rectangle.NO_BORDER);
+
+            Image logo = Image.getInstance("src/main/resources/static/images/KanLogo.jpg");
+            logo.scaleToFit(100, 100);
+            logo.setAlignment(Element.ALIGN_CENTER);
+            kanLogo.addElement(logo);
+
+            Paragraph logoText = new Paragraph("БЪЛГАРСКА ФЕДЕРАЦИЯ\n КИОКУШИН-КАН\n",titleFont);
+            logoText.setAlignment(Element.ALIGN_CENTER);
+            logoText.setSpacingAfter(10f);
+            kanLogo.addElement(logoText);
+
+            headerTable.addCell(kanLogo);
+
+            PdfPCell emptyRow = new PdfPCell(new Phrase(" "));
+            emptyRow.setColspan(2);
+//            emptyRow.setBorder(Rectangle.NO_BORDER);
+            emptyRow.setFixedHeight(18f);
+            headerTable.addCell(emptyRow);
+
+            headerTable.addCell(createCell("СЪСТЕЗАНИЕ:",subtitleFont));
+            headerTable.addCell(createCell(event.getEventDescription(),subtitleFont));
+
+            headerTable.addCell(createCell("МЯСТО:",subtitleFont));
+            headerTable.addCell(createCell(event.getLocation(),subtitleFont));
+
+            headerTable.addCell(createCell("ДАТА:",subtitleFont));
+            headerTable.addCell(createCell(event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
+
+            PdfPCell titleRow = new PdfPCell(new Phrase("ЗАЯВКА ЗА УЧАСТИЕ",logoFont));
+            titleRow.setColspan(2);
+            titleRow.setPaddingBottom(10f);
+            titleRow.setHorizontalAlignment(Element.ALIGN_CENTER);
+            titleRow.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            headerTable.addCell(titleRow);
+
+            headerTable.addCell(createCell("КЛУБ:",subtitleFont));
+            headerTable.addCell(createCell("ДРАГОН ДОДЖО ДСД",subtitleFont));
+
+            document.add(headerTable);
+
+
+//            document.add(Chunk.NEWLINE);
+//        document.add(new Paragraph("Събитие: " + event.getEventDescription(),titleFont));
+//        document.add(new Paragraph(" Начало: " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")),subtitleFont));
+//        document.add(new Paragraph("Място: " + event.getLocation(),subtitleFont));
         document.add(Chunk.NEWLINE);
-        document.add(new Paragraph("Списък с участниците от Драгон Доджо ДСД:",font));
+//        document.add(new Paragraph("Списък с участниците от Драгон Доджо ДСД:",font));
 
-        PdfPTable table = new PdfPTable(8);
+            PdfPTable disclaimer = new PdfPTable(1);
+            disclaimer.setWidthPercentage(100);
+            disclaimer.setSpacingBefore(10f);
+            disclaimer.setSpacingAfter(10f);
+
+            String disclaimerContent = "*Заявката се попълва с подредени състезатели според годината на раждане !\n Започвате с родените през 2018 година и завършвате с мъже и жени.\n Пишете с еднакъв шрифт!";
+
+
+            PdfPCell disclaimerCell = new PdfPCell(new Phrase(disclaimerContent,disclaimerFont));
+            disclaimerCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            disclaimerCell.setPaddingBottom(5f);
+            disclaimer.addCell(disclaimerCell);
+
+            document.add(disclaimer);
+
+
+        PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10f);
         table.setSpacingAfter(10f);
+        float[] columnWidths = new float[]{1f, 3f, 2f, 1f, 2f};
+        table.setWidths(columnWidths);
 
-            PdfPCell header1 = createHeaderCell("Име", headerFont);
-            PdfPCell header2 = createHeaderCell("Фамилия", headerFont);
-            PdfPCell header3 = createHeaderCell("Дата на раждане", headerFont);
-            PdfPCell header4 = createHeaderCell("Група", headerFont);
-            PdfPCell header5 = createHeaderCell("Тегло", headerFont);
-            PdfPCell header6 = createHeaderCell("Години", headerFont);
-            PdfPCell header7 = createHeaderCell("Степен", headerFont);
-            PdfPCell header8 = createHeaderCell("Мед. преглед", headerFont);
+            PdfPCell cellNum = createHeaderCell("№", headerFont);
+            PdfPCell header1 = createHeaderCell("Име и Фамилия", headerFont);
+//            PdfPCell header2 = createHeaderCell("Фамилия", headerFont);
+            PdfPCell header3 = createHeaderCell("Град", headerFont);
+            PdfPCell header4 = createHeaderCell("Тегло", headerFont);
+            PdfPCell header5 = createHeaderCell("Дата на раждане", headerFont);
+//            PdfPCell header4 = createHeaderCell("Група", headerFont);
+//            PdfPCell header5 = createHeaderCell("Тегло", headerFont);
+//            PdfPCell header6 = createHeaderCell("Години", headerFont);
+//            PdfPCell header7 = createHeaderCell("Степен", headerFont);
+//            PdfPCell header8 = createHeaderCell("Мед. преглед", headerFont);
 
-            addCellsToTable(table,header1,header2,header3,header4,header5,header6,header7,header8);
+            addCellsToTable(table,cellNum,header1,header3,header4,header5);
 // Добавяне на заглавията към таблицата
+            List<User> sortedUsers = new ArrayList<>(users);
+            sortedUsers.sort(Comparator.comparing(User::getBirthDate));
 
-            users.forEach(u -> {
+
+            AtomicInteger counter = new AtomicInteger(1);
+
+
+            sortedUsers.forEach(u -> {
+
+                int number = counter.getAndIncrement();
 
                 String ageGroupDescription = u.getAgeGroup() != null ? u.getAgeGroup().getDescription() : " - ";
                 LocalDate medicalExam = u.getMedicalExamsPassed();
                 String medicalExamFormatter = medicalExam != null ? medicalExam.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) : " - ";
-                String birthdateFormatter = u.getBirthDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                String birthdateFormatter = u.getBirthDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy ' г.'"));
 
-                PdfPCell cell1 = createCell(u.getFirstName(), font);
-                PdfPCell cell2 = createCell(u.getLastName(), font);
-                PdfPCell cell3 = createCell(birthdateFormatter, font);
-                PdfPCell cell4 = createCell(ageGroupDescription, font);
-                PdfPCell cell5 = createCell((u.getWeight() + " кг."), font);
-                PdfPCell cell6 = createCell((userService.calculateAge(u.getBirthDate()) + " г."), font);
-                PdfPCell cell7 = createCell(u.getReachedDegree().getDescription(), font);
-                PdfPCell cell8 = createCell(medicalExamFormatter, font);
+                PdfPCell cellN = createCell(String.valueOf(number), font);
+                PdfPCell cell1 = createCell(u.getFirstName() + ' ' + u.getLastName(), font);
+//                PdfPCell cell2 = createCell(u.getLastName(), font);
+                PdfPCell cell3 = createCell("Асеновград", font);
+                PdfPCell cell5 = createCell(birthdateFormatter, font);
+//                PdfPCell cell4 = createCell(ageGroupDescription, font);
+                PdfPCell cell4 = createCell((u.getWeight() + " кг."), font);
+//                PdfPCell cell6 = createCell((userService.calculateAge(u.getBirthDate()) + " г."), font);
+//                PdfPCell cell7 = createCell(u.getReachedDegree().getDescription(), font);
+//                PdfPCell cell8 = createCell(medicalExamFormatter, font);
 
-                addCellsToTable(table, cell1,
-                                        cell2,
+                addCellsToTable(table, cellN,
+                                        cell1,
                                         cell3,
                                         cell4,
-                                        cell5,
-                                        cell6,
-                                        cell7,
-                                        cell8);
+                                        cell5);
             });
 
         document.add(table);
+            document.add(Chunk.NEWLINE);
+            Paragraph spacer = new Paragraph();
+            spacer.setSpacingBefore(10f);
+            spacer.setSpacingAfter(10f);
+            document.add(spacer);
+
+            String footerContent = "С подписването на настоящата заявка, деклараирам, че всички участници ще спазват състезателния правилник на БФК, както и всички други нормативни документи, по които се провежда състезанието.";
+
+            document.add(new Paragraph(footerContent,footerFont));
+
+        PdfPTable footerTable = new PdfPTable(3);
+        footerTable.setWidthPercentage(100);
+        footerTable.setSpacingBefore(10f);
+        footerTable.setSpacingAfter(10f);
+
+        PdfPCell footerCell1 = new PdfPCell(new Phrase("Дата:",subtitleFont));
+        footerCell1.setHorizontalAlignment(Element.ALIGN_LEFT);
+        footerCell1.setPaddingBottom(5f);
+        footerTable.addCell(footerCell1);
+
+            PdfPCell footerCell2 = new PdfPCell(new Phrase("Град:",subtitleFont));
+            footerCell2.setHorizontalAlignment(Element.ALIGN_LEFT);
+            footerTable.addCell(footerCell2);
+
+            PdfPCell footerCell3 = new PdfPCell(new Phrase("Подпис:",subtitleFont));
+            footerCell3.setHorizontalAlignment(Element.ALIGN_LEFT);
+            footerTable.addCell(footerCell3);
+
+            document.add(footerTable);
+
         document.close();
 
         } catch (Exception e) {
@@ -511,6 +621,7 @@ public class EventService {
         cell.setBackgroundColor(new Color(186,210,232));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingBottom(5f);
 
         return cell;
     }
@@ -520,6 +631,7 @@ public class EventService {
         PdfPCell cell = new PdfPCell(new Phrase(content,font));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingBottom(5f);
 
         return cell;
     }
