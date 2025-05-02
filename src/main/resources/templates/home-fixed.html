@@ -35,7 +35,7 @@
                     </tr>
                     <tr><th>Име</th><td th:text="${user.firstName}"></td></tr>
                     <tr><th>Фамилия</th><td th:text="${user.lastName}"></td></tr>
-                    <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${#temporals.format(user.birthDate,'dd-MM-yyyy')}"></td></tr>
+                    <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${#temporals.format(user.birthDate,'dd-MM-yyyy г.')}"></td></tr>
                     <tr th:if="${user.userPhone} != null"><th>Телефон</th><td th:text="${user.userPhone}"></td></tr>
                     <tr th:if="${user.role != null} != null"><th>Позиция в клуба</th><td th:text="${user.role.description}"></td></tr>
                     <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.description}"></td></tr>
@@ -104,7 +104,8 @@
             </div>
             <div class="user-events">
 
-                <table>
+                <table id="medical-table">
+
                     <caption>Предстоящи мед. прегледи<div class="tick"><label>
                         <input type="checkbox" id="competitorFilterCheckbox" onclick="filterCompetitors()">
                         Покажи само състезателите
@@ -131,26 +132,34 @@
 
                     </tbody>
                 </table>
+
+                <script>
+                    function filterCompetitors() {
+                        const checkbox = document.getElementById('competitorFilterCheckbox');
+
+                        // Таргетирай конкретната таблица, напр. с caption съдържащ текст "Предстоящи мед. прегледи"
+                        const table = document.getElementById('medical-table');
+
+
+                        if (!table) return; // безопасна проверка
+
+                        const rows = table.querySelectorAll('tbody tr');
+
+                        rows.forEach(row => {
+                            const statusCell = row.querySelector('td:nth-child(3)'); // 3-та колона е "Състезателен статус"
+                            const isCompetitor = statusCell.textContent.trim() === 'Състезател';
+
+                            if (checkbox.checked) {
+                                row.style.display = isCompetitor ? '' : 'none';
+                            } else {
+                                row.style.display = '';
+                            }
+                        });
+                    }
+                </script>
+
             </div>
-            <script>
-                function filterCompetitors() {
-                    const checkbox = document.getElementById('competitorFilterCheckbox');
-                    const rows = document.querySelectorAll('.user-events tbody tr');
 
-                    rows.forEach(row => {
-                        const statusCell = row.querySelector('td:nth-child(3)'); // 3-та колона е статусът
-                        const isCompetitor = statusCell.textContent.trim() === 'Състезател';
-
-                        if (checkbox.checked) {
-                            // Показвай само състезатели
-                            row.style.display = isCompetitor ? '' : 'none';
-                        } else {
-                            // Показвай всички
-                            row.style.display = '';
-                        }
-                    });
-                }
-            </script>
 
         </div>
 
