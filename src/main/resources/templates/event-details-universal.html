@@ -151,12 +151,18 @@
             <tr>
                 <td class="buttonz">
                     <button onclick="location.href='/events'">⬅ Назад към списъка със събития</button>
-                    <button th:attr="onclick=|location.href='/events/${event.id}/details/view'|">Експорт</button>
+                    <button th:if="${event.type.name() == 'TOURNAMENT'}" th:attr="onclick=|window.location.href='@{/events/tournaments/export/pdf/{id}(id=${eventId})}'|">PDF Експорт</button>
+                    <button th:if="${event.type.name() == 'TOURNAMENT'}" th:attr="onclick=|window.location.href='@{/events/tournaments/export/csv/{id}(id=${eventId})}'|">CSV Експорт</button>
                     <!-- Показване на бутон за потвърждаване на резултати от администратор/тренер -->
                     <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
                           th:if="${event.type.name() == 'EXAM' and event.result == false}"
                           th:action="@{/events/{eventId}/results(eventId=${event.id})}" th:method="PUT">
                         <button type="submit" class="btn btn-success">Покажи резултатите</button>
+                    </form>
+                    <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                          th:if="${event.type.name() == 'EXAM' and event.result == true}"
+                          th:action="@{/events/{eventId}/results/hide(eventId=${event.id})}" th:method="PUT">
+                        <button type="submit" class="btn btn-success">Скрий резултатите</button>
                     </form>
                 </td>
             </tr>

@@ -202,24 +202,33 @@ public class EventController {
         return new ModelAndView("redirect:/events/" + eventId + "/details");
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
-    @GetMapping("/{eventId}/details/view")
-    public ModelAndView getEventDetailsView(@PathVariable UUID eventId,
-                                        @AuthenticationPrincipal CustomUserDetails details) {
+    @PreAuthorize("hasAnyRole('TRAINER','ADMIN')")
+    @PutMapping("/{eventId}/results/hide")
+    public ModelAndView hideUpdatedResultsMessage(@PathVariable UUID eventId) {
 
-        Event event = eventService.getEventById(eventId);
+        eventService.hideResultOnUpdateDetailsPage(eventId);
 
-        List<User> eventUsers = event.getUsers().stream().toList();
-        Map<UUID, Integer> userAges = userService.getUserAges(eventUsers);
-
-        ModelAndView modelAndView = new ModelAndView("event-details-export");
-
-        User currentUser = userService.getUserById(details.getId());
-        modelAndView.addObject("currentUser", currentUser);
-        modelAndView.addObject("event", event);
-        modelAndView.addObject("userAges",userAges);
-        return modelAndView;
+        return new ModelAndView("redirect:/events/" + eventId + "/details");
     }
+
+//    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+//    @GetMapping("/{eventId}/details/view")
+//    public ModelAndView getEventDetailsView(@PathVariable UUID eventId,
+//                                        @AuthenticationPrincipal CustomUserDetails details) {
+//
+//        Event event = eventService.getEventById(eventId);
+//
+//        List<User> eventUsers = event.getUsers().stream().toList();
+//        Map<UUID, Integer> userAges = userService.getUserAges(eventUsers);
+//
+//        ModelAndView modelAndView = new ModelAndView("event-details-export");
+//
+//        User currentUser = userService.getUserById(details.getId());
+//        modelAndView.addObject("currentUser", currentUser);
+//        modelAndView.addObject("event", event);
+//        modelAndView.addObject("userAges",userAges);
+//        return modelAndView;
+//    }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @PostMapping("/{eventId}/reset-winners")
@@ -234,19 +243,21 @@ public class EventController {
 
         return modelAndView;
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/tournaments/export/csv/{eventId}")
     public void EventCsvExport(@PathVariable UUID eventId, HttpServletResponse response) {
 
         eventService.exportEventDetailsAsCsv(eventId,response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/tournaments/export/pdf/{eventId}")
     public void EventPdfExport(@PathVariable UUID eventId, HttpServletResponse response) {
 
         eventService.exportEventDetailsAsPDF(eventId,response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/{eventId}/export/{userId}")
     public void exportUserExamProtocolPDF(@PathVariable UUID eventId, @PathVariable UUID userId, HttpServletResponse response){
         eventService.exportPDFExamProtocolForUser(eventId,userId,response);

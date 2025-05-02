@@ -434,15 +434,9 @@ public class EventService {
 
             PdfPCell cellNum = createHeaderCell("№", headerFont);
             PdfPCell header1 = createHeaderCell("Име и Фамилия", headerFont);
-//            PdfPCell header2 = createHeaderCell("Фамилия", headerFont);
             PdfPCell header3 = createHeaderCell("Град", headerFont);
             PdfPCell header4 = createHeaderCell("Тегло", headerFont);
             PdfPCell header5 = createHeaderCell("Дата на раждане", headerFont);
-//            PdfPCell header4 = createHeaderCell("Група", headerFont);
-//            PdfPCell header5 = createHeaderCell("Тегло", headerFont);
-//            PdfPCell header6 = createHeaderCell("Години", headerFont);
-//            PdfPCell header7 = createHeaderCell("Степен", headerFont);
-//            PdfPCell header8 = createHeaderCell("Мед. преглед", headerFont);
 
             addCellsToTable(table,cellNum,header1,header3,header4,header5);
 // Добавяне на заглавията към таблицата
@@ -464,14 +458,9 @@ public class EventService {
 
                 PdfPCell cellN = createCell(String.valueOf(number), font);
                 PdfPCell cell1 = createCell(u.getFirstName() + ' ' + u.getLastName(), font);
-//                PdfPCell cell2 = createCell(u.getLastName(), font);
                 PdfPCell cell3 = createCell("Асеновград", font);
                 PdfPCell cell5 = createCell(birthdateFormatter, font);
-//                PdfPCell cell4 = createCell(ageGroupDescription, font);
                 PdfPCell cell4 = createCell((u.getWeight() + " кг."), font);
-//                PdfPCell cell6 = createCell((userService.calculateAge(u.getBirthDate()) + " г."), font);
-//                PdfPCell cell7 = createCell(u.getReachedDegree().getDescription(), font);
-//                PdfPCell cell8 = createCell(medicalExamFormatter, font);
 
                 addCellsToTable(table, cellN,
                                         cell1,
