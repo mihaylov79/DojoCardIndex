@@ -309,7 +309,7 @@ public class UserService implements UserDetailsService {
                                                         .toList();
 
         notificationList.forEach(user -> {
-            String content = "Наближава време за подновяване на медицинският Ви преглед! До %s трябва да преминете прегледа. Моля уведомете треньорите за този мейл."
+            String content = "Наближава време за подновяване на медицинския Ви преглед! Желателно е това да се случи до %s. Моля уведомете треньорите за този мейл."
                                                                         .formatted(user.getMedicalExamsPassed().plusYears(1)
                                                                         .format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")));
             try {
