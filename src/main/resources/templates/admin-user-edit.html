@@ -98,6 +98,12 @@
         </div>
 
         <div class="field">
+             <label for="field-medicalExamsPassed">Преминал медицински преглед</label>
+             <input type="date" id="field-medicalExamsPassed" th:field="*{medicalExamsPassed}" placeholder="">
+             <span th:if="${#fields.hasErrors('medicalExamsPassed')}" th:errors="*{medicalExamsPassed}"></span>
+        </div>
+
+        <div class="field">
             <label for="field-contactPerson">Лице за контакт</label>
             <input type="text" id="field-contactPerson" th:field="*{contactPerson}" placeholder="">
         </div>

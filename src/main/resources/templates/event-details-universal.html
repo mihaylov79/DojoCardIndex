@@ -46,7 +46,8 @@
                       sec:authorize="hasAnyRole('ADMIN','TRAINER')"
                       th:action="@{/events/{eventId}/update-degree/{userId}(eventId=${event.id}, userId=${user.id})}"
                       th:method="PUT">
-                    <select name="newDegree">
+                    <label for="newDegree">Степен</label>
+                    <select id="newDegree"  name="newDegree">
                         <option th:each="degree : ${degrees}"
                                 th:value="${degree.name()}"
                                 th:text="${degree.description}"
