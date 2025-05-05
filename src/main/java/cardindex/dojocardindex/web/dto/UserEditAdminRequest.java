@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.web.dto;
 
 import cardindex.dojocardindex.User.models.*;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,9 +30,11 @@ public class UserEditAdminRequest {
 
     private AgeGroup ageGroup;
 
-    private int height;
+    @PositiveOrZero
+    private double height;
 
-    private int weight;
+    @PositiveOrZero
+    private double weight;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate medicalExamsPassed;

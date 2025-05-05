@@ -75,10 +75,10 @@ public class User {
     private boolean isCompetitor;
 
     @Column
-    private int height;
+    private double height;
 
     @Column
-    private int weight;
+    private double weight;
 
     @Column(name = "medical_exams_passed")
     private LocalDate medicalExamsPassed;
@@ -127,7 +127,7 @@ public class User {
     }
 
 
-    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, int height, int weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, ForgottenPasswordToken resetToken, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests, Set<EventParticipationRequest> processedRequests) {
+    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, double height, double weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, ForgottenPasswordToken resetToken, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests, Set<EventParticipationRequest> processedRequests) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -254,12 +254,12 @@ public class User {
 //        isCompetitor = competitor;
 //    }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 

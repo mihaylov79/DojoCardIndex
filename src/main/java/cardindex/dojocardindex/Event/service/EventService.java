@@ -292,7 +292,7 @@ public class EventService {
 
             writer.println("Име,Фамилия,Дата на раждане,Категория,Тегло,Възраст,Степен,Мед. преглед");
 
-            users.stream().forEach(u -> writer.printf("%s,%s,%s,%s,%d,%d,%s,%s%n",
+            users.stream().forEach(u -> writer.printf("%s,%s,%s,%s,%f,%d,%s,%s%n",
                     u.getFirstName(),
                     u.getLastName(),
                     u.getBirthDate(),

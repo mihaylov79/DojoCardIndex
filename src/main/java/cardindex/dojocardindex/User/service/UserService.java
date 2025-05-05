@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -297,6 +298,7 @@ public class UserService implements UserDetailsService {
         return ChronoUnit.DAYS.between(LocalDate.now(), lastMedicalExam.plusYears(1));
     }
 
+//    @Scheduled(fixedDelay = 60000)
     @Scheduled(cron = "0 0 0 * * MON ")
     public void notifyMedicalExamExpiration(){
 
@@ -307,7 +309,9 @@ public class UserService implements UserDetailsService {
                                                         .toList();
 
         notificationList.forEach(user -> {
-            String content = "Наближава време за подновяване на медицинският Ви преглед! До %s трябва да преминете прегледа. Моля уведомете треньорите за този мейл.".formatted(user.getMedicalExamsPassed().plusYears(1));
+            String content = "Наближава време за подновяване на медицинският Ви преглед! До %s трябва да преминете прегледа. Моля уведомете треньорите за този мейл."
+                                                                        .formatted(user.getMedicalExamsPassed().plusYears(1)
+                                                                        .format(DateTimeFormatter.ofPattern("dd-MM-yyy ' г.'")));
             try {
                 notificationService.sendNotification(user.getId(), user.getFirstName(), user.getLastName(), "Предстоящи медицински прегледи!",content);
             } catch (Exception e) {

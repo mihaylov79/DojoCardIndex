@@ -32,10 +32,10 @@ public class EditUserProfileRequest {
     private String interests;
 
     @Positive(message = "Въведената стойност трябва да бъде цяло, положително число")
-    private int height;
+    private double height;
 
     @Positive(message = "Въведената стойност трябва да бъде цяло, положително число")
-    private int weight;
+    private double weight;
 
     private String contactPerson;
 
