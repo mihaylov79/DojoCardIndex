@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактиране на потребителските данни</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/addUser.css">
+<!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" href="/css/default-test.css">
+<!--    <link rel="stylesheet" href="/css/addUser.css">-->
+    <link rel="stylesheet" href="/css/login-test.css">
 </head>
 <body>
     <header>
@@ -19,6 +21,7 @@
         <input type="hidden" name="id" th:value="${user.id}"/>
         <h2>Редактиране</h2>
         <h4 class="acc-holder" th:text="'Потребител: ' + ${user.firstName} + ' ' + ${user.lastName}"></h4>
+        <span class="credentials-error"></span>
 
 
 
@@ -87,13 +90,13 @@
 
         <div class="field">
             <label for="field-height">Височина (см)</label>
-            <input type="number" id="field-height" th:field="*{height}" placeholder="" min="0">
+            <input type="number" step="0.1" id="field-height" th:field="*{height}" placeholder="" min="0">
             <span class="errors" th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
         </div>
 
         <div class="field">
             <label for="field-weight">Тегло (кг)</label>
-            <input type="number" id="field-weight" th:field="*{weight}" placeholder="" min="0">
+            <input type="number" step="0.1" id="field-weight" th:field="*{weight}" placeholder="" min="0">
             <span class="errors" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></span>
         </div>
 

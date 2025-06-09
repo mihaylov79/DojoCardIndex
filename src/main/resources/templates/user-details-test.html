@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.firstName} + ' ' + ${user.lastName}"></title>
+    <!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" href="/css/default-test.css">
+    <!--    <link rel="stylesheet" href="/css/user-details.css">-->
+    <link rel="stylesheet" href="/css/home-test.css">
+</head>
+<body>
+<header>
+
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
+</header>
+<div class="main-container">
+<div class="user-info">
+    <div class="user-bio">
+    <table class="info">
+        <tr>
+            <th><img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="Профилна снимка"></th>
+            <td class = "user-buttons">
+                <button onclick="window.location.href='/users/list'">Регистрирани потребители</button>
+                <button onclick="window.location.href='/users/list/active'">Активни потребител</button>
+                <button onclick="window.location.href='/home'">Профилна страница</button>
+            </td>
+        </tr>
+        <tr><th>Име</th><td th:text="${user.firstName}"></td></tr>
+        <tr><th>Фамилия</th><td th:text="${user.lastName}"></td></tr>
+        <tr><th>Поща</th><td th:text="${user.email}"></td></tr>
+        <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${user.birthDate}"></td></tr>
+        <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.description}"></td></tr>
+        <tr th:if="${user.interests} != null"><th>Интереси</th><td th:text="${user.interests}"></td></tr>
+        <tr th:if="${user.role != null}"><th>Позиция в клуба</th><td th:text="${user.role.description}"></td></tr>
+        <tr th:if="${user.isCompetitor} == true"><th>Статус</th><td>Състезател</td></tr>
+        <tr th:if="${user.ageGroup} != null"><th>Възрастова група</th><td th:text="${user.ageGroup.description}"></td></tr>
+        <tr th:if="${user.height} != 0"><th>Ръст</th><td th:text="${user.height}"></td></tr>
+        <tr th:if="${user.weight} != 0"><th>Тегло</th><td th:text="${user.weight}"></td></tr>
+        <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${user.contactPerson} != null"><th>Лице за контакт</th><td th:text="${user.contactPerson}"></td></tr>
+        <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${user.contactPersonPhone} != null"><th>Телефон</th><td th:text="${user.contactPersonPhone}"></td></tr>
+        <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${user.medicalExamsPassed} != 0"><th>Медицински преглед</th><td th:text="${user.medicalExamsPassed}"></td></tr>
+    </table>
+    </div>
+</div>
+</div>
+</body>

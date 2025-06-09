@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Изпращане на съобщение</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/replay.css">
+<!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/reply-test.css">
+<!--    <link rel="stylesheet" href="/css/replay.css">-->
 
 <body>
 <header>
@@ -14,9 +16,10 @@
 
 
 </header>
-
+<div class="main-container">
 <div class="container-send">
     <h2>Изпрати съобщение</h2>
+    <span class="credentials-error"></span>
     <form th:action="@{/messages/send}" th:method="POST" th:object="${sendMessageRequest}">
         <label for="recipient">Получател:</label>
         <select id="recipient" name="recipient" th:field="*{recipient}" required>
@@ -33,7 +36,10 @@
         <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
         <button type="submit">Изпрати</button>
     </form>
+    <div class="back-link">
     <a href="/home">Назад</a>
+    </div>
+</div>
 </div>
 </body>
 </html>

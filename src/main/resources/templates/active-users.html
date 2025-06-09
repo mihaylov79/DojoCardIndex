@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Списък с потребители</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/users-list2.css">
+<!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" href="/css/default-test.css">
+<!--    <link rel="stylesheet" href="/css/users-list2.css">-->
+    <link rel="stylesheet" href="/css/users-list2_test.css">
 </head>
 <body>
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
+<div class="main-container">
 <div class="table-container">
     <table>
         <caption>
@@ -19,6 +22,7 @@
             <!--                <button th:attr="onclick=|location.href='/users/list'|">Регистрирани потребители</button>-->
             <!--            </div>-->
             <div class="caption-right">Списък с активните потребители в клуб "Драгон Доджо ДСД"</div></caption>
+        <thead>
         <tr>
             <th>Снимка</th>
             <th>Име</th>
@@ -31,46 +35,47 @@
             <th>Статус на акаунта</th>
             <th>Действие</th>
         </tr>
+        </thead>
         <tr th:each="user:${active}">
             <td>
                 <a th:href="@{/users/details/{id}(id=${user.id})}">
                 <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
                 </a>
             </td>
-            <td th:text="${user.firstName}">
+            <td data-label="Име" th:text="${user.firstName}">
 
             </td>
-            <td th:text="${user.lastName}">
-
-            </td>
-
-            <td th:text="${user.email}">
+            <td data-label="Фамилия" th:text="${user.lastName}">
 
             </td>
 
-            <td th:text="${user.birthDate == null}  or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>">
-
-
-            <td th:text="${user.reachedDegree?.description ?: '-'}">
+            <td data-label="Поща" th:text="${user.email}">
 
             </td>
 
-            <td th:if="${user.isCompetitor} == true">Състезател
+            <td data-label="Възраст" th:text="${user.birthDate == null}  or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>">
+
+
+            <td data-label="Защитена степен" th:text="${user.reachedDegree?.description ?: '-'}">
 
             </td>
 
-            <td th:if="${user.isCompetitor} == false"> -
+            <td data-label="Състезателен статус" th:if="${user.isCompetitor} == true">Състезател
 
             </td>
 
-            <td th:text="${user.status.description}">
+            <td data-label="Състезателен статус" th:if="${user.isCompetitor} == false"> -
+
+            </td>
+
+            <td data-label="Статус на акаунта" th:text="${user.status.description}">
 
             </td>
 
             <!--                </td>-->
 
             <!--                <td th:text="${user.registrationStatus.description}">-->
-            <td th:text="${user.registrationStatus?.description}">
+            <td data-label="Статус на регистрация" th:text="${user.registrationStatus?.description}">
 
             </td>
 
@@ -95,6 +100,6 @@
         </tr>
     </table>
 </div>
-
+</div>
 </body>
 </html>

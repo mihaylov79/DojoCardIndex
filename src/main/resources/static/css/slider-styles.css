@@ -1,0 +1,88 @@
+.swiper {
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*.swiper-slide {*/
+/*    background-position: center;*/
+/*    background-size: cover;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
+
+/*.swiper{*/
+/*    !*background-color: black;*!*/
+/*    border-bottom: solid 2px var(--red-main);*/
+/*    border-top: solid 2px var(--red-main);*/
+/*}*/
+
+/*---границите на слайдъра---*/
+.swiper {
+    padding: 2em 0;
+    position: relative;
+    /* background-color: black; */
+}
+
+.swiper::before,
+.swiper::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.swiper::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.swiper::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.swiper::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.swiper::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+
+.swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background-position: center;*/
+
+    /*background: #000; !* по избор – за контраст *!*/
+}
+
+.swiper-slide img {
+    width: auto;
+    height: 90%;
+    object-fit: cover;
+    border-radius: 10px;
+    /*opacity: 0.7;*/
+
+}
+
+/*.swiper-slide img {*/
+/*    width: 70%;        !* снимката е по-малка *!*/
+/*    height: auto;      !* автоматична височина *!*/
+/*    object-fit: contain;*/
+/*    !*opacity: 0.8;*!*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); !* по желание – сянка *!*/
+/*}*/

@@ -1,0 +1,204 @@
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgba(0, 0, 0, 0.2);
+    --black: #000000;
+    --white: #ffffff;
+}
+
+/* Контейнер на таблицата */
+.table-container {
+    width: 95%;
+    margin: 40px auto;
+    overflow-x: auto;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+/* Таблица */
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--white);
+    color: var(--black);
+}
+
+/* Заглавие */
+.table-container caption {
+    text-align: left;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #222;
+    width: 90vw;
+}
+
+/* Хедър */
+.table-container th {
+    background-color: #f0f2f5;
+    color: var(--red-main);
+    padding: 12px 8px;
+    text-align: center;
+}
+
+/* Клетки */
+.table-container td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--red-main);
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table-container td ul {
+    list-style-type: none;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Снимка */
+.table-container img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/*!* Контейнер с бутони *!*/
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em; /* разстояние между бутоните */
+}
+
+.actions form,
+.actions button {
+    width: 100%;
+}
+
+
+/* Стил за бутони */
+.actions button,
+.actions form button {
+    color: var(--red-main);
+    font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    /*background: none;*/
+
+}
+
+.actions button:hover,
+.actions form button:hover {
+    font-weight: 650;
+    /*background-color: var(--red-main);*/
+    /*color: white;*/
+}
+
+/*---границите на слайдъра---*/
+.main-container {
+    padding: 2em 0;
+    position: relative;
+}
+
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.main-container::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+/* Responsive таблица */
+@media screen and (max-width: 1370px) {
+    .table-container table,
+    .table-container thead,
+    .table-container tbody,
+    .table-container th,
+    .table-container td,
+    .table-container tr {
+        display: block;
+    }
+
+    .table-container thead tr {
+        display: none;
+    }
+
+    .table-container tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--red-main);
+        border-radius: 10px;
+        padding: 0.5rem;
+        background-color: var(--white);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-container td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table-container td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-weight: bold;
+        color: var(--red-main);
+        white-space: nowrap;
+        text-align: left;
+    }
+
+    .table-container img {
+        margin: 0 auto;
+        display: block;
+    }
+
+    .actions {
+        text-align: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .table-container table {
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+}

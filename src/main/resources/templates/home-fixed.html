@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="60">
     <title th:text="'Добре дошъл ' + ${user.firstName} + ' ' + ${user.lastName}"></title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/home.css">
+<!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+<!--    <link rel="stylesheet" href="/css/home.css">-->
+    <link rel="stylesheet" href="/css/home-test.css">
 </head>
 
 <body>
@@ -18,6 +20,24 @@
     </header>
 
     <div class="main-container">
+        <div class="admin-panel-wrapper" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
+            <div class="admin-toggle">АДМИН ПАНЕЛ ▾</div>
+            <div class="admin-menu">
+                <ul>
+                    <li><a th:href="@{/admin/add-user}">Добави нов потребител</a></li>
+                    <li><a th:href="@{/users/list}">Регистрирани потребители</a></li>
+                    <li><a th:href="@{/users/list/active}">Активни потребители</a></li>
+                    <li><a th:href="@{/admin/users/list/all-users}">Всички потребители</a></li>
+                    <li><a th:href="@{/admin/register-requests}">Заявки за регистрация</a></li>
+                    <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>
+                    <li><a th:href="@{/events/new}">Добавяне на събитие</a></li>
+                    <li><a th:href="@{/events/requests/pending}">Чакащи заявки за участие</a></li>
+                    <li><a th:href="@{/events/requests/not-pending}">Обработени заявки</a></li>
+                    <li><a th:href="@{/status}" sec:authorize="hasRole('ADMIN')">Състояние на системата</a></li>
+                </ul>
+            </div>
+        </div>
+
         <div class="user-info">
             <div class="user-bio">
                 <table class="info">
@@ -43,9 +63,9 @@
                     <tr th:if="${user.isCompetitor} == true"><th>Статус</th><td>състезател</td></tr>
                     <tr th:if="${user.ageGroup} != null"><th>Възрастова група</th><td th:text="${user.ageGroup.description}"></td></tr>
 <!--                    <tr><th>Категория</th><td th:text="${user.category}"></td></tr>-->
-                    <tr th:if="${user.height} != 0"><th>Ръст</th><td th:text="${user.height}"></td></tr>
-                    <tr th:if="${user.weight} != 0"><th>Тегло</th><td th:text="${user.weight}"></td></tr>
-                    <tr th:if="${user.medicalExamsPassed} != null"><th>Медицински преглед</th><td th:text="${user.medicalExamsPassed}"></td></tr>
+                    <tr th:if="${user.height} != 0"><th>Ръст</th><td th:text="${user.height} + ' см.'"></td></tr>
+                    <tr th:if="${user.weight} != 0"><th>Тегло</th><td th:text="${user.weight} + ' кг.'"></td></tr>
+                    <tr th:if="${user.medicalExamsPassed} != null"><th>Медицински преглед</th><td th:text="${#temporals.format(user.medicalExamsPassed, 'dd-MM-yyyy г.')}"></td></tr>
                     <tr th:if="${user.contactPerson != null and !#strings.isEmpty(user.contactPerson)}"><th>Лице за контакт</th><td th:text="${user.contactPerson}"></td></tr>
                     <tr th:if="${user.contactPersonPhone} != null"><th>Телефон</th><td th:text="${user.contactPersonPhone}"></td></tr>
                 </table>

@@ -124,7 +124,7 @@ public class UserController {
         User user = userService.getUserById(id);
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user-details");
+        modelAndView.setViewName("user-details-test");
         modelAndView.addObject("user", user);
         modelAndView.addObject("currentUser", currentUser);
 

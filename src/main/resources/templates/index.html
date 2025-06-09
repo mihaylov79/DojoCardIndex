@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Dojo - следвай пътя на карате</title>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+<!--    <link rel="stylesheet" th:href="@{/css/default.css}">-->
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/slider-styles.css}">
 </head>
 <body>
     <header>
@@ -19,7 +25,37 @@
             <h2>Dragon Dojo</h2>
             <p>следвай пътя на карате</p>
 
+            </div>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="/images/slides/image1.jpg" alt="Снимка 1"></div>
+                <div class="swiper-slide"><img src="/images/slides/image2.jpg" alt="Снимка 2"></div>
+                <div class="swiper-slide"><img src="/images/slides/image3.jpg" alt="Снимка 3"></div>
+                <div class="swiper-slide"><img src="/images/slides/image4.jpg" alt="Снимка 4"></div>
+                <div class="swiper-slide"><img src="/images/slides/image5.jpg" alt="Снимка 5"></div>
+                <div class="swiper-slide"><img src="/images/slides/image6.jpg" alt="Снимка 5"></div>
+                <div class="swiper-slide"><img src="/images/slides/image7.jpg" alt="Снимка 5"></div>
+                <div class="swiper-slide"><img src="/images/slides/image8.jpg" alt="Снимка 5"></div>
+                <div class="swiper-slide"><img src="/images/slides/image9.jpg" alt="Снимка 5"></div>
+                <div class="swiper-slide"><img src="/images/slides/image10.jpg" alt="Снимка 5"></div>
+            </div>
         </div>
+
+        <!-- Swiper JS -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+        <!-- Инициализация -->
+        <script>
+            const swiper = new Swiper('.swiper', {
+                slidesPerView: 3,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+            });
+        </script>
         
         
         
