@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавяне на ново събитие</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/new-event.css">
+
+</head>
+<body>
+<header>
+<th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<form th:action="@{'/events/edit/' + ${event.id}}" method="POST" th:object="${editEventRequest}">
+    <input type="hidden" name="_method" value="PUT"/>
+    <h2>Редактиране на събитие</h2>
+
+    <label for="eventType">Тип събитие:</label>
+    <select id="eventType" name="eventType" th:field="*{eventType}">
+        <option th:each="eventType : ${T(cardindex.dojocardindex.Event.models.EventType).values()}" th:value="${eventType}" th:text="${eventType.description}" value=""></option>
+    </select>
+
+    <label for="eventDescription">Описание:</label>
+    <textarea id="eventDescription" name="eventDescription" th:field="*{eventDescription}"></textarea>
+
+    <label for="startDate">Начална дата:</label>
+    <input type="date" id="startDate" name="startDate" th:field="*{startDate}" />
+
+    <label for="endDate">Крайна дата:</label>
+    <input type="date" id="endDate" name="endDate" th:field="*{endDate}" />
+
+    <label for="requirements">Изисквания:</label>
+    <select id="requirements" name="requirements" th:field="*{requirements}">
+        <option th:each="requirements : ${T(cardindex.dojocardindex.Event.models.Requirements).values()}" th:value="${requirements}" th:text="${requirements.description}" value=""></option>
+    </select>
+
+    <label for="location">Местоположение:</label>
+    <input type="text" id="location" name="location" th:field="*{location}" />
+
+    <button type="submit">Запази промените</button>
+</form>
+
+</body>
+</html>

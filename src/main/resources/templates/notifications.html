@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="bg"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки за известия</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/notifications.css">
+</head>
+
+<body>
+    <header>
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    </header>
+
+    <div class="main-container">
+        <div class="notification-settings">
+            <div>
+            <h2>Статус на известията за потребител: <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span></h2>
+            </div>
+            <div>
+            <h2><span class="status" th:text="${notificationPreference.enabled ? 'Включени' : 'Изключени'}"
+                      th:classappend="${notificationPreference.enabled ? 'enabled' : 'disabled'}"></span></h2>
+            </div>
+            <div>
+                <form th:action="@{/notifications/user-preference}" th:method="PUT">
+                    <input type="hidden" name="_method" value="put"/>
+                    <input type="hidden" name="userId" th:value="${user.id}" />
+                    <input type="hidden" name="enabled" th:value="${!notificationPreference.enabled}" />
+
+                    <button type="submit">
+                        <span th:text="${notificationPreference.enabled ? 'Изключи' : 'Включи'}"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="notification-history">
+            <table>
+                <div>
+                    <form th:action="@{/notifications}" th:method="DELETE">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <input type="hidden" name="recipientId" th:value="${user.id}" />
+                        <button type="submit">Изчисти историята
+                        </button>
+                    </form>
+                </div>
+                <caption>История на известията</caption>
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Тема</th>
+                        <th>Изпратено</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="notification : ${notificationHistory}">
+                        <td th:text="${#temporals.format(notification.created,'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${notification.title}"></td>
+                        <td th:text="${notification.status == 'COMPLETED' ? 'УСПЕШНО' : 'НЕУСПЕШНО'}"
+                            th:classappend="${notification.status == 'COMPLETED' ? 'enabled' : 'disabled'}">></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="back">
+           <a th:href="@{/home}">Обратно</a>
+        </p>
+
+    </div>
+</body>
+
+</html>

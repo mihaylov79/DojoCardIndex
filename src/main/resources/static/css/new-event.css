@@ -1,0 +1,80 @@
+.form {
+    margin-top: 4em;
+    display: flex;
+    justify-content: center;
+}
+
+h2 {
+    color: #e18e09;
+    text-align: center;
+}
+
+form {
+    font: 1.6em "Caveat";
+    margin: 0 auto;
+    width: 35ch;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0.3em;
+    padding: 2em 2.5em;
+    box-shadow: 0 0 0.5em 0 rgba(0, 0, 0, 0.1);
+}
+
+textarea,
+input[type="text"],
+input[type="date"],
+select {
+    display: block;
+    width: 100%;
+    border: none;
+    padding: 0.3em 0;
+    outline: none;
+    font: 1.2em "Caveat";
+    background: transparent;
+    color: #e18e09;
+    border-bottom: 2px solid;
+    margin-bottom: 1em;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+    border-color: #e18e09;
+}
+
+button[type="submit"] {
+    cursor: pointer;
+    border-radius: 0.3em;
+    margin-top: 2em;
+    font-weight: bold;
+    font: 1.2em "Caveat";
+    /*font-size: 1em;*/
+    background: rgba(0, 0, 0, 0.6);
+    color: #e18e09;
+    width: 100%;
+    padding: 0.2em;
+    border: none;
+    /*border: 2px solid #e18e09;*/
+}
+
+button[type="submit"]:hover,
+button[type="submit"]:focus {
+    background: #e18e09;
+    color: black;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    padding: 1em 0;
+    position: relative;
+}
+
+label {
+    font-weight: bold;
+    color: #e18e09;
+    opacity: 0.8;
+}
+
+h2 {
+    margin-bottom: 1em;
+}

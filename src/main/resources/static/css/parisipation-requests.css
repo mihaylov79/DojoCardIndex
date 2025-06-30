@@ -1,0 +1,89 @@
+/* Основни стилове */
+body {
+    font-family: "Caveat", cursive;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: #e18e09;
+}
+
+
+
+/* Заглавия */
+h1, h2 {
+    margin: 0 auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    font-size: 2vw;
+    color: #e18e09;
+}
+
+/* Контейнер за таблицата */
+.table-container, .title-container {
+    margin: 0 auto;
+    padding: 20px;
+    width: 90vw;
+}
+
+/* Таблица */
+table {
+    margin: 0 auto;
+    border-radius: 0.3em;
+    color: #e18e09;
+    border-collapse: separate;
+    border-spacing: 0 0.3em;
+    font-size: 1.5vw;
+    width: 100%;
+}
+
+th, td {
+    padding: 0.1em 0.3em;
+    text-align: center;
+}
+
+tr {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 0.3em;
+}
+
+caption {
+    text-align: end;
+    margin: 0.2em 0;
+    padding: 0.1em 0.3em;
+    font-size: 1.6vw;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Бутони */
+button {
+    cursor: pointer;
+    border-radius: 0.3em;
+    margin: 0.3em;
+    font-weight: bold;
+    font-size: 1.4vw;
+    background: rgba(0, 0, 0, 0.6);
+    color: #e18e09;
+    width: 80%;
+    padding: 0.3em;
+    border: none;
+}
+
+button:hover,
+button:focus {
+    background: #e18e09;
+    color: black;
+}
+
+/* Списък на участниците */
+ul {
+    list-style-type: none;
+}
+
+.text-success {
+    color: #3FFF00;
+}
+
+.text-danger {
+    color: red;
+}

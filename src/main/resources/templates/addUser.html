@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавяне на нов потребител</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/addUser.css">
+</head>
+<body>
+    <header>
+
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
+
+    </header>
+    <div class="form">
+        <form th:action="@{/admin/add-user}" th:method="POST" class="register" th:object="${createUserRequest}">
+            <h2>Нов потребител</h2>
+            <span th:text="${emailAlreadyInUse}" class="errors"></span>
+
+            <div class="field">
+                <label for="email">Електронна поща</label>
+                <input type="email" id="email" th:field="*{email}" placeholder="" required>
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="errors"></span>
+            </div>
+
+            <!-- <div class="field">
+                <label for="password">Парола</label>
+                <input type="password" id="password" th:field="*{password}" placeholder="" required>
+            </div> -->
+
+            <div class="field">
+                <label for="firstName">Име</label>
+                <input type="text" id="firstName" th:field="*{firstName}" placeholder="">
+                <span class="errors" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            </div>
+
+            <div class="field">
+                <label for="lastName">Фамилия</label>
+                <input type="text" id="lastName" th:field="*{lastName}" placeholder="">
+                <span class="errors" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+            </div>
+
+            <div class="field">
+                <label for="userPhone">Телефон</label>
+                <input type="text" id="userPhone" th:field="*{userPhone}" placeholder="">
+                <span class="errors" th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}"></span>
+            </div>
+
+            <div class="field">
+                <label for="profilePicture">Снимка (URL)</label>
+                <input type="text" id="profilePicture" th:field="*{profilePicture}" placeholder="">
+                <span class="errors" th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}"></span>
+            </div>
+
+            <div class="field">
+                <label for="birthDate">Дата на раждане</label>
+                <input type="date" id="birthDate" th:field="*{birthDate}" >
+                <span class="errors" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
+            </div>
+
+            <div class="field">
+                <label for="role">Роля</label>
+                <select id="role" th:field="*{role}">
+                    <option th:each="role : ${T(cardindex.dojocardindex.User.models.UserRole).values()}" th:value="${role}" th:text="${role.description}" value="USER"></option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="reachedDegree">Защитена степен</label>
+                <select id="reachedDegree" th:field="*{reachedDegree}">
+                    <option th:each="reachedDegree : ${T(cardindex.dojocardindex.User.models.Degree).values()}" th:value="${reachedDegree}" th:text="${reachedDegree.description}" value=""></option>
+                </select>
+                <span class="errors" th:if="${#fields.hasErrors('reachedDegree')}" th:errors="*{reachedDegree}"></span>
+            </div>
+
+            <div class="field">
+                <label for="isCompetitor">Състезател</label>
+                <input type="checkbox" id="isCompetitor" th:field="*{isCompetitor}">
+                <span class="errors" th:if="${#fields.hasErrors('isCompetitor')}" th:errors="*{isCompetitor}"></span>
+            </div>
+
+            <div class="field">
+                <label for="field-ageGroup">Възрастова група</label>
+                <select id="field-ageGroup" th:field="*{ageGroup}">
+                    <option th:each="agrGroup : ${T(cardindex.dojocardindex.User.models.AgeGroup).values()}" th:value="${agrGroup}" th:text="${agrGroup.description}" value=""></option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="interests">Интереси</label>
+                <textarea id="interests" th:field="*{interests}" placeholder=""></textarea>
+            </div>
+
+            <input type="submit" class="button" value="Добави потребител">
+        </form>
+    </div>
+</body>
+</html>

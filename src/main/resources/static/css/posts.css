@@ -1,0 +1,219 @@
+.message-container {
+    margin: 20px;
+    color: #e18e09;
+}
+
+table {
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+    text-align: right;
+    padding-right: 0.3em;
+    font: 1.5em "Caveat";
+    border-radius: 0.5em;
+    background-color: rgb(0, 0, 0, 0.7);  /* Мрак фон за таблицата */
+    color: #e18e09;  /* Текста остава в златистия нюанс */
+    border-bottom: solid 1px #e18e09;
+}
+tr{
+    display: flex;
+    flex-direction: column;
+
+}
+
+th {
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+td {
+    font: 1.5em "Caveat";
+    padding: 0.1em;
+    /*background-color: rgb(0, 0, 0, 0.7); !* Теменужено черен фон за клетките *!*/
+    border-radius: 0.3em;
+}
+
+.caption {
+    text-align: right;
+    margin-left: 40%;
+    padding: 0.1em;
+    font: 1.3vw "Caveat", sans-serif;
+    background-color: rgb(0, 0, 0, 0.7); /* Задържаме полупрозрачност */
+    border-radius: 0.3em;
+    color: #e18e09; /* Златист цвят за надписите */
+}
+
+.posted {
+    margin: 0 auto;
+    display: flex;
+    align-content: end;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex: 1 1 60%;
+    /*background-color: rgb(0, 0, 0, 0.6); !* Полупрозрачен черен фон *!*/
+    max-width: 60%;
+    margin-top: 2em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    border-radius: 0.5em;
+}
+
+.user-info {
+    margin: 0 auto;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    border-radius: 0.3em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    color: #e18e09; /* Златист текст за информация */
+}
+
+.posted-by, .date {
+    font-size: 0.6em;
+    color: #e18e09;
+}
+
+.title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #e18e09; /* Заглавието също ще е в златистия нюанс */
+}
+
+.message-content {
+    padding-top: 10px;
+    font-size: 1.3em;
+    color: #e18e09;  /* Текста на съобщението ще е в златисто */
+    text-align: center;
+    width: 100%;
+}
+
+.comments-section {
+
+
+    padding-top: 10px;
+    font: 1.6em "Caveat";
+    border-radius: 0.3em;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #e18e09;
+    width: 100%;
+
+}
+
+.comments-section h5 {
+    text-align: right;
+    font-size: 1.1em;
+    padding: 0 0.5em;
+    font-style: italic;
+    text-decoration: underline;
+
+}
+
+.comments-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comments-section li {
+    padding: 0.5em;
+    border-bottom: 1px solid #e18e09;
+}
+
+.comment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-comment-btn {
+    background-color: transparent;
+    border-radius: 0.5em;
+    color: #e18e09;
+    border: none;
+    padding: 0.3em 0.5em;
+    font: 0.7em "Caveat";
+    cursor: pointer;
+}
+
+.delete-comment-btn:hover {
+
+    color: black;
+}
+
+
+/*.comments-section form {*/
+/*    margin-top: 1em;*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*    border: none;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
+
+/*.comments-section textarea {*/
+/*    width: 20em;*/
+/*    height: 2.5em;*/
+/*    background-color: rgba(0, 0, 0, 0.7);*/
+/*    border: none;*/
+/*    color: #e18e09;*/
+/*    padding: 0.5em;*/
+/*    border-radius: 0.3em;*/
+/*    font-size: 1.3em;*/
+/*}*/
+
+a {
+    display: flex;
+    justify-content: right;
+    text-decoration: none;
+    text-align: right;
+    padding: 0.1em 0.5em;
+    color: #e18e09;
+
+}
+
+/*a {*/
+/*    text-decoration: none;*/
+/*    font:1.3vw "Caveat";*/
+/*    color: #e18e09;*/
+/*    font-weight: bold;*/
+/*    padding: 0 1em;*/
+
+/*}*/
+
+.comments-section button:hover {
+    opacity: 0.8;
+}
+textarea {
+    width: 70%;
+    height: 1em;
+    background-color: #e18e09;
+    color: black;
+    border: none;
+    padding: 5px;
+    font: 1.5em "Caveat";
+}
+textarea:focus{
+    border: none;
+}
+button {
+    /*width: 25%;*/
+    /*height: 1em;*/
+    background-color: transparent;
+    border-radius: 0.5em;
+    color: #e18e09;
+    border: none;
+    padding: 0.1em;
+    font: 0.7em "Caveat";
+    cursor: pointer;
+}
+button:hover {
+    opacity: 0.8;
+}
+.comment-button:hover {
+    opacity: 0.8;
+
+}

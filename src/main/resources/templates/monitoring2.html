@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Състояние и показатели на системата</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .box {
+            width: 45%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        pre {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+
+</head>
+<body>
+<button onclick="window.location.href='/home'" style="
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+">
+    ⬅ Към профилната страница
+</button>
+<!--<header>-->
+<!--    <th:block th:insert="~{fragments/nav :: nav}"></th:block>-->
+<!--</header>-->
+
+<h1>Actuator Health & Metrics</h1>
+
+<div class="container">
+    <!-- Info -->
+    <div class="box">
+        <h2>Info</h2>
+        <div id="info-status">Loading...</div>
+    </div>
+
+    <!-- CPU Usage -->
+    <div class="box">
+        <h2>CPU Usage</h2>
+        <div id="cpu-usage">Loading...</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Health -->
+    <div class="box">
+        <h2>Health</h2>
+        <div id="health-status">Loading...</div>
+    </div>
+
+    <!-- JVM Memory Used -->
+    <div class="box">
+        <h2>JVM Memory Used</h2>
+        <div id="jvm-memory">Loading...</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Hikari Active Connections -->
+    <div class="box">
+        <h2>Hikari Active Connections</h2>
+        <div id="hikari-active">Loading...</div>
+    </div>
+
+    <!-- Hikari Idle Connections -->
+    <div class="box">
+        <h2>Hikari Idle Connections</h2>
+        <div id="hikari-idle">Loading...</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- HTTP Requests -->
+    <div class="box">
+        <h2>HTTP Requests</h2>
+        <div id="http-requests">Loading...</div>
+    </div>
+
+    <!-- GC Pause -->
+    <div class="box">
+        <h2>GC Pause</h2>
+        <div id="gc-pause">Loading...</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Tomcat Active Sessions -->
+    <div class="box">
+        <h2>Tomcat Active Sessions</h2>
+        <div id="tomcat-sessions">Loading...</div>
+    </div>
+</div>
+
+<script>
+    // Функция за извикване на API ендпойнт
+    async function fetchActuatorData(url, elementId) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('API не отговори правилно.');
+            }
+            const data = await response.json();
+            document.getElementById(elementId).innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        } catch (error) {
+            document.getElementById(elementId).innerHTML = `<span class="error">Грешка: ${error.message}</span>`;
+        }
+    }
+
+    // Извикване на всички метрики
+    fetchActuatorData('http://localhost:8080/actuator/health', 'health-status');
+    fetchActuatorData('http://localhost:8080/actuator/info', 'info-status');
+    // fetchActuatorData('http://localhost:8080/actuator/metrics/disk.free', 'disk-free');
+    // fetchActuatorData('http://localhost:8080/actuator/metrics/disk.total', 'disk-total');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/hikaricp.connections.active', 'hikari-active');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/hikaricp.connections.idle', 'hikari-idle');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/http.server.requests', 'http-requests');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/tomcat.sessions.active.current', 'tomcat-sessions');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/system.cpu.usage', 'cpu-usage');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/jvm.gc.pause', 'gc-pause');
+    fetchActuatorData('http://localhost:8080/actuator/metrics/jvm.memory.used', 'jvm-memory');
+</script>
+</body>
+</html>

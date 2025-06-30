@@ -1,0 +1,188 @@
+/* User-specific styles */
+
+.main-container {
+    margin: 0 auto;
+    width: 95vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    padding: 0.5em;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 0.3em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 90vw;
+}
+
+.contact-person {
+    align-self: start;
+}
+
+.user-info table {
+    width: 100%;
+}
+
+.messages {
+    margin: 0 auto;
+    width: 100vw;
+    display: flex;
+    gap: 1em;
+}
+
+table {
+    margin: 0 auto;
+    border-radius: 0.3em;
+    color: #e18e09;
+    border-collapse: separate;
+    border-spacing: 0 0.3em;
+    font: 1.3vw "Caveat";
+    width: 45vw;
+}
+
+tr, td, th {
+    padding: 0.1em 0.3em 0.2em 0.3em;
+    text-align: center;
+}
+
+tr {
+    margin-bottom: 0.5em;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 0.3em;
+}
+
+caption {
+    text-align: end;
+    border-radius: 0.3em;
+    margin-left: 50%;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    padding: 0.1em;
+    padding-right: 0.3em;
+    font: 1.5vw "Caveat";
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+button {
+    background-color: #e18e09;
+    padding: 0.3em;
+    border-radius: 0.3em;
+    font: 1.3vw "Caveat";
+}
+.user-pic {
+    width: 95%;
+    display: flex;
+    justify-content:left;
+    align-self: first baseline;
+}
+
+.user-pic img {
+    width: 95%;
+    max-width: 250px; /* Или друга максимална широчина */
+    height: auto;
+    border-radius: 0.3em;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .main-container{
+        align-content: center;
+    }
+    .messages {
+        flex-direction: column;
+        align-items: first baseline;
+        align-content: space-around;
+        width: 95vw;
+        font-size: 1.3vw;
+    }
+
+    .user-info {
+        /* flex-direction: column; */
+        /* align-items: first baseline; */
+        align-content: space-around;
+        width: 95vw;
+        font-size: 1.3vw;
+    }
+   
+
+    .user-pic {
+        display: flex;
+        flex: 1 1 auto;
+        /* align-self:flex-start; */
+    }
+
+    /*.contact-person {*/
+    /*    */
+    /*    align-self:last auto;*/
+    /*}*/
+
+    table {
+        width: 90vw;
+        font-size: 2.3vw;
+    }
+
+    caption {
+        font-size: 2.6vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-info {
+        padding: 1em;
+    }
+
+    table {
+        font-size: 2.3vw;
+    }
+
+    caption {
+        font-size: 2.6vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info {
+        margin: 0 auto;
+        flex-direction: column;    
+        align-items: first baseline;
+        align-content: space-around;
+        width: 95vw;
+    }
+
+    .messages {
+        flex-direction: column;
+        flex: 1 1 auto;
+        align-items: center;
+        width: 95vw;
+    }
+
+    table {
+        width: 95vw;
+        font-size: 4vw;
+    }
+
+    caption {
+        font-size: 5.5vw;
+    }
+
+    /* @media(max-width: 1020px){
+
+        .messages{
+            flex-direction: column;
+            
+            flex: 1 1 auto;
+        }
+
+        .user-info{
+            flex-wrap: nowrap;
+            flex-direction: column;
+        }
+    } */
+}

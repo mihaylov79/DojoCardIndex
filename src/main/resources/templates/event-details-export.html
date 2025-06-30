@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детайли за събитието</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${event.eventDescription}">Име на събитието</h1>
+    <p><strong>Начало:</strong> <span th:text="${#temporals.format(event.startDate, 'dd.MM.yyyy')} + ' г.'">Описанието ще бъде тук</span></p>
+    <p><strong>Място:</strong> <span th:text="'гр/с ' + ${event.location}">Описанието ще бъде тук</span></p>
+
+    <h2>Участници</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Име</th>
+            <th>Фамилия</th>
+            <th>Дата на раждане</th>
+            <th>Категория</th>
+            <th>Тегло</th>
+            <th>Възраст</th>
+            <th>Степен</th>
+            <th>Мед. преглед</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="participant : ${event.users}">
+            <td th:text="${participant.firstName}"></td>
+            <td th:text="${participant.lastName}"></td>
+            <td th:text="${#temporals.format(participant.birthDate, 'dd.MM.yyyy')}"></td>
+            <td th:text="${participant.getAgeGroup()}"></td>
+            <td th:text="${participant.weight} + ' кг'"></td>
+            <td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]} +' г'"></td>
+<!--            td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]}"-->
+            <td th:text="${participant.reachedDegree.description}"></td>
+            <td th:text="${participant.medicalExamsPassed != null ? #temporals.format(participant.medicalExamsPassed, 'dd.MM.yyyy') : '-'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="actions">
+        <a th:href="@{'/events/tournaments/export/csv/' + ${event.id}}">
+            <button>Експорт в CSV</button>
+        </a>
+
+        <a th:href="@{'/events/tournaments/export/pdf/' + ${event.id}}">
+            <button>Експорт в PDF</button>
+        </a>
+    </div>
+</div>
+</body>
+</html>

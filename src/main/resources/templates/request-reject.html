@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отказ на заявка за участие</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/replay.css">
+</head>
+<body>
+
+<header>
+
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
+</header>
+<div class="container-replay">
+    <h2 th:text="'Заявка за участие от ' + ${request.user.firstName} + ' ' + ${request.user.lastName} +' за участие в ' + ${request.event.eventDescription}">Отговор на съобщение от ...</h2>
+    <form class="replay" th:action="@{/events/requests/reject/{id}(id=${request.id})}" th:method="PUT">
+        <input type="hidden" name="requestId" th:value="${request.id}" />
+        <label for="reason">Причина за отказа:</label>
+        <p th:text="${request.reason}"></p>
+        <textarea id="reason"  name="reason" placeholder="Причина за отказ....." required th:text="'Причина за отказа: '"></textarea>
+        <button type="submit">Отхвърли заявката</button>
+    </form>
+    <a href="/home">Назад</a>
+</div>
+</body>
+</html>

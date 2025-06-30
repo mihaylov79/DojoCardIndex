@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задаване на победители</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/set-winners.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="container">
+    <div class="event-info">
+        <p>Събитие: <span th:text="${event.type.description}+ ' - ' + ${event.eventDescription}"></span></p>
+        <p>Местоположение: <span th:text="${event.location}"></span></p>
+        <p>Проведено: <span th:text="${#temporals.format(event.startDate, 'dd-MM-yyyy')} + ' - ' + ${#temporals.format(event.endDate, 'dd-MM-yyyy')}"></span></p>
+    </div>
+
+    <!-- Първо място -->
+    <form th:action="@{/events/{eventId}/set-winner(eventId=${event.id})}" th:method="POST">
+        <label>Първо място:</label>
+        <select name="userId" th:disabled="${event.firstPlaceWinner != null}">
+            <option value="">-- Избери победител --</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${user.firstName} + ' ' + ${user.lastName}"
+                    th:selected="${user.id == event.firstPlaceWinner?.id}"
+                    th:disabled="${user.id == event.secondPlaceWinner?.id || user.id == event.thirdPlaceWinner?.id}">
+            </option>
+        </select>
+        <input type="hidden" name="place" value="1">
+        <button type="submit" th:disabled="${event.firstPlaceWinner != null}">Задай победител</button>
+    </form>
+
+    <!-- Второ място -->
+    <form th:action="@{/events/{eventId}/set-winner(eventId=${event.id})}" method="post">
+        <label>Второ място:</label>
+        <select name="userId" th:disabled="${event.secondPlaceWinner != null}">
+            <option value="">-- Избери победител --</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${user.firstName} + ' ' + ${user.lastName}"
+                    th:selected="${user.id == event.secondPlaceWinner?.id}"
+                    th:disabled="${user.id == event.firstPlaceWinner?.id || user.id == event.thirdPlaceWinner?.id}">
+            </option>
+        </select>
+        <input type="hidden" name="place" value="2">
+        <button type="submit" th:disabled="${event.secondPlaceWinner != null}">Задай победител</button>
+    </form>
+
+    <!-- Трето място -->
+    <form th:action="@{/events/{eventId}/set-winner(eventId=${event.id})}" method="post">
+        <label>Трето място:</label>
+        <select name="userId" th:disabled="${event.thirdPlaceWinner != null}">
+            <option value="">-- Избери победител --</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${user.firstName} + ' ' + ${user.lastName}"
+                    th:selected="${user.id == event.thirdPlaceWinner?.id}"
+                    th:disabled="${user.id == event.firstPlaceWinner?.id || user.id == event.secondPlaceWinner?.id}">
+            </option>
+        </select>
+        <input type="hidden" name="place" value="3">
+        <button type="submit" th:disabled="${event.thirdPlaceWinner != null}">Задай победител</button>
+    </form>
+
+    <a class="back" th:href="@{/events}">Обратно в събития</a>
+</div>
+</body>
+</html>

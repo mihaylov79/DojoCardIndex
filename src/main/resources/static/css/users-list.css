@@ -1,0 +1,184 @@
+/* General Styles */
+:root {
+    --primary-color: #e18e09;
+    --bg-color: rgba(0, 0, 0, 0.7);
+    --font-family: "Caveat", cursive;
+}
+
+.main-container {
+    margin: 0 auto;
+    width: 95vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2em;
+}
+
+.user-info, .admin-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    
+    border-radius: 0.3em;
+    padding: 1em;
+    
+    width: 21vw;
+}
+
+.admin-menu {
+    background-color: var(--bg-color);
+    margin: 2em 0;
+    width: 16vw;
+}
+
+.user-info table {
+    border-collapse: separate;
+    border-spacing: 0.3em;
+}
+
+.admin-menu ul {
+    list-style: none;
+    color: var(--primary-color);
+    padding: 0;
+    width: 100%;
+}
+
+.admin-menu li {
+    padding: 0.3em;
+    border-bottom: 1px solid var(--primary-color);
+    font: 1.3vw var(--font-family);
+    font-weight: bold;
+    text-align: right;
+    cursor: pointer;
+}
+
+.admin-menu li:last-child {
+    border-bottom: none;
+}
+
+.admin-menu li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.messages {
+    margin: 1em auto 0;
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+/* Table Styles */
+table {
+    margin: 0 auto;
+    border-radius: 0.3em;
+    color: var(--primary-color);
+    border-collapse: separate;
+    border-spacing: 0 0.3em;
+    font: 1.3vw var(--font-family);
+    width: 100%;
+}
+
+tr, td, th {
+    padding: 0.1em 0.3em;
+    text-align: center;
+}
+
+tr {
+    background-color: var(--bg-color);
+    border-radius: 0.3em;
+}
+
+caption {
+    text-align: end;
+    border-radius: 0.3em;
+    margin: 0.2em auto;
+    padding: 0.1em 0.3em;
+    font: 1.5vw var(--font-family);
+    font-weight: bold;
+    background-color: var(--bg-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    padding: 0.1em;
+    margin: 0.1em;
+    border-radius: 0.3em;
+    font: 1.3vw var(--font-family);
+    cursor: pointer;
+    border: none;
+}
+
+.user-buttons {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 0.1em;
+    gap: 0.3em; /* Разстояние между бутоните */
+    width: 100%; /* Фиксирана ширина */
+    height: 10%; /* Фиксирана височина */
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.user-pic img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 0.3em;
+}
+
+.admin-menu a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+/* Form Styles (същото оформление като .messages) */
+.user-form-container {
+    margin: 1em auto 0;
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background-color: var(--bg-color);
+    padding: 1em;
+    border-radius: 0.3em;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-info, .messages, .admin-menu, .user-pic {
+        width: 90vw;
+    }
+
+    table, caption {
+        font-size: 2.3vw;
+    }
+}
+
+@media (max-width: 768px) {
+    table, caption {
+        font-size: 2.3vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info, .user-pic, .admin-menu, table {
+        width: 95vw;
+    }
+
+    table {
+        font-size: 4vw;
+    }
+
+    caption {
+        font-size: 5.5vw;
+    }
+}

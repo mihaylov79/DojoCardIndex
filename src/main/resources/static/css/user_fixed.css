@@ -1,0 +1,106 @@
+/* User-specific styles */
+
+.main-container {
+    margin: 0 auto;
+    width: 95vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info {
+    display: flex;
+    flex-wrap: nowrap; /* Оставя снимката и таблицата в един ред при достатъчно място */
+    align-items: center;
+    justify-content: space-between;
+    width: 90vw;
+    margin: 0 auto;
+    padding: 1em;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 0.3em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.user-pic {
+    flex: 1; /* Картинката заема 1 част от пространството */
+    display: flex;
+    justify-content: center;
+}
+
+.user-pic img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 0.3em;
+}
+
+.user-bio {
+    flex: 2; /* Таблицата заема повече място */
+    display: flex;
+    justify-content: center;
+}
+
+.user-bio table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.3em;
+    font: 1.3vw "Caveat";
+    color: #e18e09;
+}
+
+tr, td, th {
+    padding: 0.1em 0.3em 0.2em 0.3em;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 0.3em;
+}
+
+caption {
+    text-align: end;
+    font: 1.5vw "Caveat";
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.1em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .user-info {
+        flex-wrap: wrap; /* Елементите се подреждат един под друг */
+        justify-content: center;
+    }
+
+    .user-pic {
+        width: 100%;
+    }
+
+    .user-pic img {
+        max-width: 150px; /* Намалява снимката на по-малки екрани */
+    }
+
+    .user-bio {
+        width: 100%;
+    }
+
+    .user-bio table {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info {
+        flex-direction: column;
+        align-items: center;
+        width: 95vw;
+    }
+
+    .user-pic img {
+        max-width: 120px;
+    }
+
+    .user-bio table {
+        font-size: 4vw;
+    }
+}

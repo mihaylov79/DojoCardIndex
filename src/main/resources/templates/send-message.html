@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изпращане на съобщение</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/replay.css">
+
+<body>
+    <header>
+
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+
+
+    </header>
+
+<div class="container-send">
+    <h2>Изпрати съобщение</h2>
+    <form th:action="@{/messages/send}" th:method="POST" th:object="${sendMessageRequest}">
+        <label for="recipient">Получател:</label>
+        <input type="text" id="recipient" name="recipient" th:field="*{recipient}" required>
+        <span class="errors" th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}"></span>
+        <span th:text="${messageCanNotBeSentToUser}" class="errors"></span>
+
+        <label for="content">Съобщение:</label>
+        <textarea id="content" name="content" maxlength="500" placeholder="Вашето съобщение..." required th:field="*{content}"></textarea>
+        <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+        <button type="submit">Изпрати</button>
+    </form>
+    <a href="/home">Назад</a>
+</div>
+</body>
+</html>
