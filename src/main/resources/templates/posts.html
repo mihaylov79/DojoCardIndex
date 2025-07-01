@@ -58,7 +58,13 @@
                 </li>
             </ul>
 
-            <a th:href="@{/comments/new-comment(postId=${post.id})}" class="add-comment-link">Добави коментар</a>
+<!--            <a th:href="@{/comments/new-comment(postId=${post.id})}" class="add-comment-link">Добави коментар</a>-->
+            <button type="button" class="delete-comment-btn"
+                    th:onclick="|window.location.href='@{/comments/new-comment(postId=${post.id})}'|">
+                Добави коментар
+            </button>
+
+
 
         </div>
     </div>

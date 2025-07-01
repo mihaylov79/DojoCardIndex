@@ -89,16 +89,6 @@
     transition: background 0.3s ease;
 }
 
-/*.delete-comment-btn {*/
-/*    color: var(--red-main);*/
-/*    font-weight: 400;*/
-/*    margin: 0.3em;*/
-/*    padding: 0.5rem 1rem;*/
-/*    border-radius: 0.5rem;*/
-/*    cursor: pointer;*/
-/*    transition: background 0.3s ease;*/
-/*}*/
-
 .post-actions button:hover , .delete-comment-btn:hover  {
     font-weight: 650;
 }
@@ -110,7 +100,6 @@
 /* --- Коментари --- */
 .comments-section {
     margin: 2rem 0;
-    /*border-top: 1px solid var(--red-main);*/
     padding-top: 1rem;
 }
 
@@ -129,7 +118,6 @@
 .comment-item {
     display: flex;
     justify-content: space-between;
-    /*align-items: center;*/
 }
 
 .author-name {
@@ -138,39 +126,20 @@
     margin-bottom: 0.3rem;
 }
 
-.comment-actions {
-    text-align: right;
-    margin-top: 0.5rem;
-}
 
-.comment-actions button {
-    font-size: 0.85rem;
-    padding: 0.3rem 0.7rem;
-    background: none;
-    border: 1px solid var(--red-main);
-    border-radius: 0.4rem;
-    color: var(--red-main);
-    cursor: pointer;
-}
+/*!* Линк за добавяне на коментар *!*/
+/*.add-comment-link {*/
+/*    display: inline-block;*/
+/*    margin-top: 1rem;*/
+/*    color: var(--red-main);*/
+/*    font-weight: 600;*/
+/*    font-size: 0.95rem;*/
+/*    text-decoration: underline;*/
+/*}*/
 
-.comment-actions button:hover {
-    background-color: var(--red-main);
-    color: white;
-}
-
-/* Линк за добавяне на коментар */
-.add-comment-link {
-    display: inline-block;
-    margin-top: 1rem;
-    color: var(--red-main);
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-decoration: underline;
-}
-
-.add-comment-link:hover {
-    color: #f44336;
-}
+/*.add-comment-link:hover {*/
+/*    color: #f44336;*/
+/*}*/
 
 /*---границите на слайдъра---*/
 .main-container {
