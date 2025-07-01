@@ -158,7 +158,7 @@ public class EventParticipationRequestController {
     }
 
     @GetMapping("/{userId}")
-    public ModelAndView getUserRequestsPage(@AuthenticationPrincipal CustomUserDetails details){
+    public ModelAndView getUserRequestsPage(@PathVariable UUID userId , @AuthenticationPrincipal CustomUserDetails details){
 
         User currentUser = userService.getUserById(details.getId());
         RequestStatus pending = RequestStatus.PENDING;

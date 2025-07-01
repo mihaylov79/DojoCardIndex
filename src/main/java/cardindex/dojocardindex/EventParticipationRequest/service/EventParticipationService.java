@@ -49,6 +49,11 @@ public class EventParticipationService {
         if (event.isClosed()){
             throw new EventClosedException();
         }
+        //TODO Да измисля къде да визуализирам екесепшъна и дали да направя нов Ексепшън за случая!
+
+        if (event.getStartDate().isBefore(LocalDate.now())){
+            throw new EventClosedException("Това събитие е вече е започнало и не можете да заявите заявка за него");
+        }
 
         requestRepository.findByUserAndEvent(user,event).ifPresent(existingRequest ->{
             switch (existingRequest.getStatus()){

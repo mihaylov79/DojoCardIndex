@@ -82,7 +82,7 @@ public class EventController {
         modelAndView.addObject(currentUser);
         return modelAndView;
     }
-
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
     @PutMapping("/{eventId}/close")
     public ModelAndView closeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails details){
 

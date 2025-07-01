@@ -1,44 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="UTF-8">
     <title>Добавяне на ново събитие</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/new-event.css">
+<!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" href="/css/default-test.css">
+<!--    <link rel="stylesheet" href="/css/new-event.css">-->
+    <link rel="stylesheet" href="/css/login-test.css">
 
 </head>
 <body>
-<header>
-<th:block th:insert="~{fragments/nav :: nav}"></th:block>
-</header>
+    <header>
+        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    </header>
+    <div class="main-container">
+        <form th:action="@{/events/new}" method="post" th:object="${createEventRequest}">
+            <h2>Ново събитие</h2>
+            <span class="credentials-error"></span>
 
-<form th:action="@{/events/new}" method="post" th:object="${createEventRequest}">
-    <h2>Ново събитие</h2>
+            <div class="field">
+                <label for="eventType">Тип събитие:</label>
+                <select id="eventType" name="eventType" th:field="*{eventType}">
+                    <option th:each="eventType : ${T(cardindex.dojocardindex.Event.models.EventType).values()}" th:value="${eventType}" th:text="${eventType.description}" value=""></option>
+                </select>
+            </div>
 
-    <label for="eventType">Тип събитие:</label>
-    <select id="eventType" name="eventType" th:field="*{eventType}">
-        <option th:each="eventType : ${T(cardindex.dojocardindex.Event.models.EventType).values()}" th:value="${eventType}" th:text="${eventType.description}" value=""></option>
-    </select>
+            <div class="field">
+                <label for="eventDescription">Описание:</label>
+                <textarea id="eventDescription" name="eventDescription" th:field="*{eventDescription}"></textarea>
+            </div>
 
-    <label for="eventDescription">Описание:</label>
-    <textarea id="eventDescription" name="eventDescription" th:field="*{eventDescription}"></textarea>
+            <div class="field">
+                <label for="startDate">Начална дата:</label>
+                <input type="date" id="startDate" name="startDate" th:field="*{startDate}" />
+            </div>
 
-    <label for="startDate">Начална дата:</label>
-    <input type="date" id="startDate" name="startDate" th:field="*{startDate}" />
+            <div class="field">
+                <label for="endDate">Крайна дата:</label>
+                <input type="date" id="endDate" name="endDate" th:field="*{endDate}" />
+            </div>
 
-    <label for="endDate">Крайна дата:</label>
-    <input type="date" id="endDate" name="endDate" th:field="*{endDate}" />
+            <div class="field">
+                <label for="location">Местоположение:</label>
+                <input type="text" id="location" name="location" th:field="*{location}" />
+            </div>
 
-    <label for="location">Местоположение:</label>
-    <input type="text" id="location" name="location" th:field="*{location}" />
+            <div class="field">
+                <label for="requirements">Изисквания:</label>
+                <select id="requirements" name="requirements" th:field="*{requirements}">
+                    <option th:each="requirements : ${T(cardindex.dojocardindex.Event.models.Requirements).values()}" th:value="${requirements}" th:text="${requirements.description}" value=""></option>
+                </select>
+            </div>
 
-    <label for="requirements">Изисквания:</label>
-    <select id="requirements" name="requirements" th:field="*{requirements}">
-        <option th:each="requirements : ${T(cardindex.dojocardindex.Event.models.Requirements).values()}" th:value="${requirements}" th:text="${requirements.description}" value=""></option>
-    </select>
-
-    <button type="submit">Създай събитие</button>
-</form>
-
+        <!--    <button type="submit" class="button login">Създай събитие</button>-->
+            <input type="submit" class="button login" value="Създай събитие">
+        </form>
+    </div>
 </body>
 </html>
