@@ -598,7 +598,7 @@ public class AdminControllerApiTest {
 
         MockHttpServletRequestBuilder request = post("/admin/users/details/edit/{id}", targetUserId)
                 .with(user(adminDetails))
-                .formField("userPhone","")
+                .formField("userPhone","888")
                 .formField("birthDate","1982-05-04")
                 .formField("isCompetitor","true")
                 .formField("reachedDegree", "NONE")
@@ -606,7 +606,7 @@ public class AdminControllerApiTest {
                 .formField("height","180")
                 .formField("weight","80")
                 .formField("contactPerson","Georgi Ivanov")
-                .formField("contactPersonPhone","")
+                .formField("contactPersonPhone","55")
                 .formField("role", "MEMBER") // Добавете всички полета от UserEditAdminRequest
                 .formField("registrationStatus", "REGISTERED")
                 .formField("status", "ACTIVE")
