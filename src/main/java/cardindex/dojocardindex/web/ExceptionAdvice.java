@@ -59,11 +59,19 @@ public class ExceptionAdvice {
         return "redirect:/messages/send";
     }
 
+    @ExceptionHandler({EventClosedException.class,
+                       RequestAlreadyExistException.class})
+    public String handleEventClosed(Exception exception,RedirectAttributes redirectAttributes){
+
+        redirectAttributes.addFlashAttribute("eventClosedMessage",exception.getMessage());
+
+        return "redirect:/events";
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({EventNotFoundException.class,
                        MessageNotFoundException.class,
                        RequestNotFoundException.class,
-                       RequestAlreadyExistException.class,
                        UserNotFoundException.class,
                        IllegalUserStatusException.class,
                        ExportIOException.class,

@@ -17,6 +17,7 @@
 </header>
 <div class="main-container">
     <div class="table-container">
+        <span th:if="${eventClosedMessage}" th:text="${eventClosedMessage}" class="credentials-error"></span>
         <table>
             <caption>Спортен календар на Българска Киокушин-кан федерация</caption>
             <thead>
@@ -63,6 +64,7 @@
 
 
                 </td>
+
             </tr>
             </tbody>
         </table>

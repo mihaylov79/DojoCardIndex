@@ -143,6 +143,20 @@
 
 /*---границите на слайдъра---*/
 
+.credentials-error {
+    margin: 1.5em 0;
+    display: block;
+    /*font-style: italic;*/
+    text-align: center;
+    /*opacity: 0.5;*/
+    line-height: 1.2;
+    padding: 0.3em;
+    color: red;
+    background: #cccccc;
+    border-top-right-radius: 1.5em;
+    border-bottom-left-radius: 1.5em;
+}
+
 /* Responsive таблица */
 @media screen and (max-width: 1370px) {
     .table-container table,
