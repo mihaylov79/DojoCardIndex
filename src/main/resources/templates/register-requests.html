@@ -5,75 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="120">
     <title>Заявки за регистрация</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/users-list2.css">
+<!--    <link rel="stylesheet" href="/css/default.css">-->
+    <link rel="stylesheet" href="/css/default-test.css">
+<!--    <link rel="stylesheet" href="/css/users-list2.css">-->
+    <link rel="stylesheet" href="/css/users-list2_test.css">
 </head>
 <body>
     <header>
         <th:block th:insert="~{fragments/nav :: nav}"></th:block>
     </header>
-    <div class="table-container">
-        <table>
-            <caption>Заявки за регистрация клуб "Драгон Доджо ДСД"</caption>
-            <tr>
-                <th>Снимка</th>
-                <th>Име</th>
-                <th>Фамилия</th>
-                <th>Ел. поща</th>
-<!--                <th>Възраст</th>-->
-                <!-- <th>Защитена степен</th>
-                <th>Състезателен статус</th> -->
-                <th>Статус на акаунта</th>
-                <th>Действие</th>
-            </tr>
-            <tr  th:each="user:${registerRequests}">
-                <td>
-                    <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
-                </td>
-                <td th:text="${user.firstName}">
-                    
-                </td>
-                <td th:text="${user.lastName}">
-                    
-                </td>
+    <div class="main-container">
+        <div class="table-container">
+            <table>
+                <caption>Заявки за регистрация клуб "Драгон Доджо ДСД"</caption>
+                <thead>
+                <tr>
+                    <th>Снимка</th>
+                    <th>Име</th>
+                    <th>Фамилия</th>
+                    <th>Ел. поща</th>
+    <!--                <th>Възраст</th>-->
+                    <!-- <th>Защитена степен</th>
+                    <th>Състезателен статус</th> -->
+                    <th>Статус на регистрация</th>
+                    <th>Действие</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user:${registerRequests}">
+                    <td>
+                        <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
+                    </td>
+                    <td data-label="Име" th:text="${user.firstName}">
 
-                <td th:text="${user.email}">
-                    
-<!--                </td>-->
+                    </td>
+                    <td data-label="Фамилия" th:text="${user.lastName}">
 
-<!--                <td th:text="${age}">-->
-<!--                    -->
-<!--                </td>-->
+                    </td>
 
-                <!-- <td th:text="${user.reachedDegree}">
-                    
-                </td>
+                    <td data-label="Поща" th:text="${user.email}">
 
-                <td th:text="${user.isCompetitor}">
-                    
-                </td> -->
+    <!--                </td>-->
 
-                <td th:text="${user.registrationStatus.description}">
-                    
-                </td>
+    <!--                <td th:text="${age}">-->
+    <!--                    -->
+    <!--                </td>-->
 
-                <td class="actions">
-                    <form th:action="@{/admin/register-requests/deny}" th:method="POST">
-                        <input type="hidden" name="id" th:value="${user.id}"/>
-                        <button type="submit">Отхвърли</button>
-                    </form>
+                    <!-- <td th:text="${user.reachedDegree}">
 
-                    <form th:action="@{/admin/register-requests/approve}" th:method="POST">
-                        <input type="hidden" name="id" th:value="${user.id}"/>
-                        <button type="submit">Одобри</button>
-                    </form>
-                    
-                </td>
+                    </td>
 
+                    <td th:text="${user.isCompetitor}">
 
-            </tr>
-        </table>
+                    </td> -->
+
+                    <td data-label="Статус на регистрация" th:text="${user.registrationStatus.description}">
+
+                    </td>
+
+                    <td class="actions">
+                        <form th:action="@{/admin/register-requests/deny}" th:method="POST">
+                            <input type="hidden" name="id" th:value="${user.id}"/>
+                            <button type="submit">Отхвърли</button>
+                        </form>
+
+                        <form th:action="@{/admin/register-requests/approve}" th:method="POST">
+                            <input type="hidden" name="id" th:value="${user.id}"/>
+                            <button type="submit">Одобри</button>
+                        </form>
+
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    
 </body>
 </html>
