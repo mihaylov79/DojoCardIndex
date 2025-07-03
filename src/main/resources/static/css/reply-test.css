@@ -87,7 +87,8 @@ label {
 }
 
 select,
-textarea {
+textarea,
+input[type="text"]{
   width: 100%;
   border: none;
   border-bottom: 2px solid #ccc;
@@ -99,7 +100,7 @@ textarea {
   outline: none;
 }
 
-select:focus, textarea:focus {
+select:focus, textarea:focus, input[type="text"]:focus {
   border-bottom: 2px solid var(--red-main);
 }
 
