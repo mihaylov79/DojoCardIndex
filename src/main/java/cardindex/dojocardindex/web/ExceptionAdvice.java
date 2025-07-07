@@ -109,11 +109,16 @@ public class ExceptionAdvice {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleUnknownExceptions(Exception exception) {
+    public ModelAndView handleUnknownExceptions(Exception exception, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("internal-server-error");
         modelAndView.addObject("exceptionMessage", exception.getMessage());
         modelAndView.addObject("messageError", exception.getClass().getSimpleName());
+
+        log.warn("Handle 500-type exception {} at [{}], Message: {}",
+                exception.getClass().getSimpleName(),
+                request.getRequestURI(),
+                exception.getMessage());
 
         return modelAndView;
     }

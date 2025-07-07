@@ -79,7 +79,7 @@ body {
     text-align: left;
 }
 .additional-info p{
-    margin: 1em auto;
+    margin: 1.5em auto;
     text-align: center;
 }
 
@@ -98,7 +98,7 @@ body {
 
 .additional-info a {
     color: var(--red-main);
-    /*text-decoration: underline;*/
+    text-decoration: none;
     font-weight: bold;
     transition: color 0.2s ease-in-out;
 }
