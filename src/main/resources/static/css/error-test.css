@@ -1,0 +1,108 @@
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgb(0, 0, 0, 0.2);
+    --black: #000000;
+    --white: #fff;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--background);
+    margin: 0;
+    padding: 0;
+    color: var(--black);
+}
+
+/*---границите на слайдъра---*/
+.main-container {
+    padding: 2em 0;
+    position: relative;
+    /* background-color: black; */
+}
+
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.main-container::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+.additional-info {
+    max-width: 800px;
+    margin: 4em auto;
+    padding: 2.5em 3em;
+    background-color: var(--white);
+    border-top-right-radius: 2em;
+    border-bottom-left-radius: 2em;
+    box-shadow: var(--shadow);
+}
+
+.additional-info h1 {
+    text-align: center;
+    color: var(--red-main);
+    margin-bottom: 0.5em;
+}
+
+.additional-info h3 {
+    text-align: center;
+    color: var(--red-main);
+    margin: 0.5em 0;
+}
+.additional-info .reasons{
+    text-align: left;
+}
+.additional-info p{
+    margin: 1em auto;
+    text-align: center;
+}
+
+.additional-info ul.error-list {
+    list-style-type: disc;
+    padding-left: 2em;
+    color: var(--black);
+    margin: 1em 0;
+}
+
+.additional-info ul.error-list li {
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.additional-info a {
+    color: var(--red-main);
+    /*text-decoration: underline;*/
+    font-weight: bold;
+    transition: color 0.2s ease-in-out;
+}
+
+.additional-info a:hover {
+    color: var(--red-light);
+}

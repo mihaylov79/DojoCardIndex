@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Dojo - Страницата не е намерена</title>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-    <link rel="stylesheet" th:href="@{/css/error.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/default.css}">-->
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/error-test.css}">
 </head>
 <body>
 <header>
@@ -13,21 +14,27 @@
 </header>
 
 <div class="main-container">
-    <div class="error-info">
-        <h2>Грешка 404</h2>
-        <p>Страницата не е намерена</p>
-    </div>
 
     <div class="additional-info">
         <div class="message">
             <h1>Нещо се обърка!</h1>
             <hr class="line"/>
-            <h5>Съжаляваме, но страницата, която търсите, не беше намерена.</h5>
+            <h3>Съжаляваме, но страницата, която търсите, не беше намерена.</h3>
             <hr class="line"/>
 
-            <h2>Ако съобщението отгоре не Ви говори нищо - натиснете F5. Ако и това не помогне - свържете се с нас за съдействие!</h2>
+            <h3 class="reasons">Възможно е:</h3>
+            <ul class= "error-list">
+                <li>Адресът да е написан грешно.</li>
+                <li>Страницата да е преместена или изтрита.</li>
+                <li>Временно да не е достъпна.</li>
+            </ul>
+
+
         </div>
-        <p th:text="'Допълнителна информация: ' + (${exceptionType} ?: 'Съжаляваме за причиненото неудобство')"></p>
+
+
+        <p>Ако мислите, че това е грешка, <a href="/contact">свържете се с нас</a>.</p>
+<!-- <p th:text="'Допълнителна информация: ' + (${exceptionType} ?: 'Съжаляваме за причиненото неудобство')"></p>-->
         <a href="/home">Към профилната страница</a>
     </div>
 

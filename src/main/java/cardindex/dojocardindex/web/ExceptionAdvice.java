@@ -2,6 +2,7 @@ package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.AccessDeniedException;
 
+@Slf4j
 @ControllerAdvice
 public class ExceptionAdvice {
 
@@ -92,11 +94,15 @@ public class ExceptionAdvice {
                       NoResourceFoundException.class,
                       MethodArgumentTypeMismatchException.class,
                       MissingRequestValueException.class})
-    public ModelAndView handleNotFoundExceptions(Exception ex){
+    public ModelAndView handleNotFoundExceptions(Exception ex, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("not-found");
-        modelAndView.addObject("errorMessage", ex.getMessage());
-        modelAndView.addObject("exceptionType", ex.getClass().getSimpleName());
+
+        log.warn("Handled 404-type exception: {} at [{}], Message: {}",
+                ex.getClass().getSimpleName(),
+                request.getRequestURI(),
+                ex.getMessage());
+
         return modelAndView;
 
     }
