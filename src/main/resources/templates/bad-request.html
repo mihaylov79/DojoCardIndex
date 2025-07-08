@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Dojo - Нещо се обърка</title>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-    <link rel="stylesheet" th:href="@{/css/error.css}">
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/error-test.css}">
 </head>
 <body>
 <header>
@@ -13,21 +13,22 @@
 </header>
 
 <div class="main-container">
-    <div class="error-info">
-        <h2>Грешка 400</h2>
-        <h3>Bad Request</h3>
-    </div>
+<!--    <div class="error-info">-->
+<!--        <h2>Грешка 400</h2>-->
+<!--        <h3>Bad Request</h3>-->
+<!--    </div>-->
     <div class="additional-info">
         <div class="message">
-            <h2>Нещо се обърка!</h2>
+            <h1>Нещо се обърка!</h1>
 
             <hr class="line"/>
-                <h5 th:text="${errorMessage}"></h5>
+                <h3 th:text="${errorMessage}"></h3>
             <hr class="line"/>
 
-            <h2>Ако съобщението отгоре не Ви говори нищо - натиснете F5. Ако и това не помогне - свържете се с нас за съдействие!</h2>
+            <p>Опитайте да презаредите страницата (натиснете F5).</p>
+            <p>Ако проблемът продължава, моля <a href="/contact">свържете се с нас</a>.</p>
         </div>
-        <p th:text="'Грешка: ' + ${exception}"></p>
+<!--        <p th:text="'Грешка: ' + ${exception}"></p>-->
         <a href="/home">Към профилната страница</a>
     </div>
 </div>

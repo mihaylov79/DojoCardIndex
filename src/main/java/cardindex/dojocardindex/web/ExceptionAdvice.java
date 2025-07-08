@@ -78,13 +78,15 @@ public class ExceptionAdvice {
                        IllegalUserStatusException.class,
                        ExportIOException.class,
                        IllegalEventOperationException.class})
-    public ModelAndView handleBadRequestException(Exception exception){
+    public ModelAndView handleBadRequestException(Exception exception, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");
         modelAndView.addObject("errorMessage",exception.getMessage());
-        modelAndView.addObject("errorType", HttpStatus.BAD_REQUEST);
-        modelAndView.addObject("statusCode", HttpStatusCode.valueOf(400));
-        modelAndView.addObject("exception",exception.getClass().getSimpleName());
+
+        log.warn("Handled 400-type exception: {} at [{}], Message: {}",
+                exception.getClass().getSimpleName(),
+                request.getRequestURI(),
+                exception.getMessage());
 
         return modelAndView;
     }
