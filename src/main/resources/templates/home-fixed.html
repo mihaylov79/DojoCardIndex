@@ -86,9 +86,9 @@
                     </thead>
                     <tbody th:if="${messages != null and not #lists.isEmpty(messages)}">
                     <tr th:each="message : ${messages}">
-                        <td th:text="${#temporals.format(message.created,'dd-MM-yyyy HH:mm')}"></td> <!-- Дата на съобщението -->
-                        <td th:text="${message.sender.firstName + ' ' + message.sender.lastName}"></td> <!-- Изпращач -->
-                        <td th:text="${message.content}"></td> <!-- Съдържание -->
+                        <td data-label="Дата" th:text="${#temporals.format(message.created,'dd-MM-yyyy HH:mm')}"></td> <!-- Дата на съобщението -->
+                        <td data-label="От" th:text="${message.sender.firstName + ' ' + message.sender.lastName}"></td> <!-- Изпращач -->
+                        <td data-label="Съдържание" th:text="${message.content}"></td> <!-- Съдържание -->
                         <td class="action-buttons">
                             <button th:attr="onclick=|location.href='/messages/reply/' + '${message.id}'|">Отговори</button>
                             <a th:href="@{/messages/remove/{id}(id=${message.id})}">
@@ -113,11 +113,11 @@
                     </thead>
                     <tbody>
                         <tr th:each="event : ${events}">
-                            <td th:text="${event.startDate}"></td>
-                            <td th:text="${event.endDate}"></td>
-                            <td th:text="${event.eventDescription}"></td>
-                            <td th:text="${event.requirements.description}"></td>
-                            <td th:text="${event.location}"></td>
+                            <td data-label="Начална дата" th:text="${event.startDate}"></td>
+                            <td data-label="Крайна дата" th:text="${event.endDate}"></td>
+                            <td data-label="Събитие" th:text="${event.eventDescription}"></td>
+                            <td data-label="Изискване" th:text="${event.requirements.description}"></td>
+                            <td data-label="Място" th:text="${event.location}"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -143,11 +143,11 @@
                     </thead>
                     <tbody>
                     <tr th:each="renewalUser : ${examRenewalList}">
-                        <td th:text="|${renewalUser.firstName} ${renewalUser.lastName}|"></td>
-                        <td th:text="${renewalUser.email}"></td>
-                        <td th:text="${renewalUser.isCompetitor} ? 'Състезател' : '-'"></td>
-                        <td th:text="${renewalUser.medicalExamsPassed == null ? 'Преминете преглед!' : #temporals.format(renewalUser.medicalExamsPassed, 'dd-MM-yyyy ''г.''')}" th:classappend="${renewalUser.medicalExamsPassed == null} ? 'text-red' : ''"></td>
-                        <td th:text="${daysLeft[renewalUser.id]}" th:classappend="${daysLeft[renewalUser.id] <= 0} ? 'text-red' : ''"></td>
+                        <td data-label="Име" th:text="|${renewalUser.firstName} ${renewalUser.lastName}|"></td>
+                        <td data-label="Поща" th:text="${renewalUser.email}"></td>
+                        <td data-label="Състезателен статус" th:text="${renewalUser.isCompetitor} ? 'Състезател' : '-'"></td>
+                        <td data-label="Последен преглед" th:text="${renewalUser.medicalExamsPassed == null ? 'Преминете преглед!' : #temporals.format(renewalUser.medicalExamsPassed, 'dd-MM-yyyy ''г.''')}" th:classappend="${renewalUser.medicalExamsPassed == null} ? 'text-red' : ''"></td>
+                        <td data-label="Дни до преглед" th:text="${daysLeft[renewalUser.id]}" th:classappend="${daysLeft[renewalUser.id] <= 0} ? 'text-red' : ''"></td>
                     </tr>
 
                     </tbody>
