@@ -8,11 +8,6 @@
     --white: #fff;
 }
 
-/*.form {*/
-/*    padding-top: 4em;*/
-/*    !*background: var(--black);*!*/
-/*    padding: 2em 0;*/
-/*}*/
 /*---границите на слайдъра---*/
 .form {
     padding: 4em 0;
@@ -60,7 +55,6 @@ h2 {
 .alert-info {
     text-align: start;
     color: limegreen;
-    font: 1.1em Caveat;
     margin-bottom: 1em;
 
 }

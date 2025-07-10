@@ -52,15 +52,16 @@ public class CreateUserRequest {
     @NotNull(message = "Моля отбележете дали потребителят е състезател")
     private boolean isCompetitor;
 
-
+    @PositiveOrZero
     private int height;
 
-
+    @PositiveOrZero
     private int weight;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate medicalExamsPassed;
 
+    @Size(max = 40, message = "Името не може да надвишава 40 симовла")
     private String contactPerson;
 
     private String contactPersonPhone;
