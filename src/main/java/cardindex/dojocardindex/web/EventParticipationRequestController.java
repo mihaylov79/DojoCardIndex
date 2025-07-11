@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -55,11 +56,15 @@ public class EventParticipationRequestController {
     }
     //TODO Да проверя constraints - за да реша дали има нужда да валидирам
     @PostMapping("/submit/{id}")
-    public ModelAndView submitParticipationRequest(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails details){
+    public ModelAndView submitParticipationRequest(@PathVariable UUID id,
+                                                   @AuthenticationPrincipal CustomUserDetails details,
+                                                   RedirectAttributes redirectAttributes){
 
         User user = userService.getUserById(details.getId());
 
         requestService.submitRequest(user.getId(),id);
+        redirectAttributes.addFlashAttribute("successMessage",
+                                              "Вашата заявка за участие беше приета и придвижена към Администратор за одобрение");
 
         ModelAndView modelAndView = new ModelAndView("redirect:/events");
         modelAndView.addObject("user",user);
