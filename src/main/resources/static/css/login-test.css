@@ -211,13 +211,20 @@ input[type="submit"]:hover {
 button{
     display: block;
     width: 100%;
-    color: var(--red-main);
-    background-color: var(--black);
-    border: none;
-    padding: 0.2em 0.5em;
-    outline: none;
+    /*color: var(--red-main);*/
+    /*background-color: var(--black);*/
+    /*border: none;*/
+    /*padding: 0.2em 0.5em;*/
+    /*outline: none;*/
     font: 1em "Raleway";
+    /*font-weight: 400;*/
+    color: var(--red-main);
     font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 button:hover {
     color: var(--red-main);
