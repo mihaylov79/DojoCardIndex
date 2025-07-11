@@ -53,7 +53,7 @@
         </div>
 
         <div class="field">
-            <label for="registrationStatus">Статус</label>
+            <label for="registrationStatus">Регистрация</label>
             <select id="registrationStatus" th:field="*{registrationStatus}">
                 <option th:each="registrationStatus : ${T(cardindex.dojocardindex.User.models.RegistrationStatus).values()}" th:value="${registrationStatus}" th:text="${registrationStatus.description}" value=""></option>
 
