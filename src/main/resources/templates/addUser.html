@@ -91,6 +91,12 @@
             </div>
 
             <div class="field">
+                <label for="medicalExamsPassed">Медицински прегледи</label>
+                <input type="date" id="medicalExamsPassed" th:field="*{medicalExamsPassed}" >
+                <span class="errors" th:if="${#fields.hasErrors('medicalExamsPassed')}" th:errors="*{medicalExamsPassed}"></span>
+            </div>
+
+            <div class="field">
                 <label for="interests">Интереси</label>
                 <textarea id="interests" th:field="*{interests}" placeholder=""></textarea>
             </div>
