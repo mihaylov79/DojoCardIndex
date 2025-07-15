@@ -33,6 +33,16 @@
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 1rem;
+    margin-top: 1rem;
+    color: #222;
+    width: 90vw;
+}
+
+.title-container {
+    text-align: center;
+    /*font-size: 1.2rem;*/
+    /*font-weight: bold;*/
+    margin: 1rem 0;
     color: #222;
     width: 90vw;
 }
