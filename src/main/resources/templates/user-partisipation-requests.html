@@ -15,14 +15,14 @@
 <div class="main-container">
     <div class="table-container">
 <div class="title-container">
-<h2 th:text="'Заявки за участие в събития - ' + ${currentUser.firstName} + ' '+${currentUser.getLastName()}">Заявки за участие</h2>
+<p th:text="'Заявки за участие в събития - ' + ${currentUser.firstName} + ' '+${currentUser.getLastName()}">Заявки за участие</p>
 </div>
 </div>
 
 <!-- Pending requests -->
 <div class="table-container">
     <table>
-        <caption>ЗАЯВКИ ЗА УЧАСТИЕ - СТАТУС - ЧАКАЩА</caption>
+        <caption>Заявки за участие - Статус - ЧАКАЩА</caption>
         <thead>
         <tr>
             <th>Заявка</th>
@@ -50,7 +50,7 @@
 <!-- Approved requests -->
 <div class="table-container">
     <table>
-        <caption>ЗАЯВКИ ЗА УЧАСТИЕ - СТАТУС - ОДОБРЕНА</caption>
+        <caption>Заявки за участие - Статус - ОДОБРЕНА</caption>
         <thead>
         <tr>
             <th>Заявка</th>
@@ -78,7 +78,7 @@
 <!-- Rejected requests -->
 <div class="table-container">
     <table>
-        <caption>ЗАЯВКИ ЗА УЧАСТИЕ - СТАТУС - ОТХВЪРЛЕНА</caption>
+        <caption>Заявки за участие - Статус - ОТХВЪРЛЕНА</caption>
         <thead>
         <tr>
             <th>Заявка</th>
