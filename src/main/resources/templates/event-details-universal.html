@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Детайли за събитието</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/event-details.css">
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/event-details-test.css">
 </head>
 <body>
 
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
-
+<div class="main-container">
 <div class="container">
     <h5 th:text="'Детайли за събитието: ' + ${event.eventDescription}"></h5>
     <div class="event_info">
@@ -151,7 +151,7 @@
         <table>
             <tr>
                 <td class="buttonz">
-                    <button onclick="location.href='/events'">⬅ Назад към списъка със събития</button>
+                    <button onclick="location.href='/events'">Назад към списъка със събития</button>
                     <button th:if="${event.type.name() == 'TOURNAMENT'}" th:attr="onclick=|window.location.href='@{/events/tournaments/export/pdf/{id}(id=${eventId})}'|">PDF Експорт</button>
                     <button th:if="${event.type.name() == 'TOURNAMENT'}" th:attr="onclick=|window.location.href='@{/events/tournaments/export/csv/{id}(id=${eventId})}'|">CSV Експорт</button>
                     <!-- Показване на бутон за потвърждаване на резултати от администратор/тренер -->
@@ -170,6 +170,6 @@
         </table>
     </div>
 </div>
-
+</div>
 </body>
 </html>
