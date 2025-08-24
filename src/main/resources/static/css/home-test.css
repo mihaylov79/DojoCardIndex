@@ -1,67 +1,214 @@
 :root {
-    /*--red-main: #ff0000;        !* тъмно червено *!*/
-    --red-main: #27669c;        /* тъмно червено */
-    --red-light: #f44336;       /* по-светло червено за hover */
+    --red-main: #27669c;
+    --red-light: #f44336;
     --background: #f4f7fa;
-    --shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);  /* recepie from Koko */
+    --shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);
     --black: #000000;
     --white: #fff;
 }
 
+/* Глобални ресети и стабилизация на ширината */
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
 
 body {
     /*font-family: 'Raleway', sans-serif;*/
-    /*background: #f4f7fa;*/
-    justify-items: center;
-    margin: 0;
-    padding: 0;
+    /*background: var(--background);*/
 }
 
+/* Главен контейнер: full-bleed за линиите + stretch за децата */
 .main-container {
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    /*justify-items: center;*/
-    padding: 2rem;
+    align-items: stretch;              /* важно за еднаква ширина на децата */
     gap: 2rem;
+
+    /* отстояния в съдържанието */
+    padding: 2rem 0;
+
+    /* full-bleed трик за да опрат линиите в краищата на viewport-а */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
 }
 
-.user-info, .user-messages, .user-events, .med-exams {
+/* Горна и долна линия (80% от ширината на екрана) */
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80vw;
+    pointer-events: none;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* от ляво към дясно */
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* от дясно към ляво */
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+/* Унифициран “карточен” стил за всички секции */
+.user-info,
+.user-messages,
+.user-events,
+.med-exams {
     background: var(--white);
     padding: 2rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
 }
 
-/*.user-info {*/
-/*    background: var(--black);*/
+/* Обвивката на съобщения/събития/прегледи да се разтяга като .user-info */
+.messages {
+    width: 100%;
+    max-width: 1000px;     /* същата ширина като секциите */
+    margin: 0 auto;        /* центриране като .user-info */
+}
+/* разстояние между вътрешните секции в .messages */
+.messages > * + * {
+    margin-top: 2rem;
+}
 
-/*}*/
+/* Картинка в профилната таблица */
+img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+}
 
-/*.info{*/
-/*    color: white;*/
-/*}*/
+/* Бутони в профилната секция */
+.user-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
 
+.user-buttons button,
+.action-buttons button {
+    color: var(--red-main);
+    font-weight: 400;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease, font-weight 0.2s ease;
+    background: transparent;
+    border: 1px solid var(--red-main);
+}
+.user-buttons button:hover,
+.action-buttons button:hover {
+    font-weight: 650;
+}
+
+/* Админ панел бутон/меню */
+.admin-panel-wrapper {
+    position: relative;
+    display: block;
+    /* full-bleed към десния ръб на екрана */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    text-align: right;
+    padding: 0 2rem 8px 2rem; /* десен отстъп 2rem + hover буфер отдолу */
+}
+
+.admin-toggle {
+    padding: 10px 15px;
+    border: solid 1px var(--red-main);
+    box-shadow: var(--shadow);
+    color: var(--red-main);
+    cursor: pointer;
+    border-radius: 8px;
+    display: inline-block;
+    background: var(--white);
+}
+.admin-toggle:hover,
+.admin-toggle:focus {
+    font-weight: 700;
+}
+
+.admin-menu {
+    display: none;
+    position: absolute;
+    top: 100%;             /* плътно под бутона */
+    right: 2rem;           /* изравняваме с десния вътрешен отстъп на wrapper-а */
+    left: auto;
+    background-color: var(--background);
+    color: black;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 999;
+    width: 245px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+}
+/* менюто остава отворено при hover върху wrapper или самото меню и при фокус */
+.admin-panel-wrapper:hover .admin-menu,
+.admin-panel-wrapper .admin-menu:hover {
+    display: block;
+}
+.admin-panel-wrapper:focus-within .admin-menu {
+    display: block;
+}
+.admin-menu a {
+    text-decoration: none;
+    color: var(--red-main);
+}
+.admin-menu a:hover {
+    color: var(--red-main);
+    font-weight: 700;
+    opacity: 0.8;
+}
+.admin-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.admin-menu ul li {
+    margin: 8px 0;
+}
+
+/* Таблици */
 table {
     color: var(--black);
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
-table th, table td {
+table th,
+table td {
     padding: 0.75rem 1rem;
     text-align: left;
-    /*border-bottom: 1px solid #ddd;*/
     border-bottom: 1px solid var(--red-main);
 }
 
 table th {
     background: #f0f2f5;
-    /*color: #333;*/
     color: var(--red-main);
 }
 
@@ -72,302 +219,54 @@ table caption {
     text-align: left;
 }
 
-.user-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.user-buttons button, .action-buttons button {
-    /*background:var(--black);*/
-    color: var(--red-main);
-    /*border: none;*/
-    font-weight: 400;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.user-buttons button:hover, .action-buttons button:hover {
-    /*background: #f44336;*/
-    /*opacity: 0.8;*/
-    /*color: var(--white);*/
-    font-weight: 650;
-}
-
-
-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
+/* Допълнителни отстояния между секциите */
 .user-messages,
 .user-events,
 .admin-panel {
     margin-top: 2rem;
 }
-
 .med-exams {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
 }
 
-/*.main-container {*/
-/*    display: flex;*/
-/*    justify-content: space-between;*/
-/*    align-items: flex-start;*/
-/*    gap: 20px;*/
-/*    padding: 20px;*/
-/*}*/
-
-.main-content {
-    flex: 1;
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-container {
+        padding: 1.5rem 0;
+        gap: 1.5rem;
+    }
+    .user-info,
+    .user-messages,
+    .user-events,
+    .med-exams {
+        padding: 1.5rem;
+    }
 }
-
-/*.admin-menu {*/
-/*    background-color: #f2f2f2;*/
-/*    border: 1px solid #ccc;*/
-/*    padding: 15px;*/
-/*    !*width: 250px;*!*/
-/*    border-radius: 8px;*/
-/*    box-shadow: 0 0 10px rgba(0,0,0,0.1);*/
-/*    font-family: Raleway, sans-serif;*/
-/*}*/
-
-/*.admin-title {*/
-/*    font-weight: bold;*/
-/*    font-size: 1.2em;*/
-/*    margin-bottom: 10px;*/
-/*    color: #333;*/
-/*    text-align: center;*/
-/*}*/
-
-/*.admin-menu ul {*/
-/*    list-style: none;*/
-/*    padding: 0;*/
-/*}*/
-
-/*.admin-menu li {*/
-/*    margin-bottom: 8px;*/
-/*}*/
-
-/*.admin-menu a {*/
-/*    text-decoration: none;*/
-/*    color: #ff0000;*/
-/*    text-align: center;*/
-/*    transition: color 0.3s ease;*/
-/*}*/
-
-/*.admin-menu a:hover {*/
-/*    !*background:#0056b3;*!*/
-/*    color: white;*/
-/*}*/
-
-
-/*.admin-menu {*/
-/*    margin-bottom: 20px;*/
-/*}*/
-
-/*.admin-menu ul {*/
-/*    width: 100%;*/
-/*    display: flex;*/
-/*    flex-wrap: wrap; !* Позволява пренасяне на следващ ред *!*/
-/*    flex-direction: row;*/
-/*    justify-content: center;*/
-/*    gap: 10px;*/
-/*    margin-left: 0;*/
-/*}*/
-
-/*.admin-menu ul li {*/
-/*    flex: 1 1 calc(5% - 20px); !* Автоматична ширина, без раздуване *!*/
-/*    !*background: #007bff;*!*/
-/*    background: black;*/
-/*    text-align: center;*/
-/*    border-radius: 0.3em;*/
-/*    color: #ff0000;*/
-/*    padding: 0.7em 0.3em;*/
-
-/*}*/
-
-/*.admin-menu ul li:hover {*/
-/*    !*background: #f44336;*!*/
-/*    color: white;*/
-/*}*/
-
-/*---границите на слайдъра---*/
-.main-container {
-    padding: 2em 0;
-    position: relative;
-    /* background-color: black; */
-}
-
-.main-container::before,
-.main-container::after {
-    content: "";
-    position: absolute;
-    height: 20px;
-    background-color: var(--red-main);
-    width: 80%;
-
-}
-
-.main-container::after{
-    border-top-left-radius: 0.8em;
-    border-bottom-left-radius: 0.8em;
-}
-
-.main-container::before{
-    border-top-right-radius: 0.8em;
-    border-bottom-right-radius: 0.8em;
-}
-
-.main-container::before {
-    top: 0;
-    left: 0; /* отляво надясно */
-}
-
-.main-container::after {
-    bottom: 0;
-    right: 0; /* отдясно наляво */
-}
-
-/*---границите на слайдъра---*/
-
-.admin-panel-wrapper {
-    margin-left: auto;
-    position: relative;
-    display: inline-block;
-}
-
-.admin-toggle {
-    padding: 10px 15px;
-    /*background-color: var(--black);*/
-    border: solid 1px var(--red-main);
-    box-shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);
-    color: var(--red-main);
-    cursor: pointer;
-    border-radius: 8px;
-}
-
-.admin-toggle:hover, .admin-toggle:focus {
-    font-weight: 700;
-}
-
-.admin-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: var(--background);
-    color: black;
-    border: 1px solid #ccc;
-    padding: 10px;
-    z-index: 999;
-    width: 245px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-
-.admin-menu a {
-    text-decoration: none;
-    color: var(--red-main);
-
-    /*background: black;*/
-}
-
-.admin-menu a:hover {
-    color: var(--red-main);
-    font-weight: 700;
-    opacity: 0.8;
-    /*padding: 0.1em;*/
-    /*border-radius: 0.3em;*/
-    /*box-shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);*/
-}
-
-.admin-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.admin-menu ul li {
-    margin: 8px 0;
-}
-
-.admin-panel-wrapper:hover .admin-menu {
-    display: block;
-}
-
-
-
-
-.user-events + .med-exams {
-    margin-top: 2rem;
-}
-
-
-/*table {*/
-/*    margin-bottom: 2rem;*/
-/*}*/
-
-
 
 @media (max-width: 768px) {
     .user-buttons {
         flex-direction: column;
         align-items: stretch;
     }
-
-    .main-container {
+    .user-info,
+    .user-messages,
+    .user-events,
+    .med-exams {
         padding: 1rem;
     }
-
-    .user-info, .user-messages, .user-events {
-        padding: 1rem;
-    }
-
-    table th, table td {
+    table th,
+    table td {
         font-size: 0.9rem;
     }
-}
 
-/* Основни стилове за десктоп */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-}
-
-thead {
-    background-color: var(--red-main);
-    color: white;
-}
-
-th, td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-/* === Мобилна версия === */
-@media screen and (max-width: 768px) {
+    /* Мобилно: таблици като карти с етикети */
     table, thead, tbody, th, td, tr {
         display: block;
         width: 100%;
     }
-
     thead {
         display: none;
     }
-
     tr {
         margin-bottom: 1rem;
         background: var(--white);
@@ -376,7 +275,6 @@ th, td {
         box-shadow: var(--shadow);
         padding: 0.5rem;
     }
-
     td {
         position: relative;
         padding: 1rem 1rem 0.5rem 1rem;
@@ -384,7 +282,6 @@ th, td {
         border: none;
         border-bottom: 1px solid #eee;
     }
-
     td::before {
         content: attr(data-label);
         display: block;
@@ -393,11 +290,7 @@ th, td {
         color: var(--red-main);
         font-size: 0.9rem;
     }
-
     td:last-child {
         border-bottom: none;
     }
 }
-
-
-
