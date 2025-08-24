@@ -127,14 +127,12 @@
     border-radius: 0.5rem;
     cursor: pointer;
     transition: bacground 0.3s ease;
-    /*background: #eef4fb;*/
-    /*border: 1px solid #c9d9ec;*/
+
 }
 .buttonz button:hover,
 .actions button:hover,
 .buttonz form button:hover,
 .actions form button:hover {
-    /*background-color: #dfeaf7;*/
     font-weight: 650;
 }
 .container table td.buttonz,
