@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="60">
     <title>Чакащи заявки</title>
-<!--    <link rel="stylesheet" href="/css/default.css">-->
     <link rel="stylesheet" href="/css/default-test.css">
-<!--    <link rel="stylesheet" href="/css/pending-requests.css">-->
     <link rel="stylesheet" href="/css/events-test.css">
 </head>
 <body>
-    <header>
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
-    </header>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
 <div class="main-container">
     <div class="table-container">
         <table>
@@ -21,44 +19,58 @@
                 <div class="caption-right">Обработени заявки за събития</div>
             </caption>
             <thead>
-                <tr>
-                    <th>Събитие</th>
-                    <th>Начална дата</th>
-        <!--            <th>Крайна дата</th>-->
-                    <th>Изисквания</th>
-                    <th>Дата на заявка</th>
-                    <th>Име</th>
-                    <th>Фамилия</th>
-                    <th>Степен</th>
-                    <th>Възраст</th>
-                    <th>Статус</th>
-                    <th>Причина</th>
-                    <th>Обработена от</th>
-                    <th>Действие</th>
-                </tr>
+            <tr>
+                <th>Събитие</th>
+                <th>Начална дата</th>
+                <!--            <th>Крайна дата</th>-->
+                <th>Изисквания</th>
+                <th>Дата на заявка</th>
+                <th>Име</th>
+                <th>Фамилия</th>
+                <th>Степен</th>
+                <th>Възраст</th>
+                <th>Статус</th>
+                <th>Причина</th>
+                <th>Обработена от</th>
+                <th>Действие</th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="request : ${notPendingRequests}">
-                    <td data-label="Събитие" th:text="${request.event.eventDescription}">Име на събитието</td>
-                    <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd.MM.yyyy')}">Начало</td>
-        <!--            <td th:text="${#temporals.format(request.event.endDate, 'dd.MM.yyyy HH:mm')}">Край</td>-->
-                    <td data-label="Изисквания" th:text="${request.event.requirements.description}">Изисквания</td>
-                    <td data-label="Дата на заявка" th:text="${#temporals.format(request.created, 'dd.MM.yyyy')}">дата на заявка</td>
-                    <td data-label="Име" th:text="${request.user.firstName}">Име</td>
-                    <td data-label="Фамилия" th:text="${request.user.lastName}">Фамилия</td>
-                    <td data-label="Степен" th:text="${request.user.reachedDegree?.description ?: '-'}">Степен</td>
-                    <td data-label="Възраст" th:text="${request.user.birthDate == null} or ${userAges[request.user.id]} == 0 ? 'Неизвестна' : ${userAges[request.user.id]}">Възраст</td>
-                    <td data-label="Статус" th:text="${request.status.description}"
-                        th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">>Статус</td>
-                    <td data-label="Причина" th:text="${request.reason}">Причина</td>
-                    <td data-label="Обработена от" th:text="${request.processedBy.firstName} + ' ' + ${request.processedBy.lastName}">Обработена от</td>
-                    <td class="actions">
-                        <form th:action="@{'/events/requests/' + ${request.getEvent().id} + '/users/' +${request.getUser().id} + '/unapprove'}" th:method="PUT">
-                            <input type="hidden" name="requestId" th:value="${request.id}">
-                            <button type="submit" onclick="return confirm('Тази заявка ще бъде върната за преразгледане');">Върни</button>
-                        </form>
-                    </td>
-                </tr>
+            <tr th:each="request : ${notPendingRequests}">
+                <td data-label="Събитие" th:text="${request.event.eventDescription}">Име на събитието</td>
+                <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd.MM.yyyy')}">
+                    Начало
+                </td>
+                <!--            <td th:text="${#temporals.format(request.event.endDate, 'dd.MM.yyyy HH:mm')}">Край</td>-->
+                <td data-label="Изисквания" th:text="${request.event.requirements.description}">Изисквания</td>
+                <td data-label="Дата на заявка" th:text="${#temporals.format(request.created, 'dd.MM.yyyy')}">дата на
+                    заявка
+                </td>
+                <td data-label="Име" th:text="${request.user.firstName}">Име</td>
+                <td data-label="Фамилия" th:text="${request.user.lastName}">Фамилия</td>
+                <td data-label="Степен" th:text="${request.user.reachedDegree?.description ?: '-'}">Степен</td>
+                <td data-label="Възраст"
+                    th:text="${request.user.birthDate == null} or ${userAges[request.user.id]} == 0 ? 'Неизвестна' : ${userAges[request.user.id]}">
+                    Възраст
+                </td>
+                <td data-label="Статус" th:text="${request.status.description}"
+                    th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">
+                    >Статус
+                </td>
+                <td data-label="Причина" th:text="${request.reason}">Причина</td>
+                <td data-label="Обработена от"
+                    th:text="${request.processedBy.firstName} + ' ' + ${request.processedBy.lastName}">Обработена от
+                </td>
+                <td class="actions">
+                    <form th:action="@{'/events/requests/' + ${request.getEvent().id} + '/users/' +${request.getUser().id} + '/unapprove'}"
+                          th:method="PUT">
+                        <input type="hidden" name="requestId" th:value="${request.id}">
+                        <button type="submit" onclick="return confirm('Тази заявка ще бъде върната за преразгледане');">
+                            Върни
+                        </button>
+                    </form>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

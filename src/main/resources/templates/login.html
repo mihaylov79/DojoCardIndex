@@ -4,47 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
-<!--    <link rel="stylesheet" href="/css/default.css">-->
     <link rel="stylesheet" href="/css/default-test.css">
-<!--    <link rel="stylesheet" href="/css/login.css">-->
     <link rel="stylesheet" href="/css/login-test.css">
 </head>
 
 <body>
-    <header>
+<header>
 
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
-    </header>
+</header>
 
-    <div class="form">
-        <form class="login" th:action="@{/login}" th:method="POST" th:object="${loginRequest}" >
-            <div th:if="${successMessage}" class="alert-info">
-                <p th:text="${successMessage}"></p>
-            </div>
-            <h2>Вход</h2>
-            <span class="credentials-error"></span>
-            
-            <div class="field">
-              <label for="field-email">Електронна поща</label>
-              <input type="email" name="username" id="field-email" placeholder="Email" th:field="*{email}">
-              <span class="helper info">например: john.doe@gmail.com</span>
-            </div>
-        
-            <div class="field">
-              <label for="field-password">Парола</label>
-              <input type="password" name="password" id="field-password" placeholder="Password" th:field="*{password}">
-                <span class="helper info">паролата трябва да бъде между 4 и 20 символа</span>
-                <p></p>
-              <span th:if="${errorMessage}" th:text="${errorMessage}" class="credentials-error"></span>
-            </div>
+<div class="form">
+    <form class="login" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+        <div th:if="${successMessage}" class="alert-info">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <h2>Вход</h2>
+        <span class="credentials-error"></span>
 
-            <div class="forgot-password">
-                <a th:href="@{/forgotten-password}">Забравена парола?</a>
-            </div>
-        
-            <input type="submit" class="button login" value="Вход">
-          </form>
-    </div>
+        <div class="field">
+            <label for="field-email">Електронна поща</label>
+            <input type="email" name="username" id="field-email" placeholder="Email" th:field="*{email}">
+            <span class="helper info">например: john.doe@gmail.com</span>
+        </div>
+
+        <div class="field">
+            <label for="field-password">Парола</label>
+            <input type="password" name="password" id="field-password" placeholder="Password" th:field="*{password}">
+            <span class="helper info">паролата трябва да бъде между 4 и 20 символа</span>
+            <p></p>
+            <span th:if="${errorMessage}" th:text="${errorMessage}" class="credentials-error"></span>
+        </div>
+
+        <div class="forgot-password">
+            <a th:href="@{/forgotten-password}">Забравена парола?</a>
+        </div>
+
+        <input type="submit" class="button login" value="Вход">
+    </form>
+</div>
 </body>
 </html>

@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="60">
     <title>Чакащи заявки</title>
-<!--    <link rel="stylesheet" href="/css/default.css">-->
     <link rel="stylesheet" href="/css/default-test.css">
-<!--    <link rel="stylesheet" href="/css/pending-requests.css">-->
     <link rel="stylesheet" href="/css/events-test.css">
 </head>
 <body>
@@ -21,39 +19,45 @@
                 <div class="caption-right">Чакащи заявки за събития</div>
             </caption>
             <thead>
-                <tr>
-                    <th>Събитие</th>
-                    <th>Начална дата</th>
-                    <th>Крайна дата</th>
-                    <th>Изисквания</th>
-                    <th>Име</th>
-                    <th>Фамилия</th>
-                    <th>Степен</th>
-                    <th>Възраст</th>
-                    <th>Действие</th>
-                </tr>
+            <tr>
+                <th>Събитие</th>
+                <th>Начална дата</th>
+                <th>Крайна дата</th>
+                <th>Изисквания</th>
+                <th>Име</th>
+                <th>Фамилия</th>
+                <th>Степен</th>
+                <th>Възраст</th>
+                <th>Действие</th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="request : ${requests}">
-                    <td data-label="Събитие" th:text="${request.event.eventDescription}">Име на събитието</td>
-                    <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd.MM.yyyy')}">Начало</td>
-                    <td data-label="Крайна дата" th:text="${#temporals.format(request.event.endDate, 'dd.MM.yyyy')}">Край</td>
-                    <td data-label="Изисквания" th:text="${request.event.requirements.description}">Изисквания</td>
-                    <td data-label="Име" th:text="${request.user.firstName}">Име</td>
-                    <td data-label="Фамилия" th:text="${request.user.lastName}">Фамилия</td>
-                    <td data-label="Степен" th:text="${request.user.reachedDegree?.description ?: '-'}">Степен</td>
-                    <td data-label="Възраст" th:text="${request.user.birthDate == null} or ${userAges[request.user.id]} == 0 ? 'Неизвестна' : ${userAges[request.user.id]}">Възраст</td>
-                    <td class="actions">
-                        <form th:action="@{'/events/requests/approve/' + ${request.id}}" method="post">
-                            <input type="hidden" name="requestId" th:value="${request.id}">
-                            <button type="submit">Одобри</button>
-                        </form>
-                        <form th:action="@{/events/requests/reject/{id}(id=${request.id})}" th:method="GET">
-                            <input type="hidden" name="requestId" th:value="${request.id}">
-                            <button type="submit" class="reject">Откажи</button>
-                        </form>
-                    </td>
-                </tr>
+            <tr th:each="request : ${requests}">
+                <td data-label="Събитие" th:text="${request.event.eventDescription}">Име на събитието</td>
+                <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd.MM.yyyy')}">
+                    Начало
+                </td>
+                <td data-label="Крайна дата" th:text="${#temporals.format(request.event.endDate, 'dd.MM.yyyy')}">Край
+                </td>
+                <td data-label="Изисквания" th:text="${request.event.requirements.description}">Изисквания</td>
+                <td data-label="Име" th:text="${request.user.firstName}">Име</td>
+                <td data-label="Фамилия" th:text="${request.user.lastName}">Фамилия</td>
+                <td data-label="Степен" th:text="${request.user.reachedDegree?.description ?: '-'}">Степен</td>
+                <td data-label="Възраст"
+                    th:text="${request.user.birthDate == null} or ${userAges[request.user.id]} == 0 ? 'Неизвестна' : ${userAges[request.user.id]}">
+                    Възраст
+                </td>
+                <td class="actions">
+                    <form th:action="@{'/events/requests/approve/' + ${request.id}}" method="post">
+                        <input type="hidden" name="requestId" th:value="${request.id}">
+                        <button type="submit">Одобри</button>
+                    </form>
+                    <form th:action="@{/events/requests/reject/{id}(id=${request.id})}" th:method="GET">
+                        <input type="hidden" name="requestId" th:value="${request.id}">
+                        <button type="submit" class="reject">Откажи</button>
+                    </form>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

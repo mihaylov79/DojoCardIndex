@@ -8,7 +8,8 @@
 <body>
 <div class="container">
     <h1 th:text="${event.eventDescription}">Име на събитието</h1>
-    <p><strong>Начало:</strong> <span th:text="${#temporals.format(event.startDate, 'dd.MM.yyyy')} + ' г.'">Описанието ще бъде тук</span></p>
+    <p><strong>Начало:</strong> <span th:text="${#temporals.format(event.startDate, 'dd.MM.yyyy')} + ' г.'">Описанието ще бъде тук</span>
+    </p>
     <p><strong>Място:</strong> <span th:text="'гр/с ' + ${event.location}">Описанието ще бъде тук</span></p>
 
     <h2>Участници</h2>
@@ -33,7 +34,7 @@
             <td th:text="${participant.getAgeGroup()}"></td>
             <td th:text="${participant.weight} + ' кг'"></td>
             <td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]} +' г'"></td>
-<!--            td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]}"-->
+            <!--            td th:text="${participant.birthDate == null} or ${userAges[participant.id]} == 0 ? 'Неизвестна' : ${userAges[participant.id]}"-->
             <td th:text="${participant.reachedDegree.description}"></td>
             <td th:text="${participant.medicalExamsPassed != null ? #temporals.format(participant.medicalExamsPassed, 'dd.MM.yyyy') : '-'}"></td>
         </tr>

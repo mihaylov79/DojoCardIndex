@@ -13,22 +13,19 @@
 </header>
 
 <div class="main-container">
-<!--    <div class="error-info">-->
-<!--        <h2>Грешка 400</h2>-->
-<!--        <h3>Bad Request</h3>-->
-<!--    </div>-->
+
     <div class="additional-info">
         <div class="message">
             <h1>Нещо се обърка!</h1>
 
             <hr class="line"/>
-                <h3 th:text="${errorMessage}"></h3>
+            <h3 th:text="${errorMessage}"></h3>
             <hr class="line"/>
 
             <p>Опитайте да презаредите страницата (натиснете F5).</p>
             <p>Ако проблемът продължава, моля <a href="/contact">свържете се с нас</a>.</p>
         </div>
-<!--        <p th:text="'Грешка: ' + ${exception}"></p>-->
+
         <a href="/home">Към профилната страница</a>
     </div>
 </div>
