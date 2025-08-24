@@ -4,25 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактиране на потребителските данни</title>
-<!--    <link rel="stylesheet" href="/css/default.css">-->
     <link rel="stylesheet" href="/css/default-test.css">
-<!--    <link rel="stylesheet" href="/css/addUser.css">-->
     <link rel="stylesheet" href="/css/login-test.css">
 </head>
 <body>
-    <header>
+<header>
 
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
-    </header>
+</header>
 
-    <div class="form">
-    <form class="edit-profile" th:action="@{'/admin/users/details/edit/' + ${user.id}}" th:method="POST" th:object="${userEditAdminRequest}">
+<div class="form">
+    <form class="edit-profile" th:action="@{'/admin/users/details/edit/' + ${user.id}}" th:method="POST"
+          th:object="${userEditAdminRequest}">
         <input type="hidden" name="id" th:value="${user.id}"/>
         <h2>Редактиране</h2>
         <h4 class="acc-holder" th:text="'Потребител: ' + ${user.firstName} + ' ' + ${user.lastName}"></h4>
         <span class="credentials-error"></span>
-
 
 
         <div class="field">
@@ -33,14 +31,15 @@
 
         <div class="field">
             <label for="field-birthDate">Дата на раждане</label>
-            <input type="date" id="field-birthDate" th:field="*{birthDate}" >
+            <input type="date" id="field-birthDate" th:field="*{birthDate}">
             <span class="errors" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
         </div>
 
         <div class="field">
             <label for="field-role">Роля</label>
             <select id="field-role" th:field="*{role}">
-                <option th:each="role : ${T(cardindex.dojocardindex.User.models.UserRole).values()}" th:value="${role}" th:text="${role.description}" value="USER"></option>
+                <option th:each="role : ${T(cardindex.dojocardindex.User.models.UserRole).values()}" th:value="${role}"
+                        th:text="${role.description}" value="USER"></option>
 
             </select>
         </div>
@@ -48,29 +47,33 @@
         <div class="field">
             <label for="status">Статус</label>
             <select id="status" th:field="*{status}">
-                <option th:each="status : ${T(cardindex.dojocardindex.User.models.UserStatus).values()}" th:value="${status}" th:text="${status.description}" value="ACTIVE">Очакващ</option>
+                <option th:each="status : ${T(cardindex.dojocardindex.User.models.UserStatus).values()}"
+                        th:value="${status}" th:text="${status.description}" value="ACTIVE">Очакващ
+                </option>
             </select>
         </div>
 
         <div class="field">
             <label for="registrationStatus">Регистрация</label>
             <select id="registrationStatus" th:field="*{registrationStatus}">
-                <option th:each="registrationStatus : ${T(cardindex.dojocardindex.User.models.RegistrationStatus).values()}" th:value="${registrationStatus}" th:text="${registrationStatus.description}" value=""></option>
+                <option th:each="registrationStatus : ${T(cardindex.dojocardindex.User.models.RegistrationStatus).values()}"
+                        th:value="${registrationStatus}" th:text="${registrationStatus.description}" value=""></option>
 
             </select>
         </div>
 
-<!--        <div class="field">-->
-<!--            <label for="field-birthDate">Дата на раждане</label>-->
-<!--            <input type="date" id="field-birthDate" th:field="*{birthDate}" placeholder="">-->
-<!--            <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>-->
-<!--        </div>-->
+        <!--        <div class="field">-->
+        <!--            <label for="field-birthDate">Дата на раждане</label>-->
+        <!--            <input type="date" id="field-birthDate" th:field="*{birthDate}" placeholder="">-->
+        <!--            <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>-->
+        <!--        </div>-->
 
         <div class="field">
             <label for="field-reachedDegree">Защитена степен</label>
-            <select id="field-reachedDegree" th:field="*{reachedDegree}" >
-            <option th:each="reachedDegree : ${T(cardindex.dojocardindex.User.models.Degree).values()}" th:value="${reachedDegree}" th:text="${reachedDegree.description}" value=""></option>
-<!--            <span th:if="${#fields.hasErrors('reachedDegree')}" th:errors="*{reachedDegree}"></span>-->
+            <select id="field-reachedDegree" th:field="*{reachedDegree}">
+                <option th:each="reachedDegree : ${T(cardindex.dojocardindex.User.models.Degree).values()}"
+                        th:value="${reachedDegree}" th:text="${reachedDegree.description}" value=""></option>
+                <!--            <span th:if="${#fields.hasErrors('reachedDegree')}" th:errors="*{reachedDegree}"></span>-->
             </select>
         </div>
 
@@ -83,7 +86,8 @@
         <div class="field">
             <label for="field-ageGroup">Възрастова група</label>
             <select id="field-ageGroup" th:field="*{ageGroup}">
-            <option th:each="agrGroup : ${T(cardindex.dojocardindex.User.models.AgeGroup).values()}" th:value="${agrGroup}" th:text="${agrGroup.description}" value=""></option>
+                <option th:each="agrGroup : ${T(cardindex.dojocardindex.User.models.AgeGroup).values()}"
+                        th:value="${agrGroup}" th:text="${agrGroup.description}" value=""></option>
             </select>
         </div>
 
@@ -101,9 +105,9 @@
         </div>
 
         <div class="field">
-             <label for="field-medicalExamsPassed">Преминал медицински преглед</label>
-             <input type="date" id="field-medicalExamsPassed" th:field="*{medicalExamsPassed}" placeholder="">
-             <span th:if="${#fields.hasErrors('medicalExamsPassed')}" th:errors="*{medicalExamsPassed}"></span>
+            <label for="field-medicalExamsPassed">Преминал медицински преглед</label>
+            <input type="date" id="field-medicalExamsPassed" th:field="*{medicalExamsPassed}" placeholder="">
+            <span th:if="${#fields.hasErrors('medicalExamsPassed')}" th:errors="*{medicalExamsPassed}"></span>
         </div>
 
         <div class="field">
@@ -114,7 +118,8 @@
         <div class="field">
             <label for="field-contactPersonPhone">Телефон на лице за контакт</label>
             <input type="text" id="field-contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">
-            <span class="errors" th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"></span>
+            <span class="errors" th:if="${#fields.hasErrors('contactPersonPhone')}"
+                  th:errors="*{contactPersonPhone}"></span>
         </div>
 
         <input type="submit" class="button save" value="Запази">

@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Списък с потребители</title>
-<!--    <link rel="stylesheet" href="/css/default.css">-->
     <link rel="stylesheet" href="/css/default-test.css">
-<!--    <link rel="stylesheet" href="/css/users-list2.css">-->
     <link rel="stylesheet" href="/css/users-list2_test.css">
 </head>
 <body>
-    <header>
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
-    </header>
-    <div class="main-container">
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
     <div class="table-container">
         <table>
             <caption>
-<!--                <div class="caption-left">-->
-<!--                <button th:attr="onclick=|location.href='/admin/users/list/all-users'|">Всички потребители</button>-->
-<!--                <button th:attr="onclick=|location.href='/users/list'|">Регистрирани потребители</button>-->
-<!--            </div>-->
-                <div class="caption-right">Списък с всички потребители на клуб "Драгон Доджо ДСД"</div></caption>
+                <!--                <div class="caption-left">-->
+                <!--                <button th:attr="onclick=|location.href='/admin/users/list/all-users'|">Всички потребители</button>-->
+                <!--                <button th:attr="onclick=|location.href='/users/list'|">Регистрирани потребители</button>-->
+                <!--            </div>-->
+                <div class="caption-right">Списък с всички потребители на клуб "Драгон Доджо ДСД"</div>
+            </caption>
             <thead>
             <tr>
                 <th>Снимка</th>
@@ -38,28 +37,31 @@
             </thead>
             <tr th:each="user:${allUsers}">
                 <td>
-                    <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
+                    <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}"
+                         alt="">
                 </td>
                 <td data-label="Име" th:text="${user.firstName}">
-                    
+
                 </td>
                 <td data-label="Фамилия" th:text="${user.lastName}">
-                    
+
                 </td>
 
                 <td data-label="Поща" th:text="${user.email}">
-                    
+
                 </td>
 
-                <td data-label="Възраст" th:text="${user.birthDate == null}  or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>">
+                <td data-label="Възраст"
+                    th:text="${user.birthDate == null}  or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>
+                ">
 
 
                 <td data-label="Защитена степен" th:text="${user.reachedDegree?.description ?: '-'}">
-                    
+
                 </td>
 
                 <td data-label="Състезател" th:if="${user.isCompetitor} == true">Състезател
-                    
+
                 </td>
 
                 <td data-label="Състезателен статус" th:if="${user.isCompetitor} == false"> -
@@ -67,12 +69,12 @@
                 </td>
 
                 <td data-label="Статус на акаунта" th:text="${user.status.description}">
-                    
+
                 </td>
 
-<!--                </td>-->
+                <!--                </td>-->
 
-<!--                <td th:text="${user.registrationStatus.description}">-->
+                <!--                <td th:text="${user.registrationStatus.description}">-->
                 <td data-label="Статус на регистрация" th:text="${user.registrationStatus?.description}">
 
                 </td>
@@ -82,7 +84,10 @@
                           th:action="@{/admin/users/modify-status}"
                           th:method="POST">
                         <input type="hidden" name="id" th:value="${user.id}"/>
-                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да ДЕАКТИВИРАТЕ този потребител ?');">Деактивирай</button>
+                        <button type="submit"
+                                onclick="return confirm('Сигурни ли сте, че искате да ДЕАКТИВИРАТЕ този потребител ?');">
+                            Деактивирай
+                        </button>
                     </form>
                     <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).INACTIVE}"
                           th:action="@{/admin/users/modify-status}"
@@ -90,14 +95,15 @@
                         <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit">Активирай</button>
                     </form>
-                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|">Редактиране</button>
-                    
+                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|">Редактиране
+                    </button>
+
                 </td>
 
 
             </tr>
         </table>
     </div>
-    </div>
+</div>
 </body>
 </html>
