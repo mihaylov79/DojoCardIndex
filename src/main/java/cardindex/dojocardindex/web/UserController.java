@@ -14,7 +14,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+// ... existing code ...
 import org.springframework.web.servlet.ModelAndView;
+
+// Добавени импорти за пренесените админ методи
+import cardindex.dojocardindex.web.dto.CreateUserRequest;
+import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -181,4 +189,133 @@ public class UserController {
         return modelAndView;
     }
 
+// --- Преместени от AdminController методи, с абсолютни пътища /admin/... ---
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/admin/add-user")
+    public ModelAndView getAddNewUserPage(@AuthenticationPrincipal CustomUserDetails details){
+        User user = userService.getUserById(details.getId());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("addUser");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("createUserRequest", new CreateUserRequest());
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/admin/add-user")
+    public ModelAndView addNewUser(@AuthenticationPrincipal CustomUserDetails details,
+                                   @Valid CreateUserRequest createUserRequest,
+                                   BindingResult result){
+        User user = userService.getUserById(details.getId());
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("addUser");
+            modelAndView.addObject("user", user);
+            return modelAndView;
+        }
+        userService.createNewUser(createUserRequest);
+        ModelAndView modelAndView = new ModelAndView("redirect:/home");
+        modelAndView.addObject("user", user);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/admin/register-requests")
+    public ModelAndView getRegisterRequests(@AuthenticationPrincipal CustomUserDetails details){
+        User user = userService.getUserById(details.getId());
+        List<User> registerRequests = userService.getRegisterRequests();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("register-requests");
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("registerRequests", registerRequests);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/admin/register-requests/approve")
+    public ModelAndView approveRegisterRequest(@RequestParam UUID id,
+                                               @AuthenticationPrincipal CustomUserDetails details ) {
+        User currentUser = userService.getUserById(details.getId());
+        User request = userService.getUserById(id);
+        userService.approveRequest(request.getId());
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin/register-requests");
+        modelAndView.addObject("currentUser",currentUser);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/admin/register-requests/deny")
+    public ModelAndView denyRegisterRequest(@RequestParam UUID id,
+                                            @AuthenticationPrincipal CustomUserDetails details ) {
+        User currentUser = userService.getUserById(details.getId());
+        User request = userService.getUserById(id);
+        userService.denyRequest(request.getId());
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin/register-requests");
+        modelAndView.addObject("currentUser",currentUser);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/admin/users/list/all-users")
+    public ModelAndView getAllUsersPage(@AuthenticationPrincipal CustomUserDetails details) {
+        User user = userService.getUserById(details.getId());
+        List<User> allUsers = userService.getAllUsers();
+        Map<UUID, Integer> userAges = userService.getUserAges(allUsers);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("all-users-list");
+        modelAndView.addObject("user", user );
+        modelAndView.addObject("userAges", userAges);
+        modelAndView.addObject("allUsers", allUsers);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/admin/users/modify-status")
+    public ModelAndView modifyUserStatus(@RequestParam UUID id,
+                                         @AuthenticationPrincipal CustomUserDetails details,
+                                         HttpServletRequest request){
+        User currentUser = userService.getUserById(details.getId());
+        userService.modifyAccStatus(id);
+        String referer = request.getHeader("Referer");
+        ModelAndView modelAndView = new ModelAndView("redirect:" + referer);
+        modelAndView.addObject("currentUser", currentUser);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/admin/users/details/edit/{id}")
+    public ModelAndView getEditUserDetailsByAdminPage(@PathVariable UUID id,
+                                                      @AuthenticationPrincipal CustomUserDetails details){
+        User adminUser = userService.getUserById(details.getId());
+        User user = userService.getUserById(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("admin-user-edit");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("userEditAdminRequest", DTOMapper.mapUserToUserEditAdminRequest(user));
+        modelAndView.addObject("adminUser",adminUser);
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @PostMapping("/admin/users/details/edit/{id}")
+    public ModelAndView editUserDetailsByAdmin(@PathVariable UUID id,
+                                               @AuthenticationPrincipal CustomUserDetails details,
+                                               @Valid UserEditAdminRequest userEditAdminRequest,
+                                               BindingResult result){
+        User adminUser = userService.getUserById(details.getId());
+        if (result.hasErrors()) {
+            User user = userService.getUserById(id);
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("admin-user-edit");
+            modelAndView.addObject("user", user);
+            modelAndView.addObject("userEditAdminRequest", userEditAdminRequest);
+            modelAndView.addObject("adminUser", adminUser);
+            return modelAndView;
+        }
+        userService.editUserProfileByAdmin(id,userEditAdminRequest);
+        ModelAndView modelAndView = new ModelAndView("redirect:/users/list");
+        modelAndView.addObject(adminUser);
+        return modelAndView;
+    }
 }

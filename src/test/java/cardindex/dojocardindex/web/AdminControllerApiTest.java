@@ -2,6 +2,7 @@ package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreateUserRequest;
 import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 
 
-@WebMvcTest(AdminController.class)
+@WebMvcTest(UserController.class)
 public class AdminControllerApiTest {
 
     @MockitoBean
@@ -477,16 +478,30 @@ public class AdminControllerApiTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
-    public void getEditUserDetailsByAdminPage_NonExistingUser_ShouldReturnError() throws Exception {
+    void getEditUserDetailsByAdminPage_NonExistingUser_ShouldReturnError() throws Exception {
+    UUID adminId = UUID.randomUUID();
+    UUID nonExistingId = UUID.randomUUID();
 
-        UUID nonExistingId = UUID.randomUUID();
-        when(userService.getUserById(nonExistingId)).thenReturn(null);
+    // Подготви CustomUserDetails за администратора
+    CustomUserDetails adminDetails = new CustomUserDetails(
+            adminId, "admin@test.com", "pass",
+            UserRole.ADMIN, RegistrationStatus.REGISTERED, UserStatus.ACTIVE
+    );
 
-        mockMvc.perform(get("/users/details/edit/" + nonExistingId))
-                .andExpect(status().is4xxClientError());
-    }
+    // Ако контролерът извиква userService.getUserById(details.getId()) за текущия админ:
+    when(userService.getUserById(adminId)).thenReturn(
+            User.builder().id(adminId).email("admin@test.com").role(UserRole.ADMIN)
+                    .registrationStatus(RegistrationStatus.REGISTERED).status(UserStatus.ACTIVE).build()
+    );
 
+    // Неприсъстващ потребител -> реалната услуга хвърля exception
+    when(userService.getUserById(nonExistingId))
+            .thenThrow(new UserNotFoundException("not found"));
+
+    mockMvc.perform(get("/admin/users/details/edit/" + nonExistingId)
+                    .with(user(adminDetails)))
+            .andExpect(status().is4xxClientError());
+}
     @Test
     public void editUserDetailsByAdmin_ValidRequest_ShouldRedirect() throws Exception {
 
