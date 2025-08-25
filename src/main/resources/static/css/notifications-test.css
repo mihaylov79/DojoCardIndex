@@ -1,0 +1,246 @@
+:root {
+    --blue-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgba(0, 0, 0, 0.2);
+    --black: #222;
+    --white: #ffffff;
+}
+
+/* Основен контейнер */
+.table-container {
+    width: 95%;
+    margin: 40px auto;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+}
+
+/* Статус секция */
+.notification-settings {
+    margin-bottom: 2em;
+    /*background: var(--background);*/
+    border-radius: 0.7em;
+    padding: 1em 2em;
+    /*box-shadow: 0 0 10px rgba(0,0,0,0.05);*/
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2em;
+}
+.notification-settings h2 {
+    color: var(--blue-main);
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+}
+.status {
+    font-weight: bold;
+    padding: 0.2em 0.8em;
+    border-radius: 1em;
+    color: var(--black);
+    background: #e6e6e6;
+    margin-left: 0.5em;
+}
+.enabled {
+    color: green !important;
+    background: #e6fbe6 !important;
+}
+.disabled {
+    color: red !important;
+    background: #fbe6e6 !important;
+}
+.notification-settings button {
+    color: var(--blue-main);
+    font-weight: 400;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--blue-main);
+    background: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+.notification-settings button:hover {
+    /*background: var(--blue-main);*/
+    /*color: var(--white);*/
+    font-weight: 650;
+}
+
+/* История на известията - таблица */
+.notification-history table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--white);
+    color: var(--black);
+    margin-top: 1em;
+}
+.notification-history caption {
+    text-align: left;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    color: var(--black);
+    width: 90vw;
+}
+.notification-history th {
+    background-color: #f0f2f5;
+    color: var(--blue-main);
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+}
+.notification-history td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--blue-main);
+    vertical-align: middle;
+    text-align: center;
+    color: var(--black);
+}
+.notification-history form {
+    display: inline-block;
+    margin-bottom: 1em;
+}
+.notification-history button {
+    color: var(--blue-main);
+    font-weight: 400;
+    padding: 0.4em 1em;
+    border-radius: 0.5em;
+    border: 1px solid var(--blue-main);
+    background: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+.notification-history button:hover {
+    /*background: var(--blue-main);*/
+    /*color: var(--white);*/
+    font-weight: 650;
+}
+
+.notification-actions button {
+    color: var(--blue-main);
+    background: none;
+    border: 1px solid var(--blue-main);
+    font-weight: 400;
+    padding: 0.4em 1em;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+.notification-actions button:hover {
+    /*background: var(--blue-main);*/
+    /*color: var(--white);*/
+    font-weight: 650;
+}
+
+/* Линк за връщане */
+.back {
+    margin-top: 2em;
+    text-align: center;
+}
+.back a {
+    color: var(--blue-main);
+    text-decoration: none;
+    font-weight: 400;
+    padding: 0.4em 1em;
+    /*border-radius: 0.5em;*/
+    /*border: 1px solid var(--blue-main);*/
+    transition: background 0.3s, color 0.3s;
+}
+.back a:hover {
+    /*background: var(--blue-main);*/
+    /*color: var(--white);*/
+    font-weight: 650;
+}
+
+/*---границите на слайдъра---*/
+.main-container {
+    padding: 2em 0;
+    position: relative;
+}
+
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.main-container::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+/* Responsive таблица */
+@media screen and (max-width: 1370px) {
+    .notification-history table,
+    .notification-history thead,
+    .notification-history tbody,
+    .notification-history th,
+    .notification-history td,
+    .notification-history tr {
+        display: block;
+    }
+    .notification-history thead tr {
+        display: none;
+    }
+    .notification-history tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--blue-main);
+        border-radius: 10px;
+        padding: 0.5rem;
+        background-color: var(--white);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .notification-history td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+    .notification-history td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-weight: bold;
+        color: var(--blue-main);
+        white-space: nowrap;
+        text-align: left;
+    }
+}
+
+@media (max-width: 520px) {
+    .notification-history table {
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+    .table-container {
+        padding: 0.5em;
+    }
+}
