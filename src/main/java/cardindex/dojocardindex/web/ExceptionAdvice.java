@@ -2,6 +2,7 @@ package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.AccessDeniedException;
 
+@Slf4j
 @ControllerAdvice
 public class ExceptionAdvice {
 
@@ -59,22 +61,32 @@ public class ExceptionAdvice {
         return "redirect:/messages/send";
     }
 
+    @ExceptionHandler({EventClosedException.class,
+                       RequestAlreadyExistException.class})
+    public String handleEventClosed(Exception exception,RedirectAttributes redirectAttributes){
+
+        redirectAttributes.addFlashAttribute("eventClosedMessage",exception.getMessage());
+
+        return "redirect:/events";
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({EventNotFoundException.class,
                        MessageNotFoundException.class,
                        RequestNotFoundException.class,
-                       RequestAlreadyExistException.class,
                        UserNotFoundException.class,
                        IllegalUserStatusException.class,
                        ExportIOException.class,
                        IllegalEventOperationException.class})
-    public ModelAndView handleBadRequestException(Exception exception){
+    public ModelAndView handleBadRequestException(Exception exception, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");
         modelAndView.addObject("errorMessage",exception.getMessage());
-        modelAndView.addObject("errorType", HttpStatus.BAD_REQUEST);
-        modelAndView.addObject("statusCode", HttpStatusCode.valueOf(400));
-        modelAndView.addObject("exception",exception.getClass().getSimpleName());
+
+        log.warn("Handled 400-type exception: {} at [{}], Message: {}",
+                exception.getClass().getSimpleName(),
+                request.getRequestURI(),
+                exception.getMessage());
 
         return modelAndView;
     }
@@ -84,22 +96,31 @@ public class ExceptionAdvice {
                       NoResourceFoundException.class,
                       MethodArgumentTypeMismatchException.class,
                       MissingRequestValueException.class})
-    public ModelAndView handleNotFoundExceptions(Exception ex){
+    public ModelAndView handleNotFoundExceptions(Exception ex, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("not-found");
-        modelAndView.addObject("errorMessage", ex.getMessage());
-        modelAndView.addObject("exceptionType", ex.getClass().getSimpleName());
+
+        log.warn("Handled 404-type exception: {} at [{}], Message: {}",
+                ex.getClass().getSimpleName(),
+                request.getRequestURI(),
+                ex.getMessage());
+
         return modelAndView;
 
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleUnknownExceptions(Exception exception) {
+    public ModelAndView handleUnknownExceptions(Exception exception, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("internal-server-error");
         modelAndView.addObject("exceptionMessage", exception.getMessage());
         modelAndView.addObject("messageError", exception.getClass().getSimpleName());
+
+        log.warn("Handle 500-type exception {} at [{}], Message: {}",
+                exception.getClass().getSimpleName(),
+                request.getRequestURI(),
+                exception.getMessage());
 
         return modelAndView;
     }

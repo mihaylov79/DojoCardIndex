@@ -62,7 +62,7 @@ public class MessageControllerApiTest {
         mockMvc.perform(get("/messages/send")
                         .with(user(userDetails)))
                 .andExpect(status().isOk())
-                .andExpect(view().name("send-message"))
+                .andExpect(view().name("new-message"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("sendMessageRequest"));
     }
@@ -123,7 +123,7 @@ public class MessageControllerApiTest {
                         .with(user(userDetails))
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("send-message"))
+                .andExpect(view().name("new-message"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("sendMessageRequest"));
 

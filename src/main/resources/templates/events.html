@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Събития</title>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-    <link rel="stylesheet" th:href="@{/css/events.css}">
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/events-test.css}">
 </head>
 <body>
 <header>
@@ -13,57 +13,73 @@
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
 </header>
+<div class="main-container">
+    <div class="table-container">
+        <span th:if="${eventClosedMessage}" th:text="${eventClosedMessage}" class="credentials-error"></span>
+        <span th:if="${successMessage}" th:text="${successMessage}" class="alert-info"></span>
+        <table>
+            <caption>Спортен календар на Българска Киокушин-кан федерация</caption>
+            <thead>
+            <tr>
+                <th scope="col">Начална дата</th>
+                <th scope="col">Крайна дата</th>
+                <th scope="col">Събитие</th>
+                <th scope="col">Описание</th>
+                <th scope="col">Изисквания</th>
+                <th scope="col">Място</th>
+                <th scope="col">Участници</th>
+                <th scope="col">Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="event : ${events}">
+                <td data-label="Начална дата" th:text="${event.startDate}">11.01.2025</td>
+                <td data-label="Крайна дата" th:text="${event.endDate}">12.01.2025</td>
+                <td data-label="Събитие" th:text="${event.type.description}">Треньорски семинар</td>
+                <td data-label="Описание" th:text="${event.eventDescription}">Треньорски семинар</td>
+                <td data-label="Изисквания" th:text="${event.requirements.description}">Треньор</td>
+                <td data-label="Място" th:text="${event.location}">Габрово</td>
+                <td data-label="Участници">
+                    <ul>
+                        <li th:each="participant : ${event.getUsers()}"
+                            th:text="${participant.firstName + ' ' + participant.lastName}">Име на участник
+                        </li>
+                    </ul>
+                </td>
+                <td class="actions">
+                    <form th:action="@{/events/requests/submit/{eventId}(eventId=${event.id})}" th:method="POST">
+                        <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
+                        <button type="submit" onclick="return confirm('Заявавате участие за това събитие?');">Заяви
+                            участие
+                        </button>
+                    </form>
 
-<div class="table-container">
-    <table>
-        <caption>Спортен календар на Българска Киокушин-кан федерация</caption>
-        <thead>
-        <tr>
-            <th scope="col">Начална дата</th>
-            <th scope="col">Крайна дата</th>
-            <th scope="col">Събитие</th>
-            <th scope="col">Описание</th>
-            <th scope="col">Изисквания</th>
-            <th scope="col">Място</th>
-            <th scope="col">Участници</th>
-            <th  scope="col">Действие</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="event : ${events}">
-            <td th:text="${event.startDate}">11.01.2025</td>
-            <td th:text="${event.endDate}">12.01.2025</td>
-            <td th:text="${event.type.description}">Треньорски семинар</td>
-            <td th:text="${event.eventDescription}">Треньорски семинар</td>
-            <td th:text="${event.requirements.description}">Треньор</td>
-            <td th:text="${event.location}">Габрово</td>
-            <td>
-                <ul>
-                    <li th:each="participant : ${event.getUsers()}" th:text="${participant.firstName + ' ' + participant.lastName}">Име на участник</li>
-                </ul>
-            </td>
-            <td>
-                <form th:action="@{/events/requests/submit/{eventId}(eventId=${event.id})}" th:method="POST">
-<!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
-                    <button type="submit" onclick="return confirm('Заявавате участие за това събитие?');" >Заяви участие</button>
-                </form>
+                    <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                          th:action="@{/events/{eventId}/close(eventId=${event.id})}" th:method="PUT">
+                        <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
+                        <button type="submit"
+                                onclick="return confirm('Сигурни ли сте, че искате да ЗАТВОРИТЕ това събитие?');">
+                            Затвори събитие
+                        </button>
+                    </form>
 
-                <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:action="@{/events/{eventId}/close(eventId=${event.id})}" th:method="PUT">
-                    <!--                    <input type="hidden" name="id" th:value="${event.id}"/>-->
-                    <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да ЗАТВОРИТЕ това събитие?');">Затвори събитие</button>
-                </form>
+                    <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                            th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране
+                    </button>
 
-                <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:attr="onclick=|location.href='/events/edit/' + '${event.id}'|">Редактиране</button>
+                    <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:if="${event.type.name()} == 'TOURNAMENT'"
+                            th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победители
+                    </button>
 
-                <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')" th:if="${event.type.name()} == 'TOURNAMENT'" th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">Победители</button>
-
-                <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/details'|">Детайли</button>
+                    <button th:attr="onclick=|location.href='/events/' + '${event.id}' + '/details'|">Детайли</button>
 
 
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

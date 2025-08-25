@@ -4,103 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Заявки на потребител</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/parisipation-requests.css">
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/events-test.css">
 </head>
 <body>
 
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
-<div class="title-container">
-<h1 th:text="'Заявки за участие в събития - ' + ${currentUser.firstName} + ' '+${currentUser.getLastName()}">Заявки за участие</h1>
-</div>
+<div class="main-container">
+    <div class="table-container">
+        <div class="title-container">
+            <p th:text="'Заявки за участие в събития - ' + ${currentUser.firstName} + ' '+${currentUser.getLastName()}">
+                Заявки за участие</p>
+        </div>
+    </div>
 
-<!-- Pending requests -->
-<div class="table-container">
-    <table>
-        <caption>ЗАЯВКИ ЗА УЧАСТИЕ - СТАТУС - ЧАКАЩА</caption>
-        <thead>
-        <tr>
-            <th>Заявка</th>
-            <th>дата</th>
-            <th>Потребител</th>
-            <th>Събитие</th>
-            <th>Начална дата</th>
-            <th>Статус на заявката</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="request : ${pendingRequest}">
-            <td th:text="${#strings.substring(request.id, 0, 8)}">Заявка</td>
-            <td th:text="${#temporals.format(request.created, 'dd-MM-yyyy')}">дата на заявката</td>
-            <td th:text="${request.user.firstName} + ' ' + ${request.user.lastName}">Потребител</td>
-            <td th:text="${request.event.eventDescription}">Събитие</td>
-            <td th:text="${#temporals.format(request.event.startDate, 'dd-MM-yyyy')}">Дата</td>
-            <td th:text="${request.status.description}"
-                th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">>Статус</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <!-- Pending requests -->
+    <div class="table-container">
+        <table>
+            <caption>Заявки за участие - Статус - ЧАКАЩА</caption>
+            <thead>
+            <tr>
+                <th>Заявка</th>
+                <th>дата</th>
+                <th>Потребител</th>
+                <th>Събитие</th>
+                <th>Начална дата</th>
+                <th>Статус на заявката</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${pendingRequest}">
+                <td data-label="Заявка" th:text="${#strings.substring(request.id, 0, 8)}">Заявка</td>
+                <td data-label="дата" th:text="${#temporals.format(request.created, 'dd-MM-yyyy')}">дата на заявката
+                </td>
+                <td data-label="Потребител" th:text="${request.user.firstName} + ' ' + ${request.user.lastName}">
+                    Потребител
+                </td>
+                <td data-label="Събитие" th:text="${request.event.eventDescription}">Събитие</td>
+                <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd-MM-yyyy')}">
+                    Дата
+                </td>
+                <td data-label="Статус на заявката" th:text="${request.status.description}"
+                    th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">
+                    >Статус
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-<!-- Approved requests -->
-<div class="table-container">
-    <table>
-        <caption>ЗАЯВКИ ЗА УЧАСТИЕ - СТАТУС - ОДОБРЕНА</caption>
-        <thead>
-        <tr>
-            <th>Заявка</th>
-            <th>дата</th>
-            <th>Потребител</th>
-            <th>Събитие</th>
-            <th>Начална дата</th>
-            <th>Статус на заявката</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="request : ${approvedRequest}">
-            <td th:text="${#strings.substring(request.id, 0, 8)}">Заявка</td>
-            <td th:text="${#temporals.format(request.created, 'dd-MM-yyyy')}">дата на заявката</td>
-            <td th:text="${request.user.firstName} + ' ' + ${request.user.lastName}">Потребител</td>
-            <td th:text="${request.event.eventDescription}">Събитие</td>
-            <td th:text="${#temporals.format(request.event.startDate, 'dd-MM-yyyy')}">Дата</td>
-            <td th:text="${request.status.description}"
-                th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">>Статус</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <!-- Approved requests -->
+    <div class="table-container">
+        <table>
+            <caption>Заявки за участие - Статус - ОДОБРЕНА</caption>
+            <thead>
+            <tr>
+                <th>Заявка</th>
+                <th>дата</th>
+                <th>Потребител</th>
+                <th>Събитие</th>
+                <th>Начална дата</th>
+                <th>Статус на заявката</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${approvedRequest}">
+                <td data-label="Заявка" th:text="${#strings.substring(request.id, 0, 8)}">Заявка</td>
+                <td data-label="дата" th:text="${#temporals.format(request.created, 'dd-MM-yyyy')}">дата на заявката
+                </td>
+                <td data-label="Потребител" th:text="${request.user.firstName} + ' ' + ${request.user.lastName}">
+                    Потребител
+                </td>
+                <td data-label="Събитие" th:text="${request.event.eventDescription}">Събитие</td>
+                <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd-MM-yyyy')}">
+                    Дата
+                </td>
+                <td data-label="Статус на заявката" th:text="${request.status.description}"
+                    th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">
+                    >Статус
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-<!-- Rejected requests -->
-<div class="table-container">
-    <table>
-        <caption>ЗАЯВКИ ЗА УЧАСТИЕ - СТАТУС - ОТХВЪРЛЕНА</caption>
-        <thead>
-        <tr>
-            <th>Заявка</th>
-            <th>дата</th>
-            <th>Потребител</th>
-            <th>Събитие</th>
-            <th>Начална дата</th>
-            <th>Статус на заявката</th>
-            <th>Причина</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="request : ${rejectedRequest}">
-            <td th:text="${#strings.substring(request.id, 0, 8)}">Заявка</td>
-            <td th:text="${#temporals.format(request.created, 'dd-MM-yyyy')}">дата на заявката</td>
-            <td th:text="${request.user.firstName} + ' ' + ${request.user.lastName}">Потребител</td>
-            <td th:text="${request.event.eventDescription}">Събитие</td>
-            <td th:text="${#temporals.format(request.event.startDate, 'dd-MM-yyyy')}">Дата</td>
-            <td th:text="${request.status.description}"
-                th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">>Статус</td>
-            <td th:text="${request.reason}">Причина за отказа</td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Rejected requests -->
+    <div class="table-container">
+        <table>
+            <caption>Заявки за участие - Статус - ОТХВЪРЛЕНА</caption>
+            <thead>
+            <tr>
+                <th>Заявка</th>
+                <th>дата</th>
+                <th>Потребител</th>
+                <th>Събитие</th>
+                <th>Начална дата</th>
+                <th>Статус на заявката</th>
+                <th>Причина</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${rejectedRequest}">
+                <td data-label="Заявка" th:text="${#strings.substring(request.id, 0, 8)}">Заявка</td>
+                <td data-label="дата" th:text="${#temporals.format(request.created, 'dd-MM-yyyy')}">дата на заявката
+                </td>
+                <td data-label="Потребител" th:text="${request.user.firstName} + ' ' + ${request.user.lastName}">
+                    Потребител
+                </td>
+                <td data-label="Събитие" th:text="${request.event.eventDescription}">Събитие</td>
+                <td data-label="Начална дата" th:text="${#temporals.format(request.event.startDate, 'dd-MM-yyyy')}">
+                    Дата
+                </td>
+                <td data-label="Статус на заявката" th:text="${request.status.description}"
+                    th:classappend="${request.status.description == 'Одобрена' ? 'text-success' : (request.status.description == 'Отхвърлена' ? 'text-danger' : 'text-pending')}">
+                    >Статус
+                </td>
+                <td data-label="Причина" th:text="${request.reason}">Причина за отказа</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-
 </body>
 </html>

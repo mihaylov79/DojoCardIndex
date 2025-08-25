@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-                      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Членове на клуба</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/users-list2.css">
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/users-list2_test.css">
 </head>
 <body>
-    <header>
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
-    </header>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
     <div class="table-container">
         <table>
             <caption>Членове на клуб "Драгон Доджо ДСД"</caption>
+            <thead>
             <tr>
                 <th>Снимка</th>
                 <th>Име</th>
@@ -27,40 +29,44 @@
                 <th>Статус на акаунта</th>
                 <th>Действие</th>
             </tr>
+            </thead>
             <tr th:each="user:${allActiveUsers}">
                 <td>
                     <a th:href="@{/users/details/{id}(id=${user.id})}">
-                    <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="">
+                        <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}"
+                             alt="">
                     </a>
                 </td>
-                <td th:text="${user.firstName}">
-                    
+                <td data-label="Име" th:text="${user.firstName}">
+
                 </td>
-                <td th:text="${user.lastName}">
-                    
-                </td>
-
-                <td th:text="${user.email}">
-                    
-                </td>
-
-                <td th:text="${user.birthDate == null} or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>">
-
-
-                <td th:text="${user.reachedDegree?.description ?: '-'}">
-                    
-                </td>
-
-                <td th:if="${user.isCompetitor} == true">Състезател
-                    
-                </td>
-
-                <td th:if="${user.isCompetitor} == false"> -
+                <td data-label="Фамилия" th:text="${user.lastName}">
 
                 </td>
 
-                <td th:text="${user.status.description}">
-                    
+                <td data-label="Поща" th:text="${user.email}">
+
+                </td>
+
+                <td data-label="Възраст"
+                    th:text="${user.birthDate == null} or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>
+                ">
+
+
+                <td data-label="Защитена степен" th:text="${user.reachedDegree?.description ?: '-'}">
+
+                </td>
+
+                <td data-label="Състезателен статус" th:if="${user.isCompetitor} == true">Състезател
+
+                </td>
+
+                <td data-label="Състезателен статус" th:if="${user.isCompetitor} == false"> -
+
+                </td>
+
+                <td data-label="Статус на акаунта" th:text="${user.status.description}">
+
                 </td>
 
                 <td class="actions">
@@ -68,7 +74,10 @@
                           th:action="@{/admin/users/modify-status}"
                           th:method="POST" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
                         <input type="hidden" name="id" th:value="${user.id}"/>
-                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да ДЕАКТИВИРАТЕ този потребител ?');">Деактивирай</button>
+                        <button type="submit"
+                                onclick="return confirm('Сигурни ли сте, че искате да ДЕАКТИВИРАТЕ този потребител ?');">
+                            Деактивирай
+                        </button>
                     </form>
                     <form th:if="${user.status == T(cardindex.dojocardindex.User.models.UserStatus).INACTIVE}"
                           th:action="@{/admin/users/modify-status}"
@@ -77,16 +86,18 @@
                         <button type="submit">Активирай</button>
                     </form>
 
-                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Редактиране</button>
+                    <button th:attr="onclick=|location.href='/admin/users/details/edit/' + '${user.id}'|"
+                            sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Редактиране
+                    </button>
                     <button th:attr="onclick=|location.href='/messages/send/' + '${user.id}'|">Съобщение</button>
 
-                    
+
                 </td>
 
 
             </tr>
         </table>
     </div>
-    
+</div>
 </body>
 </html>

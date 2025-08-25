@@ -1,0 +1,291 @@
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);
+    --black: #000000;
+    --white: #fff;
+}
+
+/* Глобални ресети и стабилизация на ширината */
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* Главен контейнер: full-bleed за линиите + stretch за децата */
+.main-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+
+    /* отстояния в съдържанието */
+    padding: 2rem 0;
+
+    /* full-bleed трик за да опрат линиите в краищата на viewport-а */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+/* Горна и долна линия */
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80vw;
+    pointer-events: none;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0;
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0;
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+/* Унифициран “карточен” стил за всички секции */
+.user-info,
+.user-messages,
+.user-events,
+.med-exams {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Обвивката на съобщения/събития/прегледи да се разтяга като .user-info */
+.messages {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;        /* центриране като .user-info */
+}
+/* разстояние между вътрешните секции в .messages */
+.messages > * + * {
+    margin-top: 2rem;
+}
+
+/* Картинка в профилната таблица */
+img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+}
+
+/* Бутони в профилната секция */
+.user-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.user-buttons button,
+.action-buttons button {
+    color: var(--red-main);
+    font-weight: 400;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease, font-weight 0.2s ease;
+    background: transparent;
+    border: 1px solid var(--red-main);
+}
+.user-buttons button:hover,
+.action-buttons button:hover {
+    font-weight: 650;
+}
+
+/* Админ панел бутон/меню */
+.admin-panel-wrapper {
+    position: relative;
+    display: block;
+    /* full-bleed към десния ръб на екрана */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    text-align: right;
+    padding: 0 2rem 8px 2rem; /* десен отстъп 2rem + hover буфер отдолу */
+}
+
+.admin-toggle {
+    padding: 10px 15px;
+    border: solid 1px var(--red-main);
+    box-shadow: var(--shadow);
+    color: var(--red-main);
+    cursor: pointer;
+    border-radius: 8px;
+    display: inline-block;
+    background: var(--white);
+}
+.admin-toggle:hover,
+.admin-toggle:focus {
+    font-weight: 700;
+}
+
+.admin-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 2rem;
+    left: auto;
+    background-color: var(--background);
+    color: black;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 999;
+    width: 245px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+}
+/* менюто остава отворено при hover върху wrapper или самото меню и при фокус */
+.admin-panel-wrapper:hover .admin-menu,
+.admin-panel-wrapper .admin-menu:hover {
+    display: block;
+}
+.admin-panel-wrapper:focus-within .admin-menu {
+    display: block;
+}
+.admin-menu a {
+    text-decoration: none;
+    color: var(--red-main);
+}
+.admin-menu a:hover {
+    color: var(--red-main);
+    font-weight: 700;
+    opacity: 0.8;
+}
+.admin-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.admin-menu ul li {
+    margin: 8px 0;
+}
+
+/* Таблици */
+table {
+    color: var(--black);
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+table th,
+table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--red-main);
+}
+
+table th {
+    background: #f0f2f5;
+    color: var(--red-main);
+}
+
+table caption {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+/* Допълнителни отстояния между секциите */
+.user-messages,
+.user-events,
+.admin-panel {
+    margin-top: 2rem;
+}
+.med-exams {
+    margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-container {
+        padding: 1.5rem 0;
+        gap: 1.5rem;
+    }
+    .user-info,
+    .user-messages,
+    .user-events,
+    .med-exams {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .user-info,
+    .user-messages,
+    .user-events,
+    .med-exams {
+        padding: 1rem;
+    }
+    table th,
+    table td {
+        font-size: 0.9rem;
+    }
+
+    /* Мобилно: таблици като карти с етикети */
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+    thead {
+        display: none;
+    }
+    tr {
+        margin-bottom: 1rem;
+        background: var(--white);
+        border: 1px solid var(--red-main);
+        border-radius: 0.5rem;
+        box-shadow: var(--shadow);
+        padding: 0.5rem;
+    }
+    td {
+        position: relative;
+        padding: 1rem 1rem 0.5rem 1rem;
+        text-align: left;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+    td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+        color: var(--red-main);
+        font-size: 0.9rem;
+    }
+    td:last-child {
+        border-bottom: none;
+    }
+}

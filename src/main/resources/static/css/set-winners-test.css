@@ -1,0 +1,187 @@
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgb(0, 0, 0, 0.2);
+    --black: #000000;
+    --white: #fff;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--background);
+    margin: 0;
+    padding: 0;
+    color: var(--black);
+}
+
+/*---границите на слайдъра---*/
+.main-container {
+    padding: 2em 0;
+    position: relative;
+    /* background-color: black; */
+}
+
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.main-container::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+
+.container-send {
+    max-width: 800px;
+    margin: 4em auto;
+    padding: 2.5em 3em;
+    background-color: var(--white);
+    border-top-right-radius: 2em;
+    border-bottom-left-radius: 2em;
+    box-shadow: var(--shadow);
+}
+
+.container-send h2 {
+    text-align: left;
+    font-size: 1.8em;
+    color: var(--black);
+    margin-bottom: 0.5em;
+}
+
+
+.field {
+    display: flex;
+    flex-direction: column;
+    padding: 1em 0;
+    position: relative;
+}
+
+label {
+    color: var(--red-main);
+    transition:
+            translate 0.3s ease-in-out
+
+}
+
+.event-info{
+    color: var(--red-main);
+    font-weight: bold;
+}
+
+select,
+textarea,
+input[type="text"]{
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background: transparent;
+    color: var(--black);
+    padding: 0.3em 0;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1em;
+    outline: none;
+}
+
+select:focus, textarea:focus, input[type="text"]:focus {
+    border-bottom: 2px solid var(--red-main);
+}
+
+
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+    margin-top: 0.5em;
+}
+
+select {
+    margin-top: 0.5em;
+}
+
+.errors {
+    display: block;
+    color: var(--red-light);
+    font-size: 0.9em;
+    margin-top: 0.3em;
+    padding: 0.3em 0;
+    font-style: italic;
+}
+
+button {
+    display: block;
+    width: 45%;
+    /*background-color: #ccc;*/
+    color: var(--red-main);
+    border: none;
+    padding: 0.6em 1em;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.1em;
+    font-weight: 500;
+    margin-top: 2em;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: font-weight 0.3s ease;
+    margin-bottom: 1em;
+    margin-left: auto;
+
+}
+
+button:hover {
+    font-weight: 700;
+}
+
+.back-link a{
+    display: block;
+    text-align: center;
+    margin-top: 1.5em;
+    text-decoration: none;
+    color: var(--red-main);
+    font-family: 'Raleway', sans-serif;
+    font-size: 1em;
+}
+
+.back-link:hover {
+    font-weight: 600;
+}
+
+.credentials-error {
+    margin: 1.5em 0;
+    display: block;
+    /*font-style: italic;*/
+    text-align: center;
+    /*opacity: 0.5;*/
+    line-height: 1.1;
+    padding: 0.3em;
+    color:red;
+    background: #cccccc;
+    border-top-right-radius: 1.5em;
+    border-bottom-left-radius: 1.5em;
+}
+
+.original-message {
+    margin-bottom: 1em;
+}

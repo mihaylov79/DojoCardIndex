@@ -24,7 +24,7 @@ public class Message {
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @Column
+    @Column(length = 300)
     private String content;
 
     @Column(nullable = false)

@@ -4,29 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Изпращане на съобщение</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/replay.css">
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/reply-test.css">
 
 <body>
-    <header>
+<header>
 
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
 
-    </header>
+</header>
+<div class="main-container">
+    <div class="container-send">
+        <h2>Нова публикация</h2>
+        <span class="credentials-error"></span>
+        <form th:action="@{/posts/create}" th:method="POST" th:object="${createPostRequest}">
+            <div class="field">
+                <label for="title">Заглавие:</label>
+                <input type="text" id="title" name="title" th:field="*{title}" required>
+                <span class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+            </div>
 
-<div class="container-send">
-    <h2>Нова публикация</h2>
-    <form th:action="@{/posts/create}" th:method="POST" th:object="${createPostRequest}">
-        <label for="title">Заглавие:</label>
-        <input type="text" id="title" name="title" th:field="*{title}" required>
-        <span class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
-
-        <label for="content">Съобщение:</label>
-        <textarea id="content" name="content" maxlength="1000" placeholder="Вашата публикация..." required th:field="*{content}"></textarea>
-        <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
-        <button type="submit">Изпрати</button>
-    </form>
+            <div class="field">
+                <label for="content">Съобщение:</label>
+                <textarea id="content" name="content" maxlength="1000" placeholder="Вашата публикация..." required
+                          th:field="*{content}"></textarea>
+                <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+            </div>
+            <button type="submit">Публикувай</button>
+            <div class="back-link">
+                <a href="/posts">Назад</a>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

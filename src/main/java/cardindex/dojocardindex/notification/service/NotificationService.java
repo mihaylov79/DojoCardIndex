@@ -45,8 +45,6 @@ public class NotificationService {
 
     public void saveNotificationPreference(UUID recipientId, boolean notification,String email){
 
-
-
         NotificationPreferenceRequest preferenceRequest = NotificationPreferenceRequest.builder()
                                                             .recipientId(recipientId)
                                                             .enabled(notification)

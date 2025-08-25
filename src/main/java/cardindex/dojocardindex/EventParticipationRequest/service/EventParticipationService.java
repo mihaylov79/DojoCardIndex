@@ -50,6 +50,10 @@ public class EventParticipationService {
             throw new EventClosedException();
         }
 
+        if (event.getStartDate().isBefore(LocalDate.now())){
+            throw new EventClosedException("Това събитие е вече е започнало и не можете да заявите участие за него");
+        }
+
         requestRepository.findByUserAndEvent(user,event).ifPresent(existingRequest ->{
             switch (existingRequest.getStatus()){
                 case REJECTED -> throw new RequestAlreadyExistException("Вашата заявка е била отхвърлена!");

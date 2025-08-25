@@ -1,170 +1,26 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="60">
     <title th:text="'Добре дошъл ' + ${user.firstName} + ' ' + ${user.lastName}"></title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" href="/css/home-test.css">
 </head>
 
 <body>
-    <header>
+<header>
 
-        <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
-    </header>
+</header>
 
-    <div class="main-container">
-        <div class="user-info">
-            <div class="user-bio">
-                <table class="info">
-                    <tr>
-                        <th><img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}" alt="Профилна снимка"></th>
-                        <td class="user-buttons">
-                            <button th:attr="onclick=|location.href='/users/details/edit/' + '${user.id}'|">Редактиране</button>
-                            <button onclick="location.href='/messages/send'">Съобщение</button>
-                            <button onclick="location.href='/notifications'">Известия</button>
-                            <button th:attr="onclick=|location.href='/events/requests/' + '${user.id}'|">Заявки</button>
-                            <button onclick="location.href='/users/list'">Потребители</button>
-                            <button onclick="location.href='/users/details/edit/password'">Нова парола</button>
-
-                        </td>
-                    </tr>
-                    <tr><th>Име</th><td th:text="${user.firstName}"></td></tr>
-                    <tr><th>Фамилия</th><td th:text="${user.lastName}"></td></tr>
-                    <tr th:if="${user.birthDate} != null"><th>Дата на раждане</th><td th:text="${#temporals.format(user.birthDate,'dd-MM-yyyy г.')}"></td></tr>
-                    <tr th:if="${user.userPhone} != null"><th>Телефон</th><td th:text="${user.userPhone}"></td></tr>
-                    <tr th:if="${user.role != null} != null"><th>Позиция в клуба</th><td th:text="${user.role.description}"></td></tr>
-                    <tr th:if="${user.reachedDegree} != null"><th>Защитена степен</th><td th:text="${user.reachedDegree.description}"></td></tr>
-                    <tr th:if="${user.interests} != null"><th>Интереси</th><td th:text="${user.interests}"></td></tr>
-                    <tr th:if="${user.isCompetitor} == true"><th>Статус</th><td>състезател</td></tr>
-                    <tr th:if="${user.ageGroup} != null"><th>Възрастова група</th><td th:text="${user.ageGroup.description}"></td></tr>
-<!--                    <tr><th>Категория</th><td th:text="${user.category}"></td></tr>-->
-                    <tr th:if="${user.height} != 0"><th>Ръст</th><td th:text="${user.height}"></td></tr>
-                    <tr th:if="${user.weight} != 0"><th>Тегло</th><td th:text="${user.weight}"></td></tr>
-                    <tr th:if="${user.medicalExamsPassed} != null"><th>Медицински преглед</th><td th:text="${user.medicalExamsPassed}"></td></tr>
-                    <tr th:if="${user.contactPerson != null and !#strings.isEmpty(user.contactPerson)}"><th>Лице за контакт</th><td th:text="${user.contactPerson}"></td></tr>
-                    <tr th:if="${user.contactPersonPhone} != null"><th>Телефон</th><td th:text="${user.contactPersonPhone}"></td></tr>
-                </table>
-            </div>
-        </div>
-        
-        <div class="messages">
-            <div class="user-messages">
-                <table class="private-messages">
-                    <caption>Лични Съобщения</caption>
-                    <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>От</th>
-                            <th>Съдържание</th>
-                            <th>Действие</th>
-                        </tr>
-                    </thead>
-                    <tbody th:if="${messages != null and not #lists.isEmpty(messages)}">
-                    <tr th:each="message : ${messages}">
-                        <td th:text="${#temporals.format(message.created,'dd-MM-yyyy HH:mm')}"></td> <!-- Дата на съобщението -->
-                        <td th:text="${message.sender.firstName + ' ' + message.sender.lastName}"></td> <!-- Изпращач -->
-                        <td th:text="${message.content}"></td> <!-- Съдържание -->
-                        <td class="action-buttons">
-                            <button th:attr="onclick=|location.href='/messages/reply/' + '${message.id}'|">Отговори</button>
-                            <a th:href="@{/messages/remove/{id}(id=${message.id})}">
-                                <button>Изчисти</button>
-                            </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="user-events">
-                <table>
-                    <caption>Предстоящи събития</caption>
-                    <thead>
-                        <tr>
-                            <th>Начална дата</th>
-                            <th>Крайна дата</th>
-                            <th>Събитие</th>
-                            <th>Изискване</th>
-                            <th>Място</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="event : ${events}">
-                            <td th:text="${event.startDate}"></td>
-                            <td th:text="${event.endDate}"></td>
-                            <td th:text="${event.eventDescription}"></td>
-                            <td th:text="${event.requirements.description}"></td>
-                            <td th:text="${event.location}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="med-exams" sec:authorize="hasAnyRole('ADMIN','TRAINER')">
-
-                <table id="medical-table">
-
-                    <caption>Предстоящи мед. прегледи<div class="tick"><label>
-                        <input type="checkbox" id="competitorFilterCheckbox" onclick="filterCompetitors()">
-                        Покажи само състезателите
-                    </label></div></caption>
-
-
-                    <thead>
-                        <tr>
-                            <th>Име</th>
-                            <th>Ел.Поща</th>
-                            <th>Състезателен статус</th>
-                            <th>Последен преглед</th>
-                            <th>Дни до следващият преглед</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="renewalUser : ${examRenewalList}">
-                        <td th:text="|${renewalUser.firstName} ${renewalUser.lastName}|"></td>
-                        <td th:text="${renewalUser.email}"></td>
-                        <td th:text="${renewalUser.isCompetitor} ? 'Състезател' : '-'"></td>
-                        <td th:text="${renewalUser.medicalExamsPassed == null ? 'Преминете преглед!' : #temporals.format(renewalUser.medicalExamsPassed, 'dd-MM-yyyy ''г.''')}" th:classappend="${renewalUser.medicalExamsPassed == null} ? 'text-red' : ''"></td>
-                        <td th:text="${daysLeft[renewalUser.id]}" th:classappend="${daysLeft[renewalUser.id] <= 0} ? 'text-red' : ''"></td>
-                    </tr>
-
-                    </tbody>
-                </table>
-
-                <script>
-                    function filterCompetitors() {
-                        const checkbox = document.getElementById('competitorFilterCheckbox');
-
-                        // Таргетирай конкретната таблица, напр. с caption съдържащ текст "Предстоящи мед. прегледи"
-                        const table = document.getElementById('medical-table');
-
-
-                        if (!table) return; // безопасна проверка
-
-                        const rows = table.querySelectorAll('tbody tr');
-
-                        rows.forEach(row => {
-                            const statusCell = row.querySelector('td:nth-child(3)'); // 3-та колона е "Състезателен статус"
-                            const isCompetitor = statusCell.textContent.trim() === 'Състезател';
-
-                            if (checkbox.checked) {
-                                row.style.display = isCompetitor ? '' : 'none';
-                            } else {
-                                row.style.display = '';
-                            }
-                        });
-                    }
-                </script>
-
-            </div>
-
-
-        </div>
-
-        <div class="admin-menu" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
-            <div class="admin-title">АДМИН ПАНЕЛ</div>
+<div class="main-container">
+    <div class="admin-panel-wrapper" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
+        <div class="admin-toggle">АДМИН ПАНЕЛ ▾</div>
+        <div class="admin-menu">
             <ul>
                 <li><a th:href="@{/admin/add-user}">Добави нов потребител</a></li>
                 <li><a th:href="@{/users/list}">Регистрирани потребители</a></li>
@@ -174,11 +30,226 @@
                 <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>
                 <li><a th:href="@{/events/new}">Добавяне на събитие</a></li>
                 <li><a th:href="@{/events/requests/pending}">Чакащи заявки за участие</a></li>
-                <li><a th:href="@{/events/requests/not-pending}">Обработени заявки за участие</a></li>
+                <li><a th:href="@{/events/requests/not-pending}">Обработени заявки</a></li>
                 <li><a th:href="@{/status}" sec:authorize="hasRole('ADMIN')">Състояние на системата</a></li>
             </ul>
         </div>
     </div>
+
+    <div class="user-info">
+        <div class="user-bio">
+            <table class="info">
+                <tr>
+                    <th><img
+                            th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}"
+                            alt="Профилна снимка"></th>
+                    <td class="user-buttons">
+                        <button th:attr="onclick=|location.href='/users/details/edit/' + '${user.id}'|">Редактиране
+                        </button>
+                        <button onclick="location.href='/messages/send'">Съобщение</button>
+                        <button onclick="location.href='/notifications'">Известия</button>
+                        <button th:attr="onclick=|location.href='/events/requests/' + '${user.id}'|">Заявки</button>
+                        <button onclick="location.href='/users/list'">Потребители</button>
+                        <button onclick="location.href='/users/details/edit/password'">Нова парола</button>
+
+                    </td>
+                </tr>
+                <tr>
+                    <th>Име</th>
+                    <td th:text="${user.firstName}"></td>
+                </tr>
+                <tr>
+                    <th>Фамилия</th>
+                    <td th:text="${user.lastName}"></td>
+                </tr>
+                <tr th:if="${user.birthDate} != null">
+                    <th>Дата на раждане</th>
+                    <td th:text="${#temporals.format(user.birthDate,'dd-MM-yyyy г.')}"></td>
+                </tr>
+                <tr th:if="${user.userPhone} != null">
+                    <th>Телефон</th>
+                    <td th:text="${user.userPhone}"></td>
+                </tr>
+                <tr th:if="${user.role != null} != null">
+                    <th>Позиция в клуба</th>
+                    <td th:text="${user.role.description}"></td>
+                </tr>
+                <tr th:if="${user.reachedDegree} != null">
+                    <th>Защитена степен</th>
+                    <td th:text="${user.reachedDegree.description}"></td>
+                </tr>
+                <tr th:if="${user.interests} != null">
+                    <th>Интереси</th>
+                    <td th:text="${user.interests}"></td>
+                </tr>
+                <tr th:if="${user.isCompetitor} == true">
+                    <th>Статус</th>
+                    <td>състезател</td>
+                </tr>
+                <tr th:if="${user.ageGroup} != null">
+                    <th>Възрастова група</th>
+                    <td th:text="${user.ageGroup.description}"></td>
+                </tr>
+                <!--                    <tr><th>Категория</th><td th:text="${user.category}"></td></tr>-->
+                <tr th:if="${user.height} != 0">
+                    <th>Ръст</th>
+                    <td th:text="${user.height} + ' см.'"></td>
+                </tr>
+                <tr th:if="${user.weight} != 0">
+                    <th>Тегло</th>
+                    <td th:text="${user.weight} + ' кг.'"></td>
+                </tr>
+                <tr th:if="${user.medicalExamsPassed} != null">
+                    <th>Медицински преглед</th>
+                    <td th:text="${#temporals.format(user.medicalExamsPassed, 'dd-MM-yyyy г.')}"></td>
+                </tr>
+                <tr th:if="${user.contactPerson != null and !#strings.isEmpty(user.contactPerson)}">
+                    <th>Лице за контакт</th>
+                    <td th:text="${user.contactPerson}"></td>
+                </tr>
+                <tr th:if="${user.contactPersonPhone} != null">
+                    <th>Телефон</th>
+                    <td th:text="${user.contactPersonPhone}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="messages">
+        <div class="user-messages">
+            <table class="private-messages">
+                <caption>Лични Съобщения</caption>
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>От</th>
+                    <th>Съдържание</th>
+                    <th>Действие</th>
+                </tr>
+                </thead>
+                <tbody th:if="${messages != null and not #lists.isEmpty(messages)}">
+                <tr th:each="message : ${messages}">
+                    <td data-label="Дата" th:text="${#temporals.format(message.created,'dd-MM-yyyy HH:mm')}"></td>
+                    <!-- Дата на съобщението -->
+                    <td data-label="От" th:text="${message.sender.firstName + ' ' + message.sender.lastName}"></td>
+                    <!-- Изпращач -->
+                    <td data-label="Съдържание" th:text="${message.content}"></td> <!-- Съдържание -->
+                    <td class="action-buttons">
+                        <button th:attr="onclick=|location.href='/messages/reply/' + '${message.id}'|">Отговори</button>
+                        <a th:href="@{/messages/remove/{id}(id=${message.id})}">
+                            <button>Изчисти</button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="user-events">
+            <table>
+                <caption>Предстоящи събития</caption>
+                <thead>
+                <tr>
+                    <th>Начална дата</th>
+                    <th>Крайна дата</th>
+                    <th>Събитие</th>
+                    <th>Изискване</th>
+                    <th>Място</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="event : ${events}">
+                    <td data-label="Начална дата" th:text="${event.startDate}"></td>
+                    <td data-label="Крайна дата" th:text="${event.endDate}"></td>
+                    <td data-label="Събитие" th:text="${event.eventDescription}"></td>
+                    <td data-label="Изискване" th:text="${event.requirements.description}"></td>
+                    <td data-label="Място" th:text="${event.location}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="med-exams" sec:authorize="hasAnyRole('ADMIN','TRAINER')">
+
+            <table id="medical-table">
+
+                <caption>Предстоящи мед. прегледи
+                    <div class="tick"><label>
+                        <input type="checkbox" id="competitorFilterCheckbox" onclick="filterCompetitors()">
+                        Покажи само състезателите
+                    </label></div>
+                </caption>
+
+
+                <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Ел.Поща</th>
+                    <th>Състезателен статус</th>
+                    <th>Последен преглед</th>
+                    <th>Дни до следващият преглед</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="renewalUser : ${examRenewalList}">
+                    <td data-label="Име" th:text="|${renewalUser.firstName} ${renewalUser.lastName}|"></td>
+                    <td data-label="Поща" th:text="${renewalUser.email}"></td>
+                    <td data-label="Състезателен статус"
+                        th:text="${renewalUser.isCompetitor} ? 'Състезател' : '-'"></td>
+                    <td data-label="Последен преглед"
+                        th:text="${renewalUser.medicalExamsPassed == null ? 'Преминете преглед!' : #temporals.format(renewalUser.medicalExamsPassed, 'dd-MM-yyyy ''г.''')}"
+                        th:classappend="${renewalUser.medicalExamsPassed == null} ? 'text-red' : ''"></td>
+                    <td data-label="Дни до преглед" th:text="${daysLeft[renewalUser.id]}"
+                        th:classappend="${daysLeft[renewalUser.id] <= 0} ? 'text-red' : ''"></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <script>
+                function filterCompetitors() {
+                    const checkbox = document.getElementById('competitorFilterCheckbox');
+
+                    // Таргетирай конкретната таблица, напр. с caption съдържащ текст "Предстоящи мед. прегледи"
+                    const table = document.getElementById('medical-table');
+
+
+                    if (!table) return; // безопасна проверка
+
+                    const rows = table.querySelectorAll('tbody tr');
+
+                    rows.forEach(row => {
+                        const statusCell = row.querySelector('td:nth-child(3)'); // 3-та колона е "Състезателен статус"
+                        const isCompetitor = statusCell.textContent.trim() === 'Състезател';
+
+                        if (checkbox.checked) {
+                            row.style.display = isCompetitor ? '' : 'none';
+                        } else {
+                            row.style.display = '';
+                        }
+                    });
+                }
+            </script>
+
+        </div>
+
+
+    </div>
+
+    <div class="admin-menu" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
+        <div class="admin-title">АДМИН ПАНЕЛ</div>
+        <ul>
+            <li><a th:href="@{/admin/add-user}">Добави нов потребител</a></li>
+            <li><a th:href="@{/users/list}">Регистрирани потребители</a></li>
+            <li><a th:href="@{/users/list/active}">Активни потребители</a></li>
+            <li><a th:href="@{/admin/users/list/all-users}">Всички потребители</a></li>
+            <li><a th:href="@{/admin/register-requests}">Заявки за регистрация</a></li>
+            <li><a th:href="@{/posts/create}">Добавяне на публикация</a></li>
+            <li><a th:href="@{/events/new}">Добавяне на събитие</a></li>
+            <li><a th:href="@{/events/requests/pending}">Чакащи заявки за участие</a></li>
+            <li><a th:href="@{/events/requests/not-pending}">Обработени заявки за участие</a></li>
+            <li><a th:href="@{/status}" sec:authorize="hasRole('ADMIN')">Състояние на системата</a></li>
+        </ul>
+    </div>
+</div>
 </body>
 
 </html>

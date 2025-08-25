@@ -1,0 +1,342 @@
+/* event-details.css */
+/* Тема и базови променливи - синхронизирани с изгледа за събития */
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgba(0, 0, 0, 0.2);
+    --black: #000000;
+    --white: #ffffff;
+}
+
+/* Главен контейнер на страницата */
+.container {
+    width: 95%;
+    margin: 40px auto;
+    background-color: var(--white);
+    padding: 1rem 1.2rem 1.2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+/* Заглавие в стил на title-container */
+.container > h5 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #222;
+    margin: 0.5rem 0 1rem;
+}
+
+/* Информационен блок за събитието (тип/дата) */
+.event_info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.6rem 1rem;
+    background: #f9fafc;
+    border: 1px solid #e5e9f0;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+}
+.event_info p {
+    margin: 0;
+    color: #333;
+}
+.event_info strong {
+    color: var(--red-main);
+}
+
+/* Подзаглавия (Участници, Победители) */
+.container > h6 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--red-main);
+    margin: 1.2rem 0 0.6rem;
+}
+
+/* Таблици */
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--white);
+    color: var(--black);
+    border: 1px solid #e5e9f0;
+    border-radius: 10px;
+    overflow: hidden; /* за заоблени ъгли при tbody */
+    margin-bottom: 1rem;
+}
+
+/* Хедър на таблица */
+.container table thead th {
+    background-color: #f0f2f5;
+    color: var(--red-main);
+    padding: 12px 10px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 1px solid var(--red-main);
+}
+
+/* Клетки */
+.container table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #d9e2ec;
+    vertical-align: middle;
+    text-align: center;
+}
+.container table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Списъци вътре в клетки (ако има) */
+.container table td ul {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Зона с бутони в клетки */
+.buttonz,
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    align-items: stretch;
+}
+
+/* Формите в действията да заемат цялата ширина */
+.buttonz form,
+.actions form,
+.buttonz button,
+.actions button {
+    width: auto;
+}
+
+/* Стил за бутони */
+.buttonz button,
+.actions button,
+.buttonz form button,
+.actions form button {
+    color: var(--red-main);
+    font-weight: 500;
+    margin: 0.2em 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: bacground 0.3s ease;
+
+}
+.buttonz button:hover,
+.actions button:hover,
+.buttonz form button:hover,
+.actions form button:hover {
+    font-weight: 650;
+}
+.container table td.buttonz,
+.container table td.actions {
+    text-align: right;
+}
+
+/* --- Долният ред с бутони: в една линия вдясно --- */
+.container > .buttonz table td.buttonz {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap; /* позволява пренасяне при недостиг на място */
+    text-align: right;
+}
+.container > .buttonz table td.buttonz form {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0; /* премахва допълнителни отстъпи между формите */
+}
+.container > .buttonz table td.buttonz button {
+    width: auto;           /* избягва заемане на 100% ширина */
+    margin: 0;             /* изравнява разстоянията, разчитаме на gap */
+    white-space: nowrap;   /* бутоните да не се чупят на нов ред */
+}
+/* --- Край: долният ред с бутони --- */
+
+/* Опасни бутони (напр. Нулиране на победители) */
+.btn.btn-danger {
+    background: #ffe8e6;
+    color: #b71c1c;
+    border: 1px solid #f5b7b1;
+    border-radius: 0.45rem;
+    padding: 0.4rem 0.5rem;
+
+}
+.btn.btn-danger:hover {
+    background: #ffd4d0;
+}
+
+/* Успешни бутони */
+.btn.btn-success {
+    background: #e8f5e9;
+    color: #1b5e20;
+    border: 1px solid #b7e1b5;
+}
+.btn.btn-success:hover {
+    background: #d4edd6;
+}
+
+/* Инфо и предупреждения (използват се в секцията с резултати) */
+.alert-info,
+.credentials-error {
+    margin: 1rem 0;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.5rem 0.8rem;
+    background: #f1f1f1;
+    border-top-right-radius: 1.2rem;
+    border-bottom-left-radius: 1.2rem;
+}
+.alert-info {
+    color: green;
+}
+.credentials-error {
+    color: red;
+}
+
+/* Специални таблици за съобщения */
+.noParticipants td,
+.noWinners td,
+.reset td {
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Формови елементи вътре в таблица Действия */
+.buttonz select,
+.actions select {
+    padding: 0.4rem 0.5rem;
+    border-radius: 0.45rem;
+    border: 1px solid #c9d9ec;
+    background: #fff;
+    color: #333;
+    margin: 0.2em 0 0.4em;
+}
+
+/*---границите на слайдъра---*/
+.main-container {
+    padding: 2em 0;
+    position: relative;
+}
+
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.main-container::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+/* Отзивчивост: мобилен изглед като карти (без да изисква data-label) */
+@media screen and (max-width: 1200px) {
+    .container table thead {
+        display: none;
+    }
+
+    .container table,
+    .container tbody,
+    .container tr,
+    .container td {
+        display: block;
+        width: 100%;
+    }
+
+    .container tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--red-main);
+        border-radius: 10px;
+        padding: 0.5rem;
+        background-color: var(--white);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .container td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+        min-height: 40px;
+    }
+
+    .container tr:last-child td:last-child {
+        border-bottom: none;
+    }
+
+    /* Етикети за стандартните таблици (Име, Фамилия, Степен, Възраст, Действия) */
+    /* Работи за всички таблици със същата структура (участници и победители) */
+    .container table:not(.noParticipants):not(.noWinners):not(.reset) td:nth-child(1)::before { content: "Име"; }
+    .container table:not(.noParticipants):not(.noWinners):not(.reset) td:nth-child(2)::before { content: "Фамилия"; }
+    .container table:not(.noParticipants):not(.noWinners):not(.reset) td:nth-child(3)::before { content: "Степен"; }
+    .container table:not(.noParticipants):not(.noWinners):not(.reset) td:nth-child(4)::before { content: "Възраст"; }
+    .container table:not(.noParticipants):not(.noWinners):not(.reset) td:nth-child(5)::before { content: "Действия"; }
+
+    .container td::before {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-weight: bold;
+        color: var(--red-main);
+        white-space: nowrap;
+        text-align: left;
+    }
+
+    /* По подразбиране на мобилни колоните стават вертикални,
+       но долният ред с бутони остава на един ред вдясно (с пренасяне при нужда) */
+    .container > .buttonz table td.buttonz {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        padding-left: 0; /* премахва отместването при mobile layout */
+    }
+    .container > .buttonz table td.buttonz form,
+    .container > .buttonz table td.buttonz button {
+        width: auto;
+    }
+}
+
+/* По-малки екрани: пренасяне на думи в клетки */
+@media (max-width: 520px) {
+    .container table {
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+}

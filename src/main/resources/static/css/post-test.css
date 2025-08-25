@@ -1,0 +1,199 @@
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgba(0, 0, 0, 0.2);
+    --black: #000000;
+    --white: #ffffff;
+}
+
+
+/* Контейнер за публикация */
+.message-container {
+    width: 95%;
+    margin: 2em auto;
+    background-color: var(--white);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    font-family: 'Raleway', sans-serif;
+    color: var(--black); /* гарантирано черен текст */
+}
+
+
+.posted + .posted {
+    margin-top: 2rem; /* добавено разстояние между публикации */
+    border-top: 1px solid var(--red-main);
+
+}
+
+/* Заглавие на пост */
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: right;
+    color: var(--red-main);
+    margin-bottom: 0.5rem;
+}
+
+/* Автор и дата */
+.posted-by, .date {
+    font-size: 0.95rem;
+    color: var(--red-main);
+    margin-bottom: 1rem;
+}
+
+.table-header {
+    width: 100%;
+}
+
+.table-header .info {
+    text-align: left;
+}
+
+.table-header .title {
+    text-align: right;
+}
+
+.header-row td{
+    padding-bottom: 2.5rem;
+}
+
+
+/* Съдържание */
+.message-content {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    color: var(--black); /* черен текст за добра четимост */
+}
+
+/* Секция с бутони за пост */
+.post-actions  {
+    vertical-align: top;
+    text-align: right;
+    white-space: nowrap;
+    /*display: flex;*/
+    gap: 0.8em;
+    /*flex-wrap: wrap;*/
+}
+
+.post-actions button , .delete-comment-btn  {
+    color: var(--red-main);
+    font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.post-actions button:hover , .delete-comment-btn:hover  {
+    font-weight: 650;
+}
+
+.delete-comment-btn:hover {
+    font-weight: 650;
+}
+
+/* --- Коментари --- */
+.comments-section {
+    margin: 2rem 0;
+    padding-top: 1rem;
+}
+
+.comment-item {
+    background-color: #f0f2f5;
+    border-left: 4px solid var(--red-main);
+    border-radius: 0.5rem;
+    padding: 0.8rem 0 0.8rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: var(--black); /* черен текст */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    list-style: none;
+}
+
+.comment-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.author-name {
+    font-weight: bold;
+    color: var(--red-main);
+    margin-bottom: 0.3rem;
+}
+
+
+/*!* Линк за добавяне на коментар *!*/
+/*.add-comment-link {*/
+/*    display: inline-block;*/
+/*    margin-top: 1rem;*/
+/*    color: var(--red-main);*/
+/*    font-weight: 600;*/
+/*    font-size: 0.95rem;*/
+/*    text-decoration: underline;*/
+/*}*/
+
+/*.add-comment-link:hover {*/
+/*    color: #f44336;*/
+/*}*/
+
+/*---границите на слайдъра---*/
+.main-container {
+    padding: 2em 0;
+    position: relative;
+}
+
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+
+}
+
+.main-container::after{
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before{
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/*---границите на слайдъра---*/
+
+/* Responsive пост */
+@media (max-width: 600px) {
+    .post-container {
+        padding: 1rem;
+    }
+
+    .post-title {
+        font-size: 1.3rem;
+    }
+
+    .post-content {
+        font-size: 1rem;
+    }
+
+    .comment-item {
+        font-size: 0.9rem;
+    }
+}

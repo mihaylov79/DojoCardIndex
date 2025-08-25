@@ -312,7 +312,7 @@ public class UserServiceUTest {
 
         verify(userRepository,times(1)).save(Mockito.argThat(user -> user.getRegistrationStatus()== RegistrationStatus.REGISTERED));
         verify(notificationService,times(1)).saveNotificationPreference(userId,true,existingUser.getEmail());
-        verify(notificationService,times(1)).sendNotification(userId,existingUser.getFirstName(),existingUser.getLastName(),"Одобрена заявка за регистрация","Вашата заявка за регистрация беше потвърдена.Вече можете да влезете в профила си.");
+        verify(notificationService,times(1)).sendNotification(userId,existingUser.getFirstName(),existingUser.getLastName(),"Одобрена заявка за регистрация","Вашата заявка за регистрация беше потвърдена. Вече можете да влезете в профила си.");
 
    }
 

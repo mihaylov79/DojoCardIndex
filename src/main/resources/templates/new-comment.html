@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Добавяне на коментар</title>
-  <link rel="stylesheet" href="/css/default.css">
-  <link rel="stylesheet" href="/css/replay.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавяне на коментар</title>
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/reply-test.css">
 </head>
 <body>
 <header>
 
-  <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
 </header>
-<div class="container-replay">
-<h2>Добави коментар</h2>
-<form th:action="@{/comments/new-comment}" th:method="POST">
-  <input type="hidden" name="postId" th:value="${postId}" />
-  <label>
-    <textarea name="content" placeholder="Въведете коментар..." required></textarea>
-  </label>
-  <button type="submit">Публикувай</button>
-</form>
-<a href="/posts">Назад</a>
+<div class="main-container">
+    <div class="container-send">
+        <h2>Добави коментар</h2>
+        <form class="reply" th:action="@{/comments/new-comment}" th:method="POST">
+            <input type="hidden" name="postId" th:value="${postId}"/>
+            <span class="credentials-error"></span>
+            <label>
+                <textarea name="content" placeholder="Въведете коментар..." required></textarea>
+            </label>
+            <button type="submit">Публикувай</button>
+        </form>
+        <div class="back-link">
+            <a href="/posts">Назад</a>
+        </div>
+    </div>
 </div>
 </body>
 </html>

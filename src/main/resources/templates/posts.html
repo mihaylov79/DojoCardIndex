@@ -5,59 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="60">
     <title>Публикации</title>
-    <link rel="stylesheet" href="/css/default.css">
-    <link rel="stylesheet" href="/css/posts.css">
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/post-test.css">
 
 </head>
 <body>
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
+<div class="main-container">
+    <div class="message-container">
+        <div class="posted" th:each="post : ${allActivePosts}">
+            <input type="hidden" name="postId" th:value="${post.id}"/>
+            <table class="table-header">
+                <tr class="header-row">
+                    <td class="info">
+                        <span class="posted-by"
+                              th:text="'Публикувано от: ' + ${post.author.firstName} + ' ' + ${post.author.lastName}">Публикувано от: Свилен</span>
+                        <span class="date" th:text="${#temporals.format(post.created,'dd-MM-yyyy, HH:mm ч.')}">10.01.2025</span>
+                    </td>
+                    <td class="title">
+                        <strong th:text="${post.title}"></strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="message-content" th:text="${post.content}"></td>
+                </tr>
+                <tr th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <td colspan="2" class="post-actions">
+                        <form th:action="@{/posts/close/{id}(id=${post.id})}" th:method="POST">
+                            <button type="submit"
+                                    onclick="return confirm('Сигурни ли сте, че искате да затворите тази публикация ?');"
+                                    class="close-post-btn">Затвори пост
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
 
-<div class="message-container">
-    <div class="posted" th:each="post : ${allActivePosts}">
-        <input type="hidden" name="postId" th:value="${post.id}" />
-        <table>
-            <tr>
-                <td class="info">
-                    <span class="posted-by" th:text="'Публикувано от: ' + ${post.author.firstName} + ' ' + ${post.author.lastName}">Публикувано от: Свилен</span>
-                    <span class="date" th:text="${#temporals.format(post.created,'dd-MM-yyyy HH:mm')}">10.01.2025</span>
-                </td>
-                <td class="title">
-                    <strong th:text="${post.title}"></strong>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="message-content" th:text="${post.content}"></td>
-            </tr>
-            <tr th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                <td colspan="2" class="post-actions">
-                    <form th:action="@{/posts/close/{id}(id=${post.id})}" th:method="POST">
-                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да затворите тази публикация ?');" class="close-post-btn">Затвори пост</button>
-                    </form>
-                </td>
-            </tr>
-        </table>
+
+            <div class="comments-section">
+
+                <ul>
+                    <li th:each="comment : ${post.comments}" class="comment-item">
+                        <div>
+                            <strong class="author-name"
+                                    th:text="${comment.commentAuthor.getFirstName()} + ' ' + ${comment.commentAuthor.lastName}">Име</strong>,
+                            <strong class="author-name"
+                                    th:text="${#temporals.format(comment.commented, 'dd-MM-yyyy, HH:mm ч.:')}">Име</strong>
+                            <span th:text="${comment.content}">Съдържание</span>
+                        </div>
+                        <form th:if="${#authorization.expression('hasRole(''ADMIN'')') or #authentication.name == comment.commentAuthor.email}"
+                              th:action="@{/comments/remove/{id}(id=${comment.id})}" th:method="DELETE"
+                              style="display:inline;">
+                            <!--                        <input type="hidden" name="_method" value="DELETE"/>-->
+                            <button type="submit"
+                                    onclick="return confirm('Сигурни ли сте, че искате да изтриете този коментар?');"
+                                    class="delete-comment-btn">Премахни
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+
+                <!--            <a th:href="@{/comments/new-comment(postId=${post.id})}" class="add-comment-link">Добави коментар</a>-->
+                <button type="button" class="delete-comment-btn"
+                        th:onclick="|window.location.href='@{/comments/new-comment(postId=${post.id})}'|">
+                    Добави коментар
+                </button>
 
 
-        <div class="comments-section">
-
-            <ul>
-                <li th:each="comment : ${post.comments}" class="comment-item">
-                    <div>
-                        <strong th:text="${comment.commentAuthor.getFirstName()} + ' ' + ${comment.commentAuthor.lastName}">Име</strong>:
-                        <span th:text="${comment.content}">Съдържание</span>
-                    </div>
-                    <form th:if="${#authorization.expression('hasRole(''ADMIN'')') or #authentication.name == comment.commentAuthor.email}"
-                          th:action="@{/comments/remove/{id}(id=${comment.id})}" th:method="DELETE" style="display:inline;">
-<!--                        <input type="hidden" name="_method" value="DELETE"/>-->
-                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да изтриете този коментар?');" class="delete-comment-btn">ПРЕМАХНИ</button>
-                    </form>
-                </li>
-            </ul>
-
-            <a th:href="@{/comments/new-comment(postId=${post.id})}" class="add-comment-link">Добави коментар</a>
-
+            </div>
         </div>
     </div>
 </div>

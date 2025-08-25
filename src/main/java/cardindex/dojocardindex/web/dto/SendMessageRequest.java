@@ -19,7 +19,7 @@ public class SendMessageRequest {
 //    private User sender;
 
     @NotBlank(message = "Това поле не може да бъде празно")
-    @Size(max = 500, message = "Вашето съобщение не може да надвишава 500 символа")
+    @Size(max = 300, message = "Вашето съобщение не може да надвишава 300 символа")
     private String content;
 
 
