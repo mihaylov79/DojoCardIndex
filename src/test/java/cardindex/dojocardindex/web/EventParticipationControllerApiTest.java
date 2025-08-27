@@ -566,8 +566,8 @@ public class EventParticipationControllerApiTest {
                         .with(user(userDetails))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/events"))
-                .andExpect(model().attributeExists("user"));
+                .andExpect(redirectedUrl("/events"));
+
 
         verify(requestService).submitRequest(userDetails.getId(), eventId);
     }

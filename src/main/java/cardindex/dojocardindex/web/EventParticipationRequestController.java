@@ -66,10 +66,9 @@ public class EventParticipationRequestController {
         redirectAttributes.addFlashAttribute("successMessage",
                                               "Вашата заявка за участие беше приета и придвижена към Администратор за одобрение");
 
-        ModelAndView modelAndView = new ModelAndView("redirect:/events");
-        modelAndView.addObject("user",user);
+        return new ModelAndView("redirect:/events");
 
-        return modelAndView;
+
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
