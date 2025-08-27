@@ -33,8 +33,8 @@
             </thead>
             <tbody>
             <tr th:each="event : ${events}">
-                <td data-label="Начална дата" th:text="${event.startDate}">11.01.2025</td>
-                <td data-label="Крайна дата" th:text="${event.endDate}">12.01.2025</td>
+                <td data-label="Начална дата" th:text="${#temporals.format(event.startDate,'dd-MM-yyyy')}">11.01.2025</td>
+                <td data-label="Крайна дата" th:text="${#temporals.format(event.endDate, 'dd-MM-yyyy')}">12.01.2025</td>
                 <td data-label="Събитие" th:text="${event.type.description}">Треньорски семинар</td>
                 <td data-label="Описание" th:text="${event.eventDescription}">Треньорски семинар</td>
                 <td data-label="Изисквания" th:text="${event.requirements.description}">Треньор</td>

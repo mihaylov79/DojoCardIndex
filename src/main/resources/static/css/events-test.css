@@ -102,7 +102,9 @@
     margin: 0.3em;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    border-color: var(--red-main);
     cursor: pointer;
+    background: transparent;
     transition: background 0.3s ease;
     /*background: none;*/
 

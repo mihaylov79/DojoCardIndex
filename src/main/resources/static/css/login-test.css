@@ -134,6 +134,8 @@ input[type="submit"] {
     font-weight: 400;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    border: 2px solid #cccccc;
+    background: transparent;
     cursor: pointer;
     font-size: 1.25em;
     transition: background 0.3s ease;
@@ -145,6 +147,7 @@ input[type="submit"]:focus,
 input[type="submit"]:hover {
     /*background: #e18e09;*/
     /*color: black;*/
+    border-color: var(--red-main);
     font-weight: 700;
     /*background: var(--black);*/
 }
@@ -223,6 +226,8 @@ button{
     margin: 0.3em;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    border-color: var(--red-main);
+    background: transparent;
     cursor: pointer;
     transition: background 0.3s ease;
 }
