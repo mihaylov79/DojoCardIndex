@@ -6,6 +6,13 @@ terraform {
       version = "4.45.0"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name = "tfstate-rg"
+    storage_account_name = "dragondojotfstate"
+    container_name = "dojotfstate"
+    key = "dragon-dojo.terraform.tfstate"
+  }
 }
 
 provider "azurerm" {
