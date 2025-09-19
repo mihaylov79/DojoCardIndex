@@ -65,7 +65,7 @@ resource "azurerm_subnet" "subnet" {
 
 resource "azurerm_mysql_flexible_server" "server" {
   location            = azurerm_resource_group.rg.location
-  name                = "mysqlserver"
+  name                = "dragon-dojo-mysqlserver"
   resource_group_name = azurerm_resource_group.rg.name
   administrator_login = "dojoadmin"
   administrator_password = var.admin_password
