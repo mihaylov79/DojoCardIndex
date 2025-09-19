@@ -65,11 +65,11 @@ resource "azurerm_subnet" "subnet" {
 
 resource "azurerm_mysql_flexible_server" "server" {
   location            = azurerm_resource_group.rg.location
-  name                = "mysqlServer"
+  name                = "mysqlserver"
   resource_group_name = azurerm_resource_group.rg.name
   administrator_login = "dojoadmin"
   administrator_password = var.admin_password
-  sku_name = "Standard_B1ms"
+  sku_name = "B1"
   version = "8.0.21"
 
   storage {
