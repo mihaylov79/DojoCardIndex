@@ -153,6 +153,6 @@ resource "azurerm_app_service_source_control" "vc" {
   app_id = azurerm_linux_web_app.alwa.id
   repo_url = "https://github.com/mihaylov79/DojoCardIndex"
   branch = "main"
-  use_manual_integration = true
+  use_manual_integration = false
 }
 
