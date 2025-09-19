@@ -37,7 +37,7 @@ resource "azurerm_app_service_plan" "asp" {
 
   sku {
     size = "B1"
-    tier = "B1"
+    tier = "Basic"
   }
 }
 
