@@ -67,17 +67,13 @@ resource "azurerm_mysql_flexible_server" "server" {
   location            = azurerm_resource_group.rg.location
   name                = "mysqlServer"
   resource_group_name = azurerm_resource_group.rg.name
-  administrator_login = "root"
+  administrator_login = "dojoadmin"
   administrator_password = var.admin_password
   sku_name = "Standard_B1ms"
-  version = "8.0"
-
-  high_availability {
-    mode = "Disabled"
-  }
+  version = "8.0.21"
 
   storage {
-    size_gb = 16
+    size_gb = 20
   }
 
   backup_retention_days = 3
@@ -138,7 +134,7 @@ resource "azurerm_linux_web_app" "alwa" {
     # "SPRING_DATASOURCE_URL"    = "jdbc:mysql://mysqlserver.mysql.database.azure.com:3306/dojo_DB"
     "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}"
 
-    "SPRING_DATASOURCE_USERNAME" = "root"
+    "SPRING_DATASOURCE_USERNAME" = "dojoadmin"
     "SPRING_DATASOURCE_PASSWORD" = var.admin_password
 
   }
