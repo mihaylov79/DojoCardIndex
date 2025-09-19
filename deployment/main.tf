@@ -70,7 +70,7 @@ resource "azurerm_mysql_flexible_server" "server" {
   administrator_login = "dojoadmin"
   administrator_password = var.admin_password
   sku_name = "Standard_B1ms"
-  version = "8.0.21"
+  version = "8.4"
 
   storage {
     size_gb = 20
