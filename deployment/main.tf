@@ -19,12 +19,26 @@ resource "azurerm_resource_group" "rg" {
   name     = "dragon-dojo-rg"
 }
 
-resource "azurerm_service_plan" "sp" {
+# resource "azurerm_service_plan" "sp" {
+#   location            = azurerm_resource_group.rg.location
+#   name                = "dragon-dojo-plan"
+#   os_type             = "Linux"
+#   resource_group_name = azurerm_resource_group.rg.name
+#   sku_name            = "B1"
+# }
+
+resource "azurerm_app_service_plan" "asp" {
   location            = azurerm_resource_group.rg.location
   name                = "dragon-dojo-plan"
-  os_type             = "Linux"
   resource_group_name = azurerm_resource_group.rg.name
-  sku_name            = "F1"
+
+  kind = "Linux"
+  reserved = true
+
+  sku {
+    size = "B1"
+    tier = "B1"
+  }
 }
 
 resource "azurerm_virtual_network" "vn" {
@@ -77,5 +91,29 @@ resource "azurerm_mysql_flexible_server_firewall_rule" "fr" {
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mysql_flexible_server.server.name
   start_ip_address    = "0.0.0.0"
+}
+
+resource "azurerm_app_service" "app" {
+  app_service_plan_id = azurerm_app_service_plan.asp.id
+  location            = azurerm_resource_group.rg.location
+  name                = "dragon-dojo"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  site_config {
+    linux_fx_version = "JAVA|17-java17"
+  }
+
+  app_settings = {
+    "SPRING_DATASOURCE_URL"      = "jdbc:mysql://mysqlServer.mysql.database.azure.com:3306/dojo_DB"
+    "SPRING_DATASOURCE_USERNAME" = "root"
+    "SPRING_DATASOURCE_PASSWORD" = var.admin_password
+  }
+}
+
+resource "azurerm_app_service_source_control" "vc" {
+  app_id = azurerm_app_service.app.id
+  repo_url = "https://github.com/mihaylov79/DojoCardIndex"
+  branch = "main"
+  use_manual_integration = true
 }
 
