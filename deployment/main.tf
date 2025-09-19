@@ -71,3 +71,11 @@ resource "azurerm_mysql_flexible_database" "db" {
   server_name         = azurerm_mysql_flexible_server.server.name
 }
 
+resource "azurerm_mysql_flexible_server_firewall_rule" "fr" {
+  end_ip_address      = "0.0.0.0"
+  name                = "dojo-firewall"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mysql_flexible_server.server.name
+  start_ip_address    = "0.0.0.0"
+}
+
