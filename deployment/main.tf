@@ -12,6 +12,7 @@ terraform {
     storage_account_name = "dragondojotfstate"
     container_name = "dojotfstate"
     key = "dragon-dojo.terraform.tfstate"
+    # auth_mode            = "login"
   }
 }
 
