@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
-      version = "4.44.0"
+      version = "4.45.0"
     }
   }
 }
@@ -34,11 +34,40 @@ resource "azurerm_virtual_network" "vn" {
   address_space = ["10.0.0.0/16"]
 }
 
-resource "azurerm_subnet" "sub" {
+resource "azurerm_subnet" "subnet" {
   address_prefixes = ["10.0.2.0/24"]
   name                 = "dragon-doje-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vn.name
-
-
 }
+
+resource "azurerm_mysql_flexible_server" "server" {
+  location            = azurerm_resource_group.rg.location
+  name                = "mysqlServer"
+  resource_group_name = azurerm_resource_group.rg.name
+  administrator_login = "root"
+  administrator_password = var.admin_password
+  sku_name = "Standard_B1ms"
+  version = "8.0"
+
+  high_availability {
+    mode = "Disabled"
+  }
+
+  storage {
+    size_gb = 16
+  }
+
+  backup_retention_days = 3
+
+  delegated_subnet_id = azurerm_subnet.subnet.id
+}
+
+resource "azurerm_mysql_flexible_database" "db" {
+  charset             = "utf8mb4"
+  collation           = "utf8mb4_0900_ai_ci"
+  name                = "dojo_DB"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mysql_flexible_server.server.name
+}
+
