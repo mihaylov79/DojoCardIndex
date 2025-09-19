@@ -66,7 +66,7 @@ resource "azurerm_subnet" "subnet" {
     name = "delegation"
 
     service_delegation {
-      name    = "Microsoft.ContainerInstance/containerGroups"
+      name    = "Microsoft.DBforMySQL/flexibleServer"
       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
     }
   }
