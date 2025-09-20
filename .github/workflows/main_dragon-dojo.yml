@@ -4,9 +4,9 @@
 name: Build and deploy JAR app to Azure Web App - dragon-dojo
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 jobs:
@@ -60,4 +60,5 @@ jobs:
           app-name: 'dragon-dojo'
           slot-name: 'Production'
           package: '*.jar'
+
           
