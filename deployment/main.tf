@@ -135,7 +135,6 @@ resource "azurerm_linux_web_app" "alwa" {
       java_server = "JAVA"
       java_server_version = "17"
     }
-    scm_type = "GitHub"
   }
 
   app_settings = {
