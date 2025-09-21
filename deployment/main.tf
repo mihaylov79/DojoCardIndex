@@ -49,28 +49,28 @@ resource "azurerm_service_plan" "sp" {
 #   }
 # }
 
-resource "azurerm_virtual_network" "vn" {
-  location            = azurerm_resource_group.rg.location
-  name                = "drogon-dojo-vn"
-  resource_group_name = azurerm_resource_group.rg.name
-  address_space = ["10.0.0.0/16"]
-}
-
-resource "azurerm_subnet" "subnet" {
-  address_prefixes = ["10.0.2.0/24"]
-  name                 = "dragon-doje-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vn.name
-
-  delegation {
-    name = "delegation"
-
-    service_delegation {
-      name    = "Microsoft.DBforMySQL/flexibleServers"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
-    }
-  }
-}
+# resource "azurerm_virtual_network" "vn" {
+#   location            = azurerm_resource_group.rg.location
+#   name                = "drogon-dojo-vn"
+#   resource_group_name = azurerm_resource_group.rg.name
+#   address_space = ["10.0.0.0/16"]
+# }
+#
+# resource "azurerm_subnet" "subnet" {
+#   address_prefixes = ["10.0.2.0/24"]
+#   name                 = "dragon-doje-subnet"
+#   resource_group_name  = azurerm_resource_group.rg.name
+#   virtual_network_name = azurerm_virtual_network.vn.name
+#
+#   delegation {
+#     name = "delegation"
+#
+#     service_delegation {
+#       name    = "Microsoft.DBforMySQL/flexibleServers"
+#       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
+#     }
+#   }
+# }
 
 resource "azurerm_mysql_flexible_server" "server" {
   location            = azurerm_resource_group.rg.location
@@ -87,7 +87,9 @@ resource "azurerm_mysql_flexible_server" "server" {
 
   backup_retention_days = 3
 
-  delegated_subnet_id = azurerm_subnet.subnet.id
+  # delegated_subnet_id = azurerm_subnet.subnet.id
+
+  public_network_access_enabled = true
 }
 
 resource "azurerm_mysql_flexible_database" "db" {
@@ -142,7 +144,7 @@ resource "azurerm_linux_web_app" "alwa" {
     # "SPRING_PROFILES_ACTIVE"   = "prod"
     # "SPRING_DATASOURCE_URL"    = "jdbc:mysql://mysqlserver.mysql.database.azure.com:3306/dojo_DB"
     # "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}"
-    "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=true&requireSSL=false&serverTimezone=UTC"
+    "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=false&requireSSL=false&serverTimezone=UTC"
 
     "SPRING_DATASOURCE_USERNAME" = "dojoadmin"
     "SPRING_DATASOURCE_PASSWORD" = var.admin_password
