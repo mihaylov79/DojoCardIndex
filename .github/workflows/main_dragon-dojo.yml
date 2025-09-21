@@ -4,9 +4,9 @@
 name: Build and deploy JAR app to Azure Web App - dragon-dojo
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -49,9 +49,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_50A36D8D12E64D2792B6536C73D8BBF6 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C59EAB5F41A04C4D9FFF9DD7727CA9A3 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4B30169E06C6460789A5C3A00E1706EA }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_68893CB494AA418F90B2A646793452FC }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BAC1AECA48964677BBB2AC05E7F302E6 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9B028DF377BC41C58E7D368F5207C462 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -60,5 +60,4 @@ jobs:
           app-name: 'dragon-dojo'
           slot-name: 'Production'
           package: '*.jar'
-
           
