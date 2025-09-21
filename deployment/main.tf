@@ -89,7 +89,6 @@ resource "azurerm_mysql_flexible_server" "server" {
 
   # delegated_subnet_id = azurerm_subnet.subnet.id
 
-  public_network_access_enabled = true
 }
 
 resource "azurerm_mysql_flexible_database" "db" {
