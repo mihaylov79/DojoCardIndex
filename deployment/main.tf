@@ -143,10 +143,11 @@ resource "azurerm_linux_web_app" "alwa" {
     # "SPRING_PROFILES_ACTIVE"   = "prod"
     # "SPRING_DATASOURCE_URL"    = "jdbc:mysql://mysqlserver.mysql.database.azure.com:3306/dojo_DB"
     # "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}"
-    "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=false&requireSSL=false&serverTimezone=UTC"
+    "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=true&requireSSL=false&serverTimezone=UTC"
 
     "SPRING_DATASOURCE_USERNAME" = "dojoadmin"
     "SPRING_DATASOURCE_PASSWORD" = var.admin_password
+    "SPRING_PROFILES_ACTIVE"     = "prod"
 
   }
 }
