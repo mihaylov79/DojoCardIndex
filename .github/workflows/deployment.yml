@@ -35,12 +35,8 @@ jobs:
         run: terraform plan -out=tfplan
         env:
           TF_VAR_admin_password: ${{ secrets.DB_ROOT_PASS }}
-          # TF_VAR_mailsvc_db_user_pass: ${{ secrets.DB_USER_PASS }}
-          # TF_VAR_mailsvc_mail_pass: ${{ secrets.MAIL_PASS }}
           TF_VAR_subscription_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
           TF_VAR_tenant_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
-          # TF_VAR_client_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-          # TF_VAR_client_secret: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
 
       - name: Upload Terraform plan
         uses: actions/upload-artifact@v4
@@ -80,9 +76,5 @@ jobs:
         run: terraform apply -auto-approve tfplan
         env:
           TF_VAR_admin_password: ${{ secrets.DB_ROOT_PASS }}
-          # TF_VAR_mailsvc_db_user_pass: ${{ secrets.DB_USER_PASS }}
-          # TF_VAR_mailsvc_mail_pass: ${{ secrets.MAIL_PASS }}
           TF_VAR_subscription_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
           TF_VAR_tenant_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
-          # TF_VAR_client_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-          # TF_VAR_client_secret: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}

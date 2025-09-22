@@ -250,6 +250,17 @@
         </ul>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const adminToggle = document.querySelector('.admin-toggle');
+        const adminMenu = document.querySelector('.admin-menu');
+        if (adminToggle && adminMenu) {
+            adminToggle.addEventListener('click', function() {
+                adminMenu.classList.toggle('show');
+            });
+        }
+    });
+</script>
 </body>
 
 </html>
