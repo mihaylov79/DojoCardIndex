@@ -253,7 +253,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const adminToggle = document.querySelector('.admin-toggle');
-        const adminMenu = document.querySelector('.admin-menu');
+        // Select only the next sibling .admin-menu
+        const adminMenu = adminToggle ? adminToggle.nextElementSibling : null;
         if (adminToggle && adminMenu) {
             adminToggle.addEventListener('click', function() {
                 adminMenu.classList.toggle('show');
