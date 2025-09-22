@@ -170,10 +170,10 @@ body {
 
 @media (max-width: 768px) {
     .admin-menu {
-        display: none;
+        display: none !important;
     }
     .admin-menu.show {
-        display: block;
+        display: block !important;
     }
 }
 
