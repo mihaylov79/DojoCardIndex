@@ -101,7 +101,7 @@
 <script>
     async function fetchInfo() {
         try {
-            const res = await fetch('http://localhost:8080/actuator/info');
+            const res = await fetch('/actuator/info');
             const data = await res.json();
             const name = data.app?.name || "неизвестно";
             const version = data.app?.version || "неизвестна";
@@ -116,7 +116,7 @@
 
     async function fetchHealth() {
         try {
-            const res = await fetch('http://localhost:8080/actuator/health');
+            const res = await fetch('/actuator/health');
             const data = await res.json();
             const status = data.status;
             const components = data.components || {};
@@ -149,7 +149,7 @@
 
     async function fetchCpuUsage() {
         try {
-            const res = await fetch('http://localhost:8080/actuator/metrics/system.cpu.usage');
+            const res = await fetch('/actuator/metrics/system.cpu.usage');
             const data = await res.json();
             const value = data.measurements[0].value;
             const percent = (value * 100).toFixed(1);
@@ -167,8 +167,8 @@
 
     async function fetchJvmMemory() {
         try {
-            const usedRes = await fetch('http://localhost:8080/actuator/metrics/jvm.memory.used');
-            const maxRes = await fetch('http://localhost:8080/actuator/metrics/jvm.memory.max');
+            const usedRes = await fetch('/actuator/metrics/jvm.memory.used');
+            const maxRes = await fetch('/actuator/metrics/jvm.memory.max');
             const used = (await usedRes.json()).measurements[0].value;
             const max = (await maxRes.json()).measurements[0].value;
             const free = max - used;
@@ -198,7 +198,7 @@
 
     async function fetchHttpRequests() {
         try {
-            const res = await fetch('http://localhost:8080/actuator/metrics/http.server.requests');
+            const res = await fetch('/actuator/metrics/http.server.requests');
             const data = await res.json();
             const count = data.measurements.find(m => m.statistic === "count")?.value || 0;
             document.getElementById('http-requests').innerHTML = `${count.toFixed(0)} заявки`;
@@ -212,11 +212,11 @@
     fetchHealth();
     fetchCpuUsage();
     fetchJvmMemory();
-    fetchSimpleMetric('http://localhost:8080/actuator/metrics/hikaricp.connections.active', 'hikari-active');
-    fetchSimpleMetric('http://localhost:8080/actuator/metrics/hikaricp.connections.idle', 'hikari-idle');
+    fetchSimpleMetric('/actuator/metrics/hikaricp.connections.active', 'hikari-active');
+    fetchSimpleMetric('/actuator/metrics/hikaricp.connections.idle', 'hikari-idle');
     fetchHttpRequests();
-    fetchSimpleMetric('http://localhost:8080/actuator/metrics/jvm.gc.pause', 'gc-pause', 'ms');
-    fetchSimpleMetric('http://localhost:8080/actuator/metrics/tomcat.sessions.active.current', 'tomcat-sessions');
+    fetchSimpleMetric('/actuator/metrics/jvm.gc.pause', 'gc-pause', 'ms');
+    fetchSimpleMetric('/actuator/metrics/tomcat.sessions.active.current', 'tomcat-sessions');
 </script>
 
 </body>
