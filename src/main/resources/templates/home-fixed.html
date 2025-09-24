@@ -78,7 +78,7 @@
                     <th>Защитена степен</th>
                     <td th:text="${user.reachedDegree.description}"></td>
                 </tr>
-                <tr th:if="${user.interests} != null">
+                <tr th:if="${user.interests != null and !#strings.isEmpty(user.interests)}">
                     <th>Интереси</th>
                     <td th:text="${user.interests}"></td>
                 </tr>
@@ -98,6 +98,10 @@
                 <tr th:if="${user.weight} != 0">
                     <th>Тегло</th>
                     <td th:text="${user.weight} + ' кг.'"></td>
+                </tr>
+                <tr th:if="${user.achievedFirstPlaces + user.achievedSecondPlaces + user.achievedThirdPlaces > 0}">
+                    <th>Отличия</th>
+                    <td th:text="${user.achievedFirstPlaces + user.achievedSecondPlaces + user.achievedThirdPlaces}"></td>
                 </tr>
                 <tr th:if="${user.medicalExamsPassed} != null">
                     <th>Медицински преглед</th>

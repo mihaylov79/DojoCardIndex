@@ -262,6 +262,15 @@ table caption {
     thead {
         display: none;
     }
+
+    table caption {
+        display: block;
+        width: 100%;
+        white-space: normal; /* or nowrap if you want to force single line */
+        text-align: left;    /* or center, as you prefer */
+        margin-bottom: 1rem;
+    }
+
     tr {
         margin-bottom: 1rem;
         background: var(--white);
