@@ -35,19 +35,6 @@ resource "azurerm_service_plan" "sp" {
   sku_name            = "B1"
 }
 
-# resource "azurerm_app_service_plan" "asp" {
-#   location            = azurerm_resource_group.rg.location
-#   name                = "dragon-dojo-plan"
-#   resource_group_name = azurerm_resource_group.rg.name
-#
-#   kind = "Linux"
-#   reserved = true
-#
-#   sku {
-#     size = "B1"
-#     tier = "Basic"
-#   }
-# }
 
 # resource "azurerm_virtual_network" "vn" {
 #   location            = azurerm_resource_group.rg.location
@@ -107,23 +94,6 @@ resource "azurerm_mysql_flexible_server_firewall_rule" "fr" {
   start_ip_address    = "0.0.0.0"
 }
 
-# resource "azurerm_app_service" "app" {
-#   app_service_plan_id = azurerm_app_service_plan.asp.id
-#   location            = azurerm_resource_group.rg.location
-#   name                = "dragon-dojo"
-#   resource_group_name = azurerm_resource_group.rg.name
-#
-#   site_config {
-#     linux_fx_version = "JAVA|17-java17"
-#   }
-#
-#   app_settings = {
-#     "SPRING_DATASOURCE_URL"      = "jdbc:mysql://mysqlServer.mysql.database.azure.com:3306/dojo_DB"
-#     "SPRING_DATASOURCE_USERNAME" = "root"
-#     "SPRING_DATASOURCE_PASSWORD" = var.admin_password
-#   }
-# }
-
 resource "azurerm_linux_web_app" "alwa" {
   location            = azurerm_resource_group.rg.location
   name                = "dragon-dojo"
@@ -140,9 +110,6 @@ resource "azurerm_linux_web_app" "alwa" {
 
   app_settings = {
 
-    # "SPRING_PROFILES_ACTIVE"   = "prod"
-    # "SPRING_DATASOURCE_URL"    = "jdbc:mysql://mysqlserver.mysql.database.azure.com:3306/dojo_DB"
-    # "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}"
     "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=true&requireSSL=false&serverTimezone=UTC"
 
     "SPRING_DATASOURCE_USERNAME" = "dojoadmin"
@@ -152,10 +119,10 @@ resource "azurerm_linux_web_app" "alwa" {
   }
 }
 
-resource "azurerm_app_service_source_control" "vc" {
-  app_id = azurerm_linux_web_app.alwa.id
-  repo_url = "https://github.com/mihaylov79/DojoCardIndex"
-  branch = "main"
-  use_manual_integration = true
-}
+# resource "azurerm_app_service_source_control" "vc" {
+#   app_id = azurerm_linux_web_app.alwa.id
+#   repo_url = "https://github.com/mihaylov79/DojoCardIndex"
+#   branch = "main"
+#   use_manual_integration = true
+# }
 

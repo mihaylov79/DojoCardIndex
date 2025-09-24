@@ -146,7 +146,7 @@ body {
     }
 }
 
-@media (max-width: 1700px) {
+@media (max-width: 1950px) {
     .swiper-slide {
         display: flex !important;
         justify-content: center;

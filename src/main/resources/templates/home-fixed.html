@@ -172,10 +172,18 @@
             <table id="medical-table">
 
                 <caption>Предстоящи мед. прегледи
-                    <div class="tick"><label>
-                        <input type="checkbox" id="competitorFilterCheckbox" onclick="filterCompetitors()">
-                        Покажи само състезателите
-                    </label></div>
+                    <div class="tick">
+                        <label>
+                            <input type="checkbox" id="hideAllCheckbox" onclick="filterCompetitors()">
+                            Скрий всички
+                        </label>
+                    </div>
+                    <div class="tick">
+                        <label>
+                            <input type="checkbox" id="competitorFilterCheckbox" onclick="filterCompetitors()">
+                            Покажи само състезателите
+                        </label>
+                    </div>
                 </caption>
 
 
@@ -206,21 +214,22 @@
 
             <script>
                 function filterCompetitors() {
-                    const checkbox = document.getElementById('competitorFilterCheckbox');
-
-                    // Таргетирай конкретната таблица, напр. с caption съдържащ текст "Предстоящи мед. прегледи"
+                    const competitorCheckbox = document.getElementById('competitorFilterCheckbox');
+                    const hideAllCheckbox = document.getElementById('hideAllCheckbox');
                     const table = document.getElementById('medical-table');
-
-
-                    if (!table) return; // безопасна проверка
+                    if (!table) return;
 
                     const rows = table.querySelectorAll('tbody tr');
 
-                    rows.forEach(row => {
-                        const statusCell = row.querySelector('td:nth-child(3)'); // 3-та колона е "Състезателен статус"
-                        const isCompetitor = statusCell.textContent.trim() === 'Състезател';
+                    if (hideAllCheckbox && hideAllCheckbox.checked) {
+                        rows.forEach(row => row.style.display = 'none');
+                        return;
+                    }
 
-                        if (checkbox.checked) {
+                    rows.forEach(row => {
+                        const statusCell = row.querySelector('td:nth-child(3)');
+                        const isCompetitor = statusCell.textContent.trim() === 'Състезател';
+                        if (competitorCheckbox && competitorCheckbox.checked) {
                             row.style.display = isCompetitor ? '' : 'none';
                         } else {
                             row.style.display = '';

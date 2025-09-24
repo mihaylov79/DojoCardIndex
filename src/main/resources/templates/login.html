@@ -41,8 +41,24 @@
             <a th:href="@{/forgotten-password}">Забравена парола?</a>
         </div>
 
+        <div id="loading-message" style="display:none; color: red; text-align: center; margin-bottom: 0.5em;">
+            Моля, изчакайте...... <br>Проверяваме Ващите данни!
+        </div>
         <input type="submit" class="button login" value="Вход">
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form.login');
+        const loadingMsg = document.getElementById('loading-message');
+        const submitBtn = form.querySelector('input[type="submit"]');
+        if (form && loadingMsg && submitBtn) {
+            form.addEventListener('submit', function() {
+                loadingMsg.style.display = 'block';
+                submitBtn.style.display = 'none';
+            });
+        }
+    });
+</script>
 </body>
 </html>
