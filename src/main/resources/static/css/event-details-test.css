@@ -121,6 +121,8 @@
 .buttonz form button,
 .actions form button {
     color: var(--red-main);
+    background-color: transparent;
+    border: 2px solid var(--red-main);
     font-weight: 500;
     margin: 0.2em 0;
     padding: 0.5rem 1rem;

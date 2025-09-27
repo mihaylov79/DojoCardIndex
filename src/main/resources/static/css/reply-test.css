@@ -127,9 +127,9 @@ select {
 button {
   display: block;
   width: 100%;
-  /*background-color: #ccc;*/
+  background-color: transparent;
   color: var(--red-main);
-  border: none;
+  border: 2px solid #ccc;
   padding: 0.6em 1em;
   font-family: 'Raleway', sans-serif;
   font-size: 1.1em;
@@ -142,6 +142,7 @@ button {
 }
 
 button:hover {
+  border-color: var(--red-main);
   font-weight: 700;
 }
 
