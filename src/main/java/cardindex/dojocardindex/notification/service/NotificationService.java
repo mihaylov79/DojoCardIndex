@@ -65,7 +65,7 @@ public class NotificationService {
         }
 
     }
-
+    @Cacheable(value = "notification-preference", key = "#recipientId")
     public NotificationPreference getUserNotificationPreference(UUID recipientId) {
         try {
             ResponseEntity<NotificationPreference> httpResponse = notificationClient.getUserMailPreference(recipientId);
@@ -122,7 +122,7 @@ public class NotificationService {
             log.warn("Известията за потребител с ID [{}] са изключени. Известие няма да бъде изпратено.", recipientID);
         }
     }
-
+    @CacheEvict(value = "notification-preference", key = "#recipientId")
     public void changeNotificationPreferences(UUID recipientId,boolean enabled){
         try {
             notificationClient.changeNotificationPreferences(recipientId, enabled);
