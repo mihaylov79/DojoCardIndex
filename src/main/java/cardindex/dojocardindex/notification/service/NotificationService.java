@@ -7,7 +7,10 @@ import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
 import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +21,6 @@ import java.util.UUID;
 public class NotificationService {
 
     private final NotificationClient notificationClient;
-//    private final UserService userService;
 
 
     @Autowired
@@ -27,6 +29,7 @@ public class NotificationService {
 
     }
 
+    @Async
     public void checkNotificationPreference(UUID recipientId, String email) {
         try {
             NotificationPreferenceRequest preferenceRequest = NotificationPreferenceRequest.builder()
@@ -64,12 +67,25 @@ public class NotificationService {
     }
 
     public NotificationPreference getUserNotificationPreference(UUID recipientId) {
-        ResponseEntity<NotificationPreference> httpResponse = notificationClient.getUserMailPreference(recipientId);
-        if (!httpResponse.getStatusCode().is2xxSuccessful()){
-            throw new RuntimeException("HTTP грешка: Неуспешен отговор за потребител [%s]".formatted(recipientId));
-        }
+        try {
+            ResponseEntity<NotificationPreference> httpResponse = notificationClient.getUserMailPreference(recipientId);
 
-        return httpResponse.getBody();
+            if (!httpResponse.getStatusCode().is2xxSuccessful() || httpResponse.getBody() == null){
+                // Ако няма preference, върнете default стойност
+                log.warn("Няма notification preference за потребител [{}]. Връщам default.", recipientId);
+                return NotificationPreference.builder()
+                        .enabled(false)
+                        .build();
+            }
+
+            return httpResponse.getBody();
+        } catch (Exception e) {
+            // Fallback при грешка
+            log.error("Грешка при четене на preference за [{}]. Връщам default.", recipientId, e);
+            return NotificationPreference.builder()
+                    .enabled(false)
+                    .build();
+        }
     }
 
     public List<Notification> getNotificationHistory(UUID recipientId) {
@@ -106,7 +122,6 @@ public class NotificationService {
             log.warn("Известията за потребител с ID [{}] са изключени. Известие няма да бъде изпратено.", recipientID);
         }
     }
-
 
     public void changeNotificationPreferences(UUID recipientId,boolean enabled){
         try {
