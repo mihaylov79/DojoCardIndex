@@ -87,13 +87,13 @@ public class NotificationService {
                     .build();
         }
     }
-
+    @Cacheable(value = "notification-history", key = "#recipientId")
     public List<Notification> getNotificationHistory(UUID recipientId) {
         ResponseEntity<List<Notification>> httpResponse = notificationClient
                                                                     .getUserNotificationHistory(recipientId);
         return httpResponse.getBody();
     }
-
+    @CacheEvict(value = "notification-history", key = "#recipientID")
     public void sendNotification(UUID recipientID, String firstName, String lastName, String title, String content) {
         // Проверка на предпочитанията за известия
         NotificationPreference preference = getUserNotificationPreference(recipientID);
@@ -130,7 +130,7 @@ public class NotificationService {
             log.warn("Неочаквана грешка при промяна на настройки за известия за потребител [{}]",recipientId,e);
         }
     }
-
+    @CacheEvict(value = "notification-history", key = "#recipientId")
     public void removeUserNotificationHistory(UUID recipientId){
 
         try{
