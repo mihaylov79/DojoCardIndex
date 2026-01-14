@@ -18,6 +18,36 @@
     box-shadow: var(--shadow);
 }
 
+/* Търсачка */
+.search-container {
+    margin: 1rem 0 1.5rem 0;
+    text-align: right;
+}
+
+.search-container input {
+    width: auto;
+    min-width: 240px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    border: 2px solid var(--red-main);
+    border-radius: 0.5rem;
+    background-color: var(--white);
+    color: var(--black);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.search-container input::placeholder {
+    color: #999;
+    opacity: 0.8;
+}
+
+.search-container input:focus {
+    border-color: var(--red-main);
+    box-shadow: 0 0 8px rgba(39, 102, 156, 0.3);
+}
+
 /* Таблица */
 .table-container table {
     width: 100%;
@@ -185,6 +215,14 @@
 
 /* Responsive таблица */
 @media screen and (max-width: 1370px) {
+    .search-container {
+        text-align: center;
+    }
+
+    .search-container input {
+        min-width: 200px;
+    }
+
     .table-container table,
     .table-container thead,
     .table-container tbody,
@@ -237,6 +275,12 @@
 }
 
 @media (max-width: 520px) {
+    .search-container input {
+        min-width: 180px;
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
     .table-container table {
         table-layout: fixed;
         word-wrap: break-word;

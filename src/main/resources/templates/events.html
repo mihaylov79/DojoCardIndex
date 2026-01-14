@@ -17,6 +17,13 @@
     <div class="table-container">
         <span th:if="${eventClosedMessage}" th:text="${eventClosedMessage}" class="credentials-error"></span>
         <span th:if="${successMessage}" th:text="${successMessage}" class="alert-info"></span>
+
+        <!-- Търсачка -->
+        <div class="search-container">
+            <label for="searchInput" style="display: none;">Търсене</label>
+            <input type="text" id="searchInput" placeholder="Търсене по събитие, място или описание...">
+        </div>
+
         <table>
             <caption>Спортен календар на Българска Киокушин-кан федерация</caption>
             <thead>
@@ -81,5 +88,30 @@
         </table>
     </div>
 </div>
+
+<script>
+    // JavaScript търсачка за събития
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const event = row.querySelector('td[data-label="Събитие"]')?.textContent.toLowerCase() || '';
+            const description = row.querySelector('td[data-label="Описание"]')?.textContent.toLowerCase() || '';
+            const location = row.querySelector('td[data-label="Място"]')?.textContent.toLowerCase() || '';
+            const requirements = row.querySelector('td[data-label="Изисквания"]')?.textContent.toLowerCase() || '';
+
+            if (event.includes(searchTerm) ||
+                description.includes(searchTerm) ||
+                location.includes(searchTerm) ||
+                requirements.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
