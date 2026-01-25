@@ -14,6 +14,13 @@
 </header>
 <div class="main-container">
     <div class="table-container">
+
+        <!-- Търсачка -->
+        <div class="search-container">
+            <label for="searchInput" style="display: none;">Търсене</label>
+            <input type="text" id="searchInput" placeholder="Търсене по събитие, име, фамилия или статус...">
+        </div>
+
         <table>
             <caption>
                 <div class="caption-right">Обработени заявки за събития</div>
@@ -75,5 +82,36 @@
         </table>
     </div>
 </div>
+
+<script>
+    // JavaScript търсачка за обработени заявки
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const event = row.querySelector('td[data-label="Събитие"]')?.textContent.toLowerCase() || '';
+            const firstName = row.querySelector('td[data-label="Име"]')?.textContent.toLowerCase() || '';
+            const lastName = row.querySelector('td[data-label="Фамилия"]')?.textContent.toLowerCase() || '';
+            const status = row.querySelector('td[data-label="Статус"]')?.textContent.toLowerCase() || '';
+            const requirements = row.querySelector('td[data-label="Изисквания"]')?.textContent.toLowerCase() || '';
+            const reason = row.querySelector('td[data-label="Причина"]')?.textContent.toLowerCase() || '';
+            const processedBy = row.querySelector('td[data-label="Обработена от"]')?.textContent.toLowerCase() || '';
+
+            if (event.includes(searchTerm) ||
+                firstName.includes(searchTerm) ||
+                lastName.includes(searchTerm) ||
+                status.includes(searchTerm) ||
+                requirements.includes(searchTerm) ||
+                reason.includes(searchTerm) ||
+                processedBy.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

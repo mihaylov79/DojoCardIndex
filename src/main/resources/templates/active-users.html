@@ -13,6 +13,13 @@
 </header>
 <div class="main-container">
     <div class="table-container">
+
+        <!-- Търсачка -->
+        <div class="search-container">
+            <label for="searchInput" style="display: none;">Търсене</label>
+            <input type="text" id="searchInput" placeholder="Търсене по име, фамилия, поща или степен...">
+        </div>
+
         <table>
             <caption>
                 <!--                <div class="caption-left">-->
@@ -35,6 +42,7 @@
                 <th>Действие</th>
             </tr>
             </thead>
+            <tbody>
             <tr th:each="user:${active}">
                 <td>
                     <a th:href="@{/users/details/{id}(id=${user.id})}">
@@ -104,8 +112,38 @@
 
 
             </tr>
+            </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    // JavaScript търсачка за потребители
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const firstName = row.querySelector('td[data-label="Име"]')?.textContent.toLowerCase() || '';
+            const lastName = row.querySelector('td[data-label="Фамилия"]')?.textContent.toLowerCase() || '';
+            const email = row.querySelector('td[data-label="Поща"]')?.textContent.toLowerCase() || '';
+            const degree = row.querySelector('td[data-label="Защитена степен"]')?.textContent.toLowerCase() || '';
+            const accountStatus = row.querySelector('td[data-label="Статус на акаунта"]')?.textContent.toLowerCase() || '';
+            const registrationStatus = row.querySelector('td[data-label="Статус на регистрация"]')?.textContent.toLowerCase() || '';
+
+            if (firstName.includes(searchTerm) ||
+                lastName.includes(searchTerm) ||
+                email.includes(searchTerm) ||
+                degree.includes(searchTerm) ||
+                accountStatus.includes(searchTerm) ||
+                registrationStatus.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
