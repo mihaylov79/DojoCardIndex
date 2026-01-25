@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.web.dto;
 
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -19,7 +20,8 @@ public class EditUserProfileRequest {
     @Size(min = 2, max = 20, message = "Въведеното име трябва да е между 2 и 20 символа!")
     private String lastName;
 
-    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
+//    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
+    @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String userPhone;
 
     @URL(message = "въведете валиден URL адрес.")
@@ -37,9 +39,11 @@ public class EditUserProfileRequest {
     @Positive(message = "Въведената стойност трябва да бъде цяло, положително число")
     private double weight;
 
+    @Size(max = 40, message = "Името не може да надвишава 40 симовла")
     private String contactPerson;
 
-    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
+//    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
+    @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String contactPersonPhone;
 
     public void setUserPhone(String userPhone) {

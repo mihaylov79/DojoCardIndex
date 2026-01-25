@@ -32,7 +32,8 @@ public class CreateUserRequest {
     @Size(max = 20, message = "Името не може да надвишава 20 симовла")
     private String lastName;
 
-    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер")
+//    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер")
+    @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String userPhone;
 
     @URL(message = "Моля въведета валиден URL")
@@ -49,7 +50,7 @@ public class CreateUserRequest {
 
     private AgeGroup ageGroup;
 
-    @NotNull(message = "Моля отбележете дали потребителят е състезател")
+//    @NotNull(message = "Моля отбележете дали потребителят е състезател")
     private boolean isCompetitor;
 
     @PositiveOrZero
@@ -64,6 +65,7 @@ public class CreateUserRequest {
     @Size(max = 40, message = "Името не може да надвишава 40 симовла")
     private String contactPerson;
 
+    @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String contactPersonPhone;
 
 
