@@ -59,7 +59,7 @@ h2 {
 
 }
 
-form {
+.form form {
     font-family: 'Raleway', sans-serif;
     margin: 0 auto;
     width: 35ch;
@@ -211,7 +211,8 @@ input[type="submit"]:hover {
 
 }
 
-button{
+.form form button,
+.form button {
     display: block;
     width: 100%;
     /*color: var(--red-main);*/
@@ -231,7 +232,8 @@ button{
     cursor: pointer;
     transition: background 0.3s ease;
 }
-button:hover {
+.form form button:hover,
+.form button:hover {
     color: var(--red-main);
     /*background-color: #e18e09;*/
     font-weight: 600;

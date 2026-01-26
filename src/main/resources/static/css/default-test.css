@@ -43,23 +43,46 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: 1.5em;
+    align-items: center;  /* Изравнява всички елементи вертикално */
 }
 
 /* Линковете */
-.menu ul li a {
+.menu ul li a,
+.menu ul li .logout-btn {
     color: var(--red-main);
     text-decoration: none;
     font-weight: 350;
     padding: 0.3em 0.6em;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    display: inline-block;
 }
 
 .menu ul li a:hover,
-.menu ul li a:focus {
+.menu ul li a:focus,
+.menu ul li .logout-btn:hover,
+.menu ul li .logout-btn:focus {
     /*color: var(--white);*/
     /*background-color: var(--red-light);*/
     font-weight: 700;
+}
+
+/* Форма за logout в навигацията */
+.menu ul li form {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline !important;
+    vertical-align: middle;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
 }
 
 /* Активна страница */

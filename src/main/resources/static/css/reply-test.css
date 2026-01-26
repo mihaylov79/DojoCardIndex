@@ -124,7 +124,8 @@ select {
   font-style: italic;
 }
 
-button {
+.container-send button,
+form button:not(.logout-btn) {
   display: block;
   width: 100%;
   background-color: transparent;
@@ -141,7 +142,8 @@ button {
 
 }
 
-button:hover {
+.container-send button:hover,
+form button:not(.logout-btn):hover {
   border-color: var(--red-main);
   font-weight: 700;
 }

@@ -64,11 +64,11 @@
                 </tr>
                 <tr th:if="${user.height} != 0">
                     <th>Ръст</th>
-                    <td th:text="${user.height}"></td>
+                    <td th:text="${user.height} + ' см.'"></td>
                 </tr>
                 <tr th:if="${user.weight} != 0">
                     <th>Тегло</th>
-                    <td th:text="${user.weight}"></td>
+                    <td th:text="${user.weight} + ' кг.'"></td>
                 </tr>
                 <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')"
                     th:if="${user.contactPerson != null and !#strings.isEmpty(user.contactPerson)}">

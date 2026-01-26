@@ -16,7 +16,7 @@
 </header>
 
 <div class="form">
-    <form class="login" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+    <form class="login" th:action="@{/login}" method="post" th:object="${loginRequest}">
         <div th:if="${successMessage}" class="alert-info">
             <p th:text="${successMessage}"></p>
         </div>
@@ -25,7 +25,7 @@
 
         <div class="field">
             <label for="field-email">Електронна поща</label>
-            <input type="email" name="username" id="field-email" placeholder="Email" th:field="*{email}">
+            <input type="email" name="email" id="field-email" placeholder="Email" th:field="*{email}">
             <span class="helper info">например: john.doe@gmail.com</span>
         </div>
 
