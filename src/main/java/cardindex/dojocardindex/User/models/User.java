@@ -50,7 +50,7 @@ public class User {
     private String lastName;
 
     @Column
-    @Size(min = 10, max = 15)
+    @Size(max = 15)
     private String userPhone;
 
     @Column(name = "profile_picture")
