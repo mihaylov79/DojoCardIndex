@@ -215,13 +215,6 @@
 
 /* Responsive таблица */
 @media screen and (max-width: 1370px) {
-    .search-container {
-        text-align: center;
-    }
-
-    .search-container input {
-        min-width: 200px;
-    }
 
     .table-container table,
     .table-container thead,

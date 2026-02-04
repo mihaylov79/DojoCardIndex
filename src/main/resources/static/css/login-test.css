@@ -201,6 +201,15 @@ input[type="submit"]:hover {
 
 }
 
+.errors {
+    display: block;
+    color: var(--red-light);
+    font-size: 0.9em;
+    margin-top: 0.3em;
+    padding: 0.3em 0;
+    font-style: italic;
+}
+
 .field:has(input:focus) label {
     color: var(--red-main);
     opacity: 1;
