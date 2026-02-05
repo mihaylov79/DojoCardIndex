@@ -322,8 +322,11 @@ public class EventService {
 
         Document document = new Document(PageSize.A4);
 
-        try {
-            Image background = Image.getInstance("src/main/resources/static/images/KAN_PDF_BACKGROUND.jpg");
+        try (InputStream backgroundStream = getClass().getClassLoader().getResourceAsStream("static/images/KAN_PDF_BACKGROUND.jpg")) {
+            if (backgroundStream == null) {
+                throw new ExportIOException("Background image не е намерено!");
+            }
+            Image background = Image.getInstance(backgroundStream.readAllBytes());
             PdfWriter  writer = PdfWriter.getInstance(document,response.getOutputStream());
             writer.setPageEvent(new BackgroundPageEvent(background,0.3f));
         } catch (IOException e) {
@@ -333,16 +336,12 @@ public class EventService {
         document.open();
 
 //        // Зареждане на шрифт с кирилица
-        try {
+        try (InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/Ubuntu-Regular.ttf")) {
+            if (fontStream == null) {
+                throw new ExportIOException("Шрифтът Ubuntu-Regular.ttf не е намерен!");
+            }
+            BaseFont baseFont = BaseFont.createFont("Ubuntu-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontStream.readAllBytes(), null);
 
-//            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/Ubuntu-Regular.ttf");
-//            BaseFont baseFont = BaseFont.createFont("Ubuntu-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontStream.readAllBytes(), null);
-//
-//        Font font = new Font(baseFont, 12);
-//        Font titleFont = new Font(baseFont, 18, Font.BOLD);
-//        Font subtitleFont = new Font(baseFont, 14, Font.BOLD);
-
-        BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
         Font font = new Font(baseFont,10,Font.NORMAL);
         Font headerFont = new Font(baseFont, 10, Font.BOLD);
         Font logoFont = new Font(baseFont, 22,Font.BOLDITALIC);
@@ -362,10 +361,15 @@ public class EventService {
             kanLogo.setColspan(2);
 //            kanLogo.setBorder(Rectangle.NO_BORDER);
 
-            Image logo = Image.getInstance("src/main/resources/static/images/KanLogo.jpg");
-            logo.scaleToFit(100, 100);
-            logo.setAlignment(Element.ALIGN_CENTER);
-            kanLogo.addElement(logo);
+            try (InputStream logoStream = getClass().getClassLoader().getResourceAsStream("static/images/KanLogo.jpg")) {
+                if (logoStream == null) {
+                    throw new ExportIOException("KAN лого не е намерено!");
+                }
+                Image logo = Image.getInstance(logoStream.readAllBytes());
+                logo.scaleToFit(100, 100);
+                logo.setAlignment(Element.ALIGN_CENTER);
+                kanLogo.addElement(logo);
+            }
 
             Paragraph logoText = new Paragraph("БЪЛГАРСКА ФЕДЕРАЦИЯ\n КИОКУШИН-КАН\n",titleFont);
             logoText.setAlignment(Element.ALIGN_CENTER);
@@ -519,15 +523,23 @@ public class EventService {
         response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
 
         Document document = new Document(PageSize.A4);
-        try {
+        try (InputStream backgroundStream = getClass().getClassLoader().getResourceAsStream("static/images/Kan_PDF_background.jpg");
+             InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/Ubuntu-Regular.ttf")) {
 
-        Image imageBackground = Image.getInstance("src/main/resources/static/images/Kan_PDF_background.jpg");
+            if (backgroundStream == null) {
+                throw new ExportIOException("Background image не е намерено!");
+            }
+            if (fontStream == null) {
+                throw new ExportIOException("Шрифтът Ubuntu-Regular.ttf не е намерен!");
+            }
+
+            Image imageBackground = Image.getInstance(backgroundStream.readAllBytes());
             PdfWriter writer = PdfWriter.getInstance(document,response.getOutputStream());
             writer.setPageEvent(new BackgroundPageEvent(imageBackground,0.3f));
 
-        document.open();
+            document.open();
 
-            BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/Ubuntu-Regular.ttf",BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+            BaseFont baseFont = BaseFont.createFont("Ubuntu-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontStream.readAllBytes(), null);
             Font defaultFont = new Font(baseFont,14,Font.NORMAL);
             Font nameFont = new Font(baseFont,20,Font.NORMAL);
             Font logoFont = new Font(baseFont,22,Font.BOLDITALIC);
