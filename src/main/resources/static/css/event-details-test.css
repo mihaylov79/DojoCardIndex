@@ -47,7 +47,7 @@
 }
 
 /* Подзаглавия (Участници, Победители) */
-.container > h6 {
+.container h6 {
     font-size: 1rem;
     font-weight: 700;
     color: var(--red-main);

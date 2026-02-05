@@ -17,7 +17,7 @@
         <h5 th:text="'Детайли за събитието: ' + ${event.eventDescription}"></h5>
         <div class="event_info">
             <p><strong>Тип:</strong> <span th:text="${event.type.description}"></span></p>
-            <p><strong>Проведено:</strong>
+            <p><strong>Период:</strong>
                 <span th:text="${#temporals.format(event.startDate, 'dd-MM-yyyy')}"></span> -
                 <span th:text="${#temporals.format(event.endDate, 'dd-MM-yyyy')}"></span>
             </p>
@@ -40,10 +40,9 @@
                 <td th:text="${user.lastName}"></td>
                 <td th:text="${user.reachedDegree.description}"></td>
                 <td th:text="${user.birthDate == null} or ${userAges[user.id]} == 0 ? 'Неизвестна' : ${userAges[user.id]}"></td>
-                <td class="buttonz">
+                <td class="buttonz" sec:authorize="hasAnyRole('ADMIN','TRAINER')">
                     <!-- Падащо меню за степен и Запази (само при EXAM) -->
                     <form th:if="${event.type.name() == 'EXAM'}"
-                          sec:authorize="hasAnyRole('ADMIN','TRAINER')"
                           th:action="@{/events/{eventId}/update-degree/{userId}(eventId=${event.id}, userId=${user.id})}"
                           th:method="PUT">
                         <label for="newDegree">Степен</label>
@@ -59,15 +58,13 @@
 
                     <!-- Бутон Експорт (само при EXAM) -->
                     <form th:if="${event.type.name() == 'EXAM'}"
-                          sec:authorize="hasAnyRole('ADMIN','TRAINER')"
                           th:action="@{/events/{eventId}/export/{userId}(eventId=${event.id}, userId=${user.id})}"
                           th:method="GET">
                         <button type="submit">Експорт</button>
                     </form>
 
                     <!-- Бутон Отпиши (за всички събития) -->
-                    <form sec:authorize="hasAnyRole('ADMIN','TRAINER')"
-                          th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}"
+                    <form th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}"
                           th:method="PUT">
                         <button type="submit">Отпиши</button>
                     </form>
@@ -83,72 +80,75 @@
             </tr>
         </table>
 
-        <h6>Победители:</h6>
-        <table class="winners"
-               th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
-            <thead>
-            <tr>
-                <th>Име</th>
-                <th>Фамилия</th>
-                <th>Степен</th>
-                <th>Възраст</th>
-                <th sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${event.getFirstPlaceWinner() != null}">
-                <td th:text="${event.getFirstPlaceWinner().firstName}"></td>
-                <td th:text="${event.getFirstPlaceWinner().lastName}"></td>
-                <td th:text="${event.getFirstPlaceWinner().reachedDegree.description}"></td>
-                <td th:text="${event.getFirstPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getFirstPlaceWinner().id]}"></td>
-                <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"> -</td>
-            </tr>
+        <!-- Секцията "Победители" се показва САМО за турнири -->
+        <div th:if="${event.type.name() == 'TOURNAMENT'}">
+            <h6>Победители:</h6>
+            <table class="winners"
+                   th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
+                <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Фамилия</th>
+                    <th>Степен</th>
+                    <th>Възраст</th>
+                    <th sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${event.getFirstPlaceWinner() != null}">
+                    <td th:text="${event.getFirstPlaceWinner().firstName}"></td>
+                    <td th:text="${event.getFirstPlaceWinner().lastName}"></td>
+                    <td th:text="${event.getFirstPlaceWinner().reachedDegree.description}"></td>
+                    <td th:text="${event.getFirstPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getFirstPlaceWinner().id]}"></td>
+                    <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">-</td>
+                </tr>
 
-            <tr th:if="${event.getSecondPlaceWinner() != null}">
-                <td th:text="${event.getSecondPlaceWinner().firstName}"></td>
-                <td th:text="${event.getSecondPlaceWinner().lastName}"></td>
-                <td th:text="${event.getSecondPlaceWinner().reachedDegree.description}"></td>
-                <td th:text="${event.getSecondPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getSecondPlaceWinner().id]}"></td>
-                <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"> -</td>
-            </tr>
+                <tr th:if="${event.getSecondPlaceWinner() != null}">
+                    <td th:text="${event.getSecondPlaceWinner().firstName}"></td>
+                    <td th:text="${event.getSecondPlaceWinner().lastName}"></td>
+                    <td th:text="${event.getSecondPlaceWinner().reachedDegree.description}"></td>
+                    <td th:text="${event.getSecondPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getSecondPlaceWinner().id]}"></td>
+                    <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">-</td>
+                </tr>
 
-            <tr th:if="${event.getThirdPlaceWinner() != null}">
-                <td th:text="${event.getThirdPlaceWinner().firstName}"></td>
-                <td th:text="${event.getThirdPlaceWinner().lastName}"></td>
-                <td th:text="${event.getThirdPlaceWinner().reachedDegree.description}"></td>
-                <td th:text="${event.getThirdPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getThirdPlaceWinner().id]}"></td>
-                <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"> -</td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="noWinners"
-               th:unless="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null || event.result == true}">
-            <tr>
-                <td>Все още няма резултати от това събитие!</td>
-            </tr>
-        </table>
+                <tr th:if="${event.getThirdPlaceWinner() != null}">
+                    <td th:text="${event.getThirdPlaceWinner().firstName}"></td>
+                    <td th:text="${event.getThirdPlaceWinner().lastName}"></td>
+                    <td th:text="${event.getThirdPlaceWinner().reachedDegree.description}"></td>
+                    <td th:text="${event.getThirdPlaceWinner().birthDate == null} ? 'Неизвестна' : ${userAges[event.getThirdPlaceWinner().id]}"></td>
+                    <td sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">-</td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="noWinners"
+                   th:unless="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
+                <tr>
+                    <td>Все още няма резултати от това събитие!</td>
+                </tr>
+            </table>
 
+            <!-- Показване на възможност за нулиране на победителите -->
+            <table class="reset"
+                   sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                   th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
+                <tr>
+                    <td>
+                        <form th:action="@{/events/{eventId}/reset-winners(eventId=${event.id})}" method="post">
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Сигурни ли сте, че искате да нулирате победителите?');">
+                                Нулирай победителите
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Съобщение за резултати от изпит -->
         <table class="noWinners" th:if="${event.type.name() == 'EXAM' and event.result == true}">
             <tr>
                 <td>Резултатите от това събитие са актуализирани!
                     <p>Всички успешно преминали изпита ще бъдат уведомени с мейл!</p></td>
-            </tr>
-        </table>
-
-
-        <!-- Показване на възможност за нулиране на победителите -->
-        <table class="reset"
-               th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
-            <tr>
-                <td>
-                    <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
-                          th:action="@{/events/{eventId}/reset-winners(eventId=${event.id})}" method="post">
-                        <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Сигурни ли сте, че искате да нулирате победителите?');">
-                            Нулирай победителите
-                        </button>
-                    </form>
-                </td>
             </tr>
         </table>
         <div class="buttonz">
