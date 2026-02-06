@@ -80,8 +80,8 @@
             </tr>
         </table>
 
-        <!-- Секцията "Победители" се показва САМО за турнири -->
-        <div th:if="${event.type.name() == 'TOURNAMENT'}">
+        <!-- Секцията "Победители" се показва САМО за турнири с участници -->
+        <div th:if="${event.type.name() == 'TOURNAMENT' and !event.users.isEmpty()}">
             <h6>Победители:</h6>
             <table class="winners"
                    th:if="${event.getFirstPlaceWinner() != null || event.getSecondPlaceWinner() != null || event.getThirdPlaceWinner() != null}">
@@ -156,6 +156,13 @@
                 <tr>
                     <td class="buttonz">
                         <button onclick="location.href='/events'">Назад към списъка със събития</button>
+
+                        <!-- Бутони за турнири -->
+                        <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                                th:if="${event.type.name() == 'TOURNAMENT' and !event.users.isEmpty()}"
+                                th:attr="onclick=|location.href='/events/' + '${event.id}' + '/winners'|">
+                            Задай победители
+                        </button>
                         <button th:if="${event.type.name() == 'TOURNAMENT'}"
                                 th:attr="onclick=|window.location.href='@{/events/tournaments/export/pdf/{id}(id=${eventId})}'|">
                             PDF Експорт
@@ -164,14 +171,15 @@
                                 th:attr="onclick=|window.location.href='@{/events/tournaments/export/csv/{id}(id=${eventId})}'|">
                             CSV Експорт
                         </button>
-                        <!-- Показване на бутон за потвърждаване на резултати от администратор/тренер -->
+
+                        <!-- Показване на бутон за потвърждаване на резултати от администратор/тренор (само ако има участници) -->
                         <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
-                              th:if="${event.type.name() == 'EXAM' and event.result == false}"
+                              th:if="${event.type.name() == 'EXAM' and event.result == false and !event.users.isEmpty()}"
                               th:action="@{/events/{eventId}/results(eventId=${event.id})}" th:method="PUT">
                             <button type="submit" class="btn btn-success">Покажи резултатите</button>
                         </form>
                         <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
-                              th:if="${event.type.name() == 'EXAM' and event.result == true}"
+                              th:if="${event.type.name() == 'EXAM' and event.result == true and !event.users.isEmpty()}"
                               th:action="@{/events/{eventId}/results/hide(eventId=${event.id})}" th:method="PUT">
                             <button type="submit" class="btn btn-success">Скрий резултатите</button>
                         </form>
