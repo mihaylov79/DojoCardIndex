@@ -11,10 +11,10 @@
             <div></div>
             <div>
             <ul>
-                <li><a th:href="@{/}">Начало</a></li>
+                <li id="home-link"><a th:href="@{/}">Начало</a></li>
                 <li><a href="#">За нас</a></li>
-                <li><a th:href="@{/events}">Събития</a></li>
-                <li><a th:href="@{/posts}">Публикации</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/events}">Събития</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/posts}">Публикации</a></li>
                 <li class="home" sec:authorize="isAuthenticated()"><a th:href="@{/home}">Профил</a></li>
                 <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Вход</a></li>
                 <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Регистрация</a></li>
@@ -29,6 +29,15 @@
 
         </div>
         </nav>
+        <script>
+            // Скрива линка "Начало" само когато сме на началната страница
+            if (window.location.pathname === '/') {
+                const homeLink = document.getElementById('home-link');
+                if (homeLink) {
+                    homeLink.style.display = 'none';
+                }
+            }
+        </script>
     </div>
 </body>
 </html>
