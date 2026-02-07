@@ -15,7 +15,14 @@
 </header>
 <div class="main-container">
     <div class="message-container">
-        <div class="posted" th:each="post : ${allActivePosts}">
+        <!-- Търсачка -->
+        <div class="search-container">
+            <label for="searchInput" style="display: none;">Търсене</label>
+            <input type="text" id="searchInput" placeholder="Търсене по заглавие, автор или съдържание...">
+        </div>
+
+        <div class="posted" th:each="post : ${allActivePosts}"
+             th:attr="data-title=${post.title}, data-author=${post.author.firstName + ' ' + post.author.lastName}, data-content=${post.content}">
             <input type="hidden" name="postId" th:value="${post.id}"/>
             <table class="table-header">
                 <tr class="header-row">
@@ -78,6 +85,28 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Търсачка за публикации
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const posts = document.querySelectorAll('.posted');
+
+        posts.forEach(post => {
+            const title = post.getAttribute('data-title')?.toLowerCase() || '';
+            const author = post.getAttribute('data-author')?.toLowerCase() || '';
+            const content = post.getAttribute('data-content')?.toLowerCase() || '';
+
+            if (title.includes(searchTerm) ||
+                author.includes(searchTerm) ||
+                content.includes(searchTerm)) {
+                post.style.display = '';
+            } else {
+                post.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
