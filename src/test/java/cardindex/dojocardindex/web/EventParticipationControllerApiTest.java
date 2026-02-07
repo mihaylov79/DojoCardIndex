@@ -584,69 +584,74 @@ public class EventParticipationControllerApiTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    // NOTE: Следните два теста са закоментирани, защото тестват ендпойнт
+    // EventParticipationRequestController.getEventDetails() който също е закоментиран.
+    // Ендпойнтът не се използва, защото EventController.getEventDetails() покрива функционалността.
+    // Ако се активира методът, актуализирай view name от "event-details" на "event-details-universal"
+    // и добави mock за userAges и degrees в теста.
 
-    @Test
-    public void getEventDetails_ShouldReturnEventDetails_WhenAuthenticated() throws Exception {
-
-        UUID eventId = UUID.randomUUID();
-        UUID userId = UUID.randomUUID();
-        CustomUserDetails userDetails = createTestUserDetails(userId);
-
-        Event mockEvent = Event.builder()
-                .id(UUID.randomUUID())
-                .type(EventType.TOURNAMENT)
-                .EventDescription("Tестов турнир")
-                .startDate(LocalDate.parse("2025-05-05",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .endDate(LocalDate.parse("2025-05-06",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .requirements(Requirements.NONE)
-                .users(new LinkedHashSet<>())
-                .location("Каспичан")
-                .closed(false)
-                .build();
-
-        User mockUser = User.builder()
-                .id(userDetails.getId())
-                .email(userDetails.getEmail())
-                .firstName("Ivan")
-                .lastName("Ivanov")
-                .role(userDetails.getRole())
-                .registrationStatus(userDetails.getRegistrationStatus())
-                .status(userDetails.getUserStatus())
-                .reachedDegree(Degree.NONE)
-                .build();
-
-        mockEvent.getUsers().add(mockUser);
-
-        when(eventService.getEventById(eventId)).thenReturn(mockEvent);
-        when(userService.getUserById(userDetails.getId())).thenReturn(mockUser);
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                )
-        );
-
-        mockMvc.perform(get("/events/requests/{eventId}/event-details", eventId))
-                .andExpect(status().isOk())
-                .andExpect(view().name("event-details"))
-                .andExpect(model().attributeExists("event"))
-                .andExpect(model().attributeExists("currentUser"))
-                .andExpect(model().attribute("event", mockEvent))
-                .andExpect(model().attribute("currentUser", mockUser));
-    }
-
-    @Test
-    public void getEventDetails_ShouldReturnUnauthorized_WhenUnauthenticated() throws Exception {
-
-        UUID eventId = UUID.randomUUID();
-        SecurityContextHolder.clearContext();
-
-        mockMvc.perform(get("/events/requests/{eventId}/event-details", eventId))
-                .andExpect(status().isUnauthorized());
-
-    }
+//    @Test
+//    public void getEventDetails_ShouldReturnEventDetails_WhenAuthenticated() throws Exception {
+//
+//        UUID eventId = UUID.randomUUID();
+//        UUID userId = UUID.randomUUID();
+//        CustomUserDetails userDetails = createTestUserDetails(userId);
+//
+//        Event mockEvent = Event.builder()
+//                .id(UUID.randomUUID())
+//                .type(EventType.TOURNAMENT)
+//                .EventDescription("Tестов турнир")
+//                .startDate(LocalDate.parse("2025-05-05",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+//                .endDate(LocalDate.parse("2025-05-06",DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+//                .requirements(Requirements.NONE)
+//                .users(new LinkedHashSet<>())
+//                .location("Каспичан")
+//                .closed(false)
+//                .build();
+//
+//        User mockUser = User.builder()
+//                .id(userDetails.getId())
+//                .email(userDetails.getEmail())
+//                .firstName("Ivan")
+//                .lastName("Ivanov")
+//                .role(userDetails.getRole())
+//                .registrationStatus(userDetails.getRegistrationStatus())
+//                .status(userDetails.getUserStatus())
+//                .reachedDegree(Degree.NONE)
+//                .build();
+//
+//        mockEvent.getUsers().add(mockUser);
+//
+//        when(eventService.getEventById(eventId)).thenReturn(mockEvent);
+//        when(userService.getUserById(userDetails.getId())).thenReturn(mockUser);
+//
+//        SecurityContextHolder.getContext().setAuthentication(
+//                new UsernamePasswordAuthenticationToken(
+//                        userDetails,
+//                        null,
+//                        userDetails.getAuthorities()
+//                )
+//        );
+//
+//        mockMvc.perform(get("/events/requests/{eventId}/event-details", eventId))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("event-details-universal")) // Актуализирано име на шаблона
+//                .andExpect(model().attributeExists("event"))
+//                .andExpect(model().attributeExists("currentUser"))
+//                .andExpect(model().attribute("event", mockEvent))
+//                .andExpect(model().attribute("currentUser", mockUser));
+//    }
+//
+//    @Test
+//    public void getEventDetails_ShouldReturnUnauthorized_WhenUnauthenticated() throws Exception {
+//
+//        UUID eventId = UUID.randomUUID();
+//        SecurityContextHolder.clearContext();
+//
+//        mockMvc.perform(get("/events/requests/{eventId}/event-details", eventId))
+//                .andExpect(status().isUnauthorized());
+//
+//    }
 
 
     @AfterEach
