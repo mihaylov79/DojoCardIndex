@@ -5,6 +5,7 @@ import cardindex.dojocardindex.Event.service.EventService;
 import cardindex.dojocardindex.EventParticipationRequest.model.EventParticipationRequest;
 import cardindex.dojocardindex.EventParticipationRequest.model.RequestStatus;
 import cardindex.dojocardindex.EventParticipationRequest.service.EventParticipationService;
+import cardindex.dojocardindex.User.models.Degree;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.security.CustomUserDetails;
@@ -85,19 +86,31 @@ public class EventParticipationRequestController {
         return modelAndView;
     }
 
-    @GetMapping("/{eventId}/event-details")
-    public ModelAndView getEventDetails(@PathVariable UUID eventId,
-                                        @AuthenticationPrincipal CustomUserDetails details) {
 
-        Event event = eventService.getEventById(eventId);
+// NOTE: Този ендпойнт("/{eventId}/event-details") не се използва активно в приложението.
+// Първоначално е бил създаден за връщане на "event-details.html", но сега се използва
+// EventController.getEventDetails() който връща "event-details-universal.html".
+// Формата за "Отпиши" в event-details.html използва unApproveUserRequest(),
+// който редиректва към referer, а не към този view.
+// Може да се изтрие заедно с event-details.html файла.
 
-        ModelAndView modelAndView = new ModelAndView("event-details");
-
-        User currentUser = userService.getUserById(details.getId());
-        modelAndView.addObject("currentUser", currentUser);
-        modelAndView.addObject("event", event);
-        return modelAndView;
-    }
+//    @GetMapping("/{eventId}/event-details")
+//    public ModelAndView getEventDetails(@PathVariable UUID eventId,
+//                                        @AuthenticationPrincipal CustomUserDetails details) {
+//
+//        Event event = eventService.getEventById(eventId);
+//        List<User>eventUsers = event.getUsers().stream().toList();
+//        Map<UUID, Integer>userAges = userService.getUserAges(eventUsers);
+//
+//        ModelAndView modelAndView = new ModelAndView("event-details-universal");
+//
+//        User currentUser = userService.getUserById(details.getId());
+//        modelAndView.addObject("currentUser", currentUser);
+//        modelAndView.addObject("event", event);
+//        modelAndView.addObject("userAges", userAges);
+//        modelAndView.addObject("degrees", Degree.values());
+//        return modelAndView;
+//    }
 
     //TODO Този ендпойнт се ползва на 2 места - да опитам да връщам на предишната страница
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
