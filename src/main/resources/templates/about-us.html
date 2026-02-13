@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>За нас - Dragon Dojo</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/about-us.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="user-info">
+        <h2>Драгон Доджо Асеновград</h2>
+
+        <div class="about-image-container">
+            <img th:src="@{/images/dojo.jpg}" alt="Dragon Dojo Асеновград" class="about-image">
+        </div>
+
+        <div class="about-content">
+            <p>
+                В началото на 2025 година <strong>Драгон Доджо Асеновград</strong> отвори врати за всички, които желаят да поемат по пътя на карате Киокушинкай – път на сила, дисциплина и усъвършенстване.
+            </p>
+            <p>
+                Доджото разполага със съвременно и безопасно оборудване, необходимо за провеждането на пълноценни и ефективни тренировки, съобразени с възрастта и нивото на трениращите. Драгон Доджо Асеновград е официална част от Българската Киокушин-Кан Федерация, което гарантира високо ниво на обучение и следване на автентичните принципи на стила.
+            </p>
+            <p>
+                Тръгвайки по пътя на Киокушинкай, каратистите не само изграждат физическа сила и издръжливост, но и развиват дисциплина, самоконтрол и уважение – както към другите, така и към самите себе си. В тренировъчния процес се възпитават качества като постоянство, честност, отговорност и силен дух.
+            </p>
+            <p>
+                Придобитите умения и ценности не остават само в залата – те намират своето приложение и в живота извън доджото, помагайки на трениращите да бъдат по-уверени, целеустремени и устойчиви пред предизвикателствата на ежедневието.
+            </p>
+            <p>
+                <strong>Драгон Доджо Асеновград</strong> е място, където традицията среща съвременния подход, а всяка тренировка е крачка напред.
+            </p>
+        </div>
+
+        <hr class="about-divider">
+
+        <div class="contact-section">
+            <h3>За контакти:</h3>
+            <p><strong>Адрес:</strong> гр. Асеновград, ул. Изложение 1, ет. 3</p>
+            <p><strong>Телефон:</strong> <a href="tel:+359878977333">087 897 7333</a></p>
+            <p><strong>E-mail:</strong> <a href="mailto:dragon.dojo.asenovgrad@gmail.com">dragon.dojo.asenovgrad@gmail.com</a></p>
+            <p><strong>Facebook:</strong> <span style="color: #666;">Скоро</span></p>
+            <p><strong>Instagram:</strong> <span style="color: #666;">Скоро</span></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

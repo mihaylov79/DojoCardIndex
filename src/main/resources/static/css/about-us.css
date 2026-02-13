@@ -1,0 +1,174 @@
+/* About Us Page Styles */
+
+/* Main container with decorative borders */
+.main-container {
+    padding: 2em 0;
+    position: relative;
+}
+
+/* Decorative borders at top and bottom */
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+}
+
+.main-container::after {
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before {
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0;
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0;
+}
+
+/* White content container at 80% width */
+.user-info {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 2.5rem;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Page title */
+.user-info h2 {
+    text-align: center;
+    color: var(--red-main);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+/* Image container */
+.about-image-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Image styling - limited height to prevent overflow */
+.about-image {
+    width: 100%;
+    max-height: 500px;
+    height: auto;
+    object-fit: cover;
+    object-position: top; /* Shows top part of image, crops from bottom */
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Text content styling */
+.about-content {
+    color: #333;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+.about-content p {
+    margin-bottom: 1.2rem;
+}
+
+.about-content strong {
+    font-weight: 600;
+    color: #222;
+}
+
+/* Divider */
+.about-divider {
+    margin: 2rem 0;
+    border: none;
+    border-top: 2px solid var(--red-main);
+}
+
+/* Contact section */
+.contact-section {
+    color: #333;
+}
+
+.contact-section h3 {
+    color: var(--red-main);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.contact-section p {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.contact-section a {
+    color: var(--red-main);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-section a:hover {
+    color: var(--red-light);
+    text-decoration: underline;
+}
+
+/* Phone link styling */
+.contact-section a[href^="tel:"] {
+    font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .user-info {
+        max-width: 85%;
+    }
+
+    .about-image {
+        max-height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-info {
+        max-width: 90%;
+        padding: 1.5rem;
+    }
+
+    .user-info h2 {
+        font-size: 1.5rem;
+    }
+
+    .about-image {
+        max-height: 300px;
+    }
+
+    .about-content {
+        text-align: left;
+    }
+
+    .contact-section h3 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info {
+        max-width: 95%;
+        padding: 1rem;
+    }
+
+    .about-image {
+        max-height: 250px;
+    }
+}

@@ -48,6 +48,12 @@ public class IndexController {
         return "index";
     }
 
+    @GetMapping("/about-us")
+    public String getAboutPage(){
+
+        return "about-us";
+    }
+
     @GetMapping("/register")
     public ModelAndView getRegistrationPage(){
 

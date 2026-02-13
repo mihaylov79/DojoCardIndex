@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers("/", "/register").permitAll()  // Разрешавa достъп до /, /register
+                                .requestMatchers("/", "/register", "/about-us").permitAll()  // Разрешавa достъп до /, /register
                                 .requestMatchers("/forgotten-password/**").permitAll()
                                 .requestMatchers("/forgotten-password/reset").permitAll()
 //                                .requestMatchers("/actuator/prometheus").permitAll()

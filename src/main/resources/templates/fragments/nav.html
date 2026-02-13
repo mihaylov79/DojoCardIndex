@@ -12,7 +12,7 @@
             <div>
             <ul>
                 <li id="home-link"><a th:href="@{/}">Начало</a></li>
-                <li><a href="#">За нас</a></li>
+                <li><a th:href="@{/about-us}">За нас</a></li>
                 <li sec:authorize="isAuthenticated()"><a th:href="@{/events}">Събития</a></li>
                 <li sec:authorize="isAuthenticated()"><a th:href="@{/posts}">Публикации</a></li>
                 <li class="home" sec:authorize="isAuthenticated()"><a th:href="@{/home}">Профил</a></li>
