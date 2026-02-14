@@ -6,6 +6,7 @@
     <title>За нас - Dragon Dojo</title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}">
     <link rel="stylesheet" th:href="@{/css/about-us.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
@@ -39,13 +40,57 @@
 
         <hr class="about-divider">
 
+        <div class="trainings-section">
+            <h3>График на тренировките:</h3>
+            <div class="trainings-container">
+                <div class="training-day">
+                    <h4><i class="far fa-calendar-alt"></i> Понеделник</h4>
+                    <ul>
+                        <li>Деца от 6 до 10 г. - 18:00 ч.</li>
+                        <li>Възрастни - 19:00 ч.</li>
+                    </ul>
+                </div>
+                <div class="training-day">
+                    <h4><i class="far fa-calendar-alt"></i> Сряда</h4>
+                    <ul>
+                        <li>Деца от 6 до 10 г. - 18:00 ч.</li>
+                        <li>Възрастни - 19:00 ч.</li>
+                    </ul>
+                </div>
+                <div class="training-day">
+                    <h4><i class="far fa-calendar-alt"></i> Петък</h4>
+                    <ul>
+                        <li>Деца от 6 до 10 г. - 18:00 ч.</li>
+                        <li>Възрастни - 19:00 ч.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <hr class="about-divider">
+
         <div class="contact-section">
             <h3>За контакти:</h3>
-            <p><strong>Адрес:</strong> гр. Асеновград, ул. Изложение 1, ет. 3</p>
-            <p><strong>Телефон:</strong> <a href="tel:+359878977333">087 897 7333</a></p>
-            <p><strong>E-mail:</strong> <a href="mailto:dragon.dojo.asenovgrad@gmail.com">dragon.dojo.asenovgrad@gmail.com</a></p>
-            <p><strong>Facebook:</strong> <span style="color: #666;">Скоро</span></p>
-            <p><strong>Instagram:</strong> <span style="color: #666;">Скоро</span></p>
+            <p class="contact-item">
+                <i class="fas fa-map-marker-alt contact-icon"></i>
+                <span>гр. Асеновград, ул. Изложение 1, ет. 3</span>
+            </p>
+            <p class="contact-item">
+                <i class="fas fa-phone contact-icon"></i>
+                <a href="tel:+359878977333">087 897 7333</a>
+            </p>
+            <p class="contact-item">
+                <i class="fas fa-envelope contact-icon"></i>
+                <a href="mailto:dragon.dojo.asenovgrad@gmail.com">dragon.dojo.asenovgrad@gmail.com</a>
+            </p>
+            <p class="contact-item">
+                <i class="fab fa-facebook contact-icon"></i>
+                <a href="https://www.facebook.com/profile.php?id=61586058624192" target="_blank" rel="noopener noreferrer">dragon.dojo.asenovgrad</a>
+            </p>
+            <p class="contact-item">
+                <i class="fab fa-instagram contact-icon"></i>
+                <a href="https://www.instagram.com/dragon.dojo.asenovgrad" target="_blank" rel="noopener noreferrer">dragon.dojo.asenovgrad</a>
+            </p>
         </div>
     </div>
 </div>
