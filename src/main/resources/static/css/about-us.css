@@ -106,7 +106,7 @@
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
     font-weight: 600;
-    text-align: center;
+    text-align: left;
 }
 
 /* Container for horizontal layout */
@@ -177,7 +177,7 @@
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
     font-weight: 600;
-    text-align: center;
+    text-align: left;
 }
 
 /* Horizontal layout for contact items */
@@ -226,17 +226,22 @@
 .contact-section a {
     color: var(--red-main);
     text-decoration: none;
-    transition: color 0.3s ease;
+    font-weight: 400;
 }
 
 .contact-section a:hover {
-    color: var(--red-light);
-    text-decoration: underline;
+    color: var(--red-main);
+    text-decoration: none;
+    font-weight: 600;
 }
 
 /* Phone link styling */
 .contact-section a[href^="tel:"] {
-    font-weight: 500;
+    font-weight: 400;
+}
+
+.contact-section a[href^="tel:"]:hover {
+    font-weight: 600;
 }
 
 /* Social media section */
@@ -248,9 +253,9 @@
 .social h3 {
     color: var(--red-main);
     margin-bottom: 1.5rem;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 600;
-    text-align: center;
+    text-align: left;
 }
 
 /* Horizontal layout for social items */
@@ -260,6 +265,20 @@
     align-items: center;
     gap: 2rem;
     flex-wrap: wrap;
+}
+
+/* Social links without effects */
+.social a {
+    color: var(--red-main);
+    text-decoration: none;
+    pointer-events: auto;
+    font-weight: 400;
+}
+
+.social a:hover {
+    color: var(--red-main);
+    text-decoration: none;
+    font-weight: 600;
 }
 
 /* Responsive design */
