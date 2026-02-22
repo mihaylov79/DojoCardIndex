@@ -37,6 +37,9 @@ jobs:
           TF_VAR_admin_password: ${{ secrets.DB_ROOT_PASS }}
           TF_VAR_subscription_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
           TF_VAR_tenant_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
+          TF_VAR_cloudinary_cloud_name: ${{ secrets.TF_VAR_CLOUDINARY_CLOUD_NAME }}
+          TF_VAR_cloudinary_api_key: ${{ secrets.TF_VAR_CLOUDINARY_API_KEY }}
+          TF_VAR_cloudinary_api_secret: ${{ secrets.TF_VAR_CLOUDINARY_API_SECRET }}
 
       - name: Upload Terraform plan
         uses: actions/upload-artifact@v4
@@ -78,3 +81,6 @@ jobs:
           TF_VAR_admin_password: ${{ secrets.DB_ROOT_PASS }}
           TF_VAR_subscription_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
           TF_VAR_tenant_id: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
+          TF_VAR_cloudinary_cloud_name: ${{ secrets.TF_VAR_CLOUDINARY_CLOUD_NAME }}
+          TF_VAR_cloudinary_api_key: ${{ secrets.TF_VAR_CLOUDINARY_API_KEY }}
+          TF_VAR_cloudinary_api_secret: ${{ secrets.TF_VAR_CLOUDINARY_API_SECRET }}
