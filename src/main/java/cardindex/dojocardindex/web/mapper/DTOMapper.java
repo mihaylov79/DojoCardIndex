@@ -16,7 +16,7 @@ public class DTOMapper {
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
                     .userPhone(user.getUserPhone())
-                    .profilePicture(user.getProfilePicture())
+                    // .profilePicture(user.getProfilePicture()) - NOT mapped, uploaded separately via /users/upload-profile-picture
                     .birthDate(user.getBirthDate())
                     .interests(user.getInterests())
                     .height(user.getHeight())

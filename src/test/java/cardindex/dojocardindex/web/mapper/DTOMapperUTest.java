@@ -27,7 +27,7 @@ public class DTOMapperUTest {
                 .firstName("Ivan")
                 .lastName("Ivanov")
                 .userPhone("0888888888")
-                .profilePicture("www.picdata.com")
+                // .profilePicture("www.picdata.com") - removed, not part of DTO anymore
                 .birthDate(LocalDate.parse("1980-05-03"))
                 .interests("none")
                 .height(180)
@@ -40,7 +40,7 @@ public class DTOMapperUTest {
         assertEquals(user.getFirstName(),(dto.getFirstName()));
         assertEquals(user.getLastName(),(dto.getLastName()));
         assertEquals(user.getUserPhone(),(dto.getUserPhone()));
-        assertEquals(user.getProfilePicture(),(dto.getProfilePicture()));
+        // profilePicture NOT mapped - uploaded separately via /users/upload-profile-picture
         assertEquals(user.getInterests(),(dto.getInterests()));
         assertEquals(user.getHeight(),(dto.getHeight()));
         assertEquals(user.getWeight(),(dto.getWeight()));
@@ -80,7 +80,7 @@ public class DTOMapperUTest {
                 .firstName("Ivan")
                 .lastName("Ivanov")
                 .userPhone("0888888888")
-                .profilePicture("www.picdata.com")
+                // .profilePicture("www.picdata.com") - removed, not part of admin DTO
                 .birthDate(LocalDate.parse("1980-05-03"))
                 .role(UserRole.ADMIN)
                 .status(UserStatus.ACTIVE)

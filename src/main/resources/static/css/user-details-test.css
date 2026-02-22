@@ -53,3 +53,299 @@ table.info th img {
 .user-buttons button:hover {
     background-color: #0056b3;
 }
+
+/* Стилове за user-details.html структура */
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.profile-image {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-image img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--red-main, #dc3545);
+}
+
+.user-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-column table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-column table th,
+.info-column table td {
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    text-align: left;
+}
+
+.info-column table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #555;
+    width: 40%;
+}
+
+.info-column table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.info-column table tr:hover {
+    background-color: #f0f8ff;
+}
+
+.back-btn {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.back-btn button {
+    margin: 0.5rem;
+    padding: 10px 20px;
+    border: 1px solid var(--red-main, #dc3545);
+    background-color: white;
+    color: var(--red-main, #dc3545);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: font-weight 0.2s ease;
+}
+
+.back-btn button:hover {
+    font-weight: 650;
+}
+
+/* ========================================
+   RESPONSIVE STYLES - Tablet and Mobile
+   ======================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .main-container {
+        padding: 1.5rem 0;
+        gap: 1.5rem;
+    }
+
+    table.info th,
+    table.info td {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+
+    /* Profile container */
+    .profile-container {
+        padding: 1rem;
+    }
+
+    /* Profile image */
+    .profile-image img {
+        width: 150px;
+        height: 150px;
+    }
+
+    /* User info - превключваме на една колона */
+    .user-info {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Info columns - таблиците стават карти */
+    .info-column table,
+    .info-column table thead,
+    .info-column table tbody,
+    .info-column table th,
+    .info-column table td,
+    .info-column table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .info-column table thead {
+        display: none;
+    }
+
+    .info-column table tr {
+        margin-bottom: 1rem;
+        background: white;
+        border: 1px solid var(--red-main, #dc3545);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem;
+    }
+
+    .info-column table td {
+        position: relative;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .info-column table td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--red-main, #dc3545);
+        font-size: 0.9rem;
+    }
+
+    .info-column table td:last-child {
+        border-bottom: none;
+    }
+
+    .info-column table tr th {
+        display: none;
+    }
+
+    /* Back buttons */
+    .back-btn {
+        margin: 1rem 0;
+    }
+
+    .back-btn button {
+        display: block;
+        width: 90%;
+        margin: 0.5rem auto;
+    }
+
+    /* Бутони в колона вместо редица */
+    .user-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .user-buttons button {
+        margin-right: 0;
+        width: 100%;
+    }
+
+    /* Таблица като карти (card layout) */
+    table.info,
+    table.info thead,
+    table.info tbody,
+    table.info th,
+    table.info td,
+    table.info tr {
+        display: block;
+        width: 100%;
+    }
+
+    /* Скриваме thead */
+    table.info thead {
+        display: none;
+    }
+
+    /* Всеки ред става карта */
+    table.info tr {
+        margin-bottom: 1rem;
+        background: white;
+        border: 1px solid var(--red-main, #dc3545);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem;
+    }
+
+    /* Първи ред (със снимката) - специално оформление */
+    table.info tr:first-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    table.info tr:first-child th,
+    table.info tr:first-child td {
+        border: none;
+        padding: 0.5rem;
+        text-align: center;
+    }
+
+    /* Снимка в mobile режим */
+    table.info th img,
+    table.info th #profileImage {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+    }
+
+    /* Останалите клетки */
+    table.info td {
+        position: relative;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Label преди всяка стойност */
+    table.info td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--red-main, #dc3545);
+        font-size: 0.9rem;
+    }
+
+    table.info td:last-child {
+        border-bottom: none;
+    }
+
+    /* Скриваме th в останалите редове */
+    table.info tr:not(:first-child) th {
+        display: none;
+    }
+}
+
+/* Extra small mobile (max-width: 480px) */
+@media (max-width: 480px) {
+
+    .profile-container {
+        padding: 0.5rem;
+    }
+
+    .profile-image img {
+        width: 120px;
+        height: 120px;
+    }
+
+    table.info th img,
+    table.info th #profileImage {
+        width: 120px;
+        height: 120px;
+    }
+
+    table.info td,
+    .info-column table td {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .user-buttons button,
+    .back-btn button {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}
+

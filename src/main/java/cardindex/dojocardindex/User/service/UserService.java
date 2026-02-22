@@ -1,16 +1,11 @@
 package cardindex.dojocardindex.User.service;
 
 
-import cardindex.dojocardindex.User.models.Degree;
-import cardindex.dojocardindex.User.models.RegistrationStatus;
-import cardindex.dojocardindex.User.models.User;
-import cardindex.dojocardindex.User.models.UserStatus;
+import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.Utils.PasswordGenerator;
-import cardindex.dojocardindex.exceptions.EmailAlreadyInUseException;
-import cardindex.dojocardindex.exceptions.UserAlreadyExistException;
-import cardindex.dojocardindex.exceptions.UserNotFoundException;
-import cardindex.dojocardindex.exceptions.WrongPasswordException;
+import cardindex.dojocardindex.exceptions.*;
+import cardindex.dojocardindex.imageUpload.ImageUploadService;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.*;
@@ -20,12 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDate;
@@ -43,12 +40,14 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final NotificationService notificationService;
+    private final ImageUploadService imageUploadService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, NotificationService notificationService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, NotificationService notificationService, ImageUploadService imageUploadService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.notificationService = notificationService;
+        this.imageUploadService = imageUploadService;
     }
 
     public void register(RegisterRequest registerRequest){
@@ -100,7 +99,7 @@ public class UserService implements UserDetailsService {
                 .firstName(createUserRequest.getFirstName())
                 .lastName(createUserRequest.getLastName())
                 .userPhone(createUserRequest.getUserPhone())
-                .profilePicture(createUserRequest.getProfilePicture())
+                .profilePicture(null)  // Снимката се добавя отделно чрез upload endpoint
                 .birthDate(createUserRequest.getBirthDate())
                 .reachedDegree(createUserRequest.getReachedDegree()== null ? Degree.NONE : createUserRequest.getReachedDegree() )
                 .ageGroup(createUserRequest.getAgeGroup())
@@ -123,7 +122,6 @@ public class UserService implements UserDetailsService {
                 .firstName(editUserProfileRequest.getFirstName())
                 .lastName(editUserProfileRequest.getLastName())
                 .userPhone(editUserProfileRequest.getUserPhone())
-                .profilePicture(editUserProfileRequest.getProfilePicture())
                 .birthDate(editUserProfileRequest.getBirthDate())
                 .interests(editUserProfileRequest.getInterests())
                 .height(editUserProfileRequest.getHeight())
@@ -133,6 +131,65 @@ public class UserService implements UserDetailsService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    public void updateProfilePicture(UUID targetUserId, UUID currentUserId, MultipartFile image) {
+
+        if (image == null || image.isEmpty()){
+            throw new IllegalArgumentException("Подайте валидно изображение");
+        }
+
+        // 🔒 SECURITY CHECK: Потребителят може да променя САМО своята снимка
+        // освен ако не е ADMIN или TRAINER
+        User currentUser = getUserById(currentUserId);
+
+        if (!targetUserId.equals(currentUserId) &&
+            currentUser.getRole() != UserRole.ADMIN &&
+            currentUser.getRole() != UserRole.TRAINER) {
+
+            log.warn("Потребител {} се опита да промени снимката на потребител {} без права!",
+                     currentUserId, targetUserId);
+            throw new AccessDeniedException("Нямате права да променяте снимката на този потребител!");
+        }
+
+        log.info("Обновяване снимката на потребител {} от потребител {}", targetUserId, currentUserId);
+
+        User user = getUserById(targetUserId);
+        String oldProfilePicture = user.getProfilePicture();
+
+        // Опитваме да изтрием старата снимка (ако има)
+        if (oldProfilePicture != null && !oldProfilePicture.isEmpty()) {
+            try {
+                imageUploadService.deleteImage(oldProfilePicture);
+                log.info("Старата снимка е изтрита: {}", oldProfilePicture);
+            } catch (Exception e) {
+                // Не позволяваме грешка при изтриване да спре upload-а на новата снимка
+                log.warn("Не успяхме да изтрием старата снимка ({}): {}",
+                         oldProfilePicture, e.getMessage());
+            }
+        }
+        log.info("Започваме качване на новата снимка...");
+        String newImageUrl = imageUploadService.uploadImage(image);
+        log.info("Качена е нова снимка: {}", newImageUrl);
+
+        try {
+            user = user.toBuilder()
+                    .profilePicture(newImageUrl)
+                    .build();
+
+            userRepository.save(user);
+            log.info("Профилната снимка на потребител : [{}] беше обновена успешно.", targetUserId);
+        } catch (Exception e) {
+            // Ако save-ът fail-не, изтриваме новата снимка от Cloudinary
+            log.error("Грешка при запазване в базата данни. Изтриваме новата снимка от Cloudinary...", e);
+            try {
+                imageUploadService.deleteImage(newImageUrl);
+                log.info("Новата снимка беше изтрита от Cloudinary след DB грешка");
+            } catch (Exception cleanupError) {
+                log.error("Не успяхме да изтрием снимката от Cloudinary: {}", cleanupError.getMessage());
+            }
+            throw new RuntimeException("Грешка при обновяване на профилната снимка", e);
+        }
     }
 
     public void editUserProfileByAdmin(UUID userId, UserEditAdminRequest userEditAdminRequest) {

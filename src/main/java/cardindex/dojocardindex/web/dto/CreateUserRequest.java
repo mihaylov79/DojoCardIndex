@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
+// import org.hibernate.validator.constraints.URL;  // Unused - profilePicture is commented out
 import org.springframework.format.annotation.DateTimeFormat;
 
 
@@ -36,8 +36,9 @@ public class CreateUserRequest {
     @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String userPhone;
 
-    @URL(message = "Моля въведета валиден URL")
-    private String profilePicture;
+    // Закоментирано - profilePicture се качва отделно чрез /users/upload-profile-picture/{userId}
+//    @URL(message = "Моля въведета валиден URL")
+//    private String profilePicture;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;

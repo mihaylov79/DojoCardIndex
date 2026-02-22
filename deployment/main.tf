@@ -116,6 +116,11 @@ resource "azurerm_linux_web_app" "alwa" {
     "SPRING_DATASOURCE_PASSWORD" = var.admin_password
     "SPRING_PROFILES_ACTIVE"     = "prod"
 
+    # Cloudinary Configuration
+    "CLOUDINARY_CLOUD_NAME" = var.cloudinary_cloud_name
+    "CLOUDINARY_API_KEY"    = var.cloudinary_api_key
+    "CLOUDINARY_API_SECRET" = var.cloudinary_api_secret
+
   }
 }
 

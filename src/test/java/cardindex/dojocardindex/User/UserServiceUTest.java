@@ -407,7 +407,7 @@ public class UserServiceUTest {
                 .firstName("Ivan")
                 .lastName("Ivanov")
                 .userPhone("0888888888")
-                .profilePicture("www.pictureData.com")
+                // .profilePicture("www.pictureData.com") - removed, uploaded separately
                 .birthDate(LocalDate.parse("1980-05-03"))
                 .role(UserRole.ADMIN)
                 .isCompetitor(false)
@@ -428,7 +428,7 @@ public class UserServiceUTest {
                         savedUser.getFirstName().equals(dto.getFirstName()) &&
                         savedUser.getLastName().equals(dto.getLastName()) &&
                         savedUser.getUserPhone().equals(dto.getUserPhone()) &&
-                        savedUser.getProfilePicture().equals(dto.getProfilePicture()) &&
+                        savedUser.getProfilePicture() == null &&  // Always null on creation
                         savedUser.getBirthDate().equals(dto.getBirthDate()) &&
                         savedUser.getRole().equals(dto.getRole()) &&
                         savedUser.getIsCompetitor() == dto.getIsCompetitor() &&

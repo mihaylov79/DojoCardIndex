@@ -39,11 +39,6 @@
             <span th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}" class="errors"></span>
         </div>
 
-        <div class="field">
-            <label for="field-profilePicture">Снимка на профила (URL)</label>
-            <input type="url" id="field-profilePicture" th:field="*{profilePicture}" placeholder="">
-            <span th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}" class="errors"></span>
-        </div>
 
         <div class="field">
             <label for="field-birthDate">Дата на раждане</label>

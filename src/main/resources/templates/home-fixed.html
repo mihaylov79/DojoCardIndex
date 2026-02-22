@@ -8,6 +8,7 @@
     <title th:text="'Добре дошъл ' + ${user.firstName} + ' ' + ${user.lastName}"></title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}">
     <link rel="stylesheet" href="/css/home-test.css">
+    <link rel="stylesheet" href="/css/profile-picture-upload.css">
 </head>
 
 <body>
@@ -16,6 +17,34 @@
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 
 </header>
+
+<!-- Error/Success съобщения (показват се в основния template ПОД навигацията) -->
+<div class="messages-container" style="max-width: 800px; margin: 1rem auto; padding: 0 1rem;">
+    <!-- Error message - бял фон, синя рамка, червени букви -->
+    <div th:if="${errorMessage}" class="alert alert-danger"
+         style="background-color: white;
+                border: 2px solid var(--red-main, #dc3545);
+                color: #d32f2f;
+                padding: 12px;
+                border-radius: 6px;
+                margin-bottom: 15px;
+                text-align: center;
+                font-weight: 500;">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Success message - син фон, бели букви -->
+    <div th:if="${successMessage}" class="alert alert-success"
+         style="background-color: var(--red-main, #dc3545);
+                color: white;
+                padding: 12px;
+                border-radius: 6px;
+                margin-bottom: 15px;
+                text-align: center;
+                font-weight: 500;">
+        <span th:text="${successMessage}"></span>
+    </div>
+</div>
 
 <div class="main-container">
     <div class="admin-panel-wrapper" sec:authorize="hasAnyRole('ADMIN', 'TRAINER')">
@@ -64,9 +93,22 @@
         <div class="user-bio">
             <table class="info">
                 <tr>
-                    <th><img
-                            th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}"
-                            alt="Профилна снимка"></th>
+                    <th style="text-align: center; padding: 0;">
+                        <div style="position: relative; display: inline-block; margin: auto;">
+                            <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' : user.profilePicture}"
+                                 alt="Профилна снимка" id="profileImage">
+
+                            <!-- Бутон за промяна на снимката -->
+                            <button onclick="document.getElementById('imageUploadForm').style.display='block'"
+                                    class="change-picture-btn"
+                                    title="Промени снимката">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </th>
                     <td class="user-buttons">
                         <button th:attr="onclick=|location.href='/users/details/edit/' + '${user.id}'|">Редактиране
                         </button>
@@ -272,6 +314,195 @@
     </div>
 
 </div>
+
+<!-- Форма за качване на профилна снимка (скрита по подразбиране) -->
+<div id="imageUploadForm" style="display:none;" class="upload-modal">
+    <div class="upload-modal-content">
+        <span onclick="document.getElementById('imageUploadForm').style.display='none'"
+              class="close-btn">&times;</span>
+
+        <h3>Промяна на профилна снимка</h3>
+
+        <form th:action="@{/users/upload-profile-picture/{userId}(userId=${user.id})}"
+              method="post"
+              enctype="multipart/form-data"
+              onsubmit="return validateImage()">
+
+            <div class="form-group">
+                <label for="imageInput">Изберете изображение:</label>
+
+                <!-- Custom file input wrapper -->
+                <div class="file-input-wrapper" onclick="document.getElementById('imageInput').click()">
+                    <div class="file-input-content">
+                        <!-- Add Photo Icon (SVG) -->
+                        <svg class="file-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                            <line x1="12" y1="10" x2="12" y2="16"></line>
+                            <line x1="9" y1="13" x2="15" y2="13"></line>
+                        </svg>
+                        <div class="file-input-text">
+                            <strong>Добави снимка</strong>
+                            <span id="fileName">Кликни или пусни файл тук</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden file input -->
+                <input type="file"
+                       id="imageInput"
+                       name="image"
+                       accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                       required
+                       onchange="previewImage(event)">
+
+                <small>Позволени формати: JPG, PNG, GIF, WEBP (макс. 5MB)</small>
+            </div>
+
+            <!-- Preview на избраната снимка -->
+            <div id="imagePreview" style="display:none; margin: 15px 0;">
+                <p>Преглед:</p>
+                <img id="preview" src="" alt="Preview" style="max-width: 200px; border-radius: 8px;">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Качи снимката</button>
+                <button type="button"
+                        onclick="document.getElementById('imageUploadForm').style.display='none'"
+                        class="cancel-btn">Откажи</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let isUploading = false; // Flag за предотвратяване на множествени uploads
+
+    // Preview на избраната снимка
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Показваме името на файла
+            const fileNameDisplay = document.getElementById('fileName');
+            if (fileNameDisplay) {
+                fileNameDisplay.textContent = file.name;
+            }
+
+            // Показваме preview на снимката
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Drag & Drop функционалност
+    window.addEventListener('DOMContentLoaded', function() {
+        const dropArea = document.querySelector('.file-input-wrapper');
+
+        if (dropArea) {
+            // Prevent defaults
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            // Handle dropped files
+            dropArea.addEventListener('drop', handleDrop, false);
+        }
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight(e) {
+            dropArea.style.borderColor = 'var(--red-main, #dc3545)';
+            dropArea.style.backgroundColor = '#f0f0f0';
+        }
+
+        function unhighlight(e) {
+            dropArea.style.borderColor = '';
+            dropArea.style.backgroundColor = '';
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                const fileInput = document.getElementById('imageInput');
+                fileInput.files = files;
+
+                // Trigger preview
+                previewImage({ target: { files: files } });
+            }
+        }
+    });
+
+    // Валидация на размера на файла
+    function validateImage() {
+        // Проверка дали вече качваме файл
+        if (isUploading) {
+            alert('Моля изчакайте... Снимката се качва.');
+            return false;
+        }
+
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('Моля изберете файл!');
+            return false;
+        }
+
+        // Проверка за размер (5MB = 5 * 1024 * 1024 bytes)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('Файлът е твърде голям! Максималният размер е 5MB.');
+            return false;
+        }
+
+        // Проверка за тип
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Невалиден формат! Позволени са само: JPG, PNG, GIF, WEBP');
+            return false;
+        }
+
+        // Disable submit бутона и show loading
+        isUploading = true;
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Качване...';
+        }
+
+        return true;
+    }
+
+    // Автоматично скриване на success/error съобщенията след 5 секунди
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const adminToggle = document.querySelector('.admin-toggle');
