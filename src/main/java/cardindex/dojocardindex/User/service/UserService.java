@@ -139,7 +139,7 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Подайте валидно изображение");
         }
 
-        // 🔒 SECURITY CHECK: Потребителят може да променя САМО своята снимка
+        //Потребителят може да променя САМО своята снимка
         // освен ако не е ADMIN или TRAINER
         User currentUser = getUserById(currentUserId);
 
@@ -190,6 +190,42 @@ public class UserService implements UserDetailsService {
             }
             throw new RuntimeException("Грешка при обновяване на профилната снимка", e);
         }
+    }
+
+    public void removeProfilePicture(UUID targetId,UUID currentUserId, MultipartFile image){
+
+        User currentUser = getUserById(currentUserId);
+        if (targetId.equals(currentUserId)
+                && currentUser.getRole() != UserRole.ADMIN
+                && currentUser.getRole() != UserRole.TRAINER){
+            throw new AccessDeniedException("Нямате права да променяте снимката на този потребител!");
+
+        }
+
+        User targetuser = getUserById(targetId);
+        String profilePictureUrl = targetuser.getProfilePicture();
+
+        if(profilePictureUrl != null && !profilePictureUrl.isEmpty()){
+            try{
+                imageUploadService.deleteImage(profilePictureUrl);
+                log.info("Посочената профилна снимка е изтрита: {}", profilePictureUrl);
+            } catch (Exception e) {
+                log.warn("Профилна снимка -{} - НЕ беше ИЗТРИТА : {}", profilePictureUrl, e.getMessage());
+            }
+
+            try{
+                targetuser = targetuser.toBuilder()
+                        .profilePicture(null)
+                        .build();
+
+                userRepository.save(targetuser);
+                log.info("Профилната снимка на потребител : [{}] беше премахната успешно!", targetId);
+            } catch (Exception e) {
+                throw new RuntimeException("Грешка при премахването на профилната снимка",e);
+            }
+
+        }
+
     }
 
     public void editUserProfileByAdmin(UUID userId, UserEditAdminRequest userEditAdminRequest) {
