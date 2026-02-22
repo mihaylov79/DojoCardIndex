@@ -192,38 +192,45 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void removeProfilePicture(UUID targetId,UUID currentUserId, MultipartFile image){
+    public void removeProfilePicture(UUID targetUserId, UUID currentUserId) {
 
         User currentUser = getUserById(currentUserId);
-        if (targetId.equals(currentUserId)
+        if (!targetUserId.equals(currentUserId)
                 && currentUser.getRole() != UserRole.ADMIN
-                && currentUser.getRole() != UserRole.TRAINER){
-            throw new AccessDeniedException("Нямате права да променяте снимката на този потребител!");
+                && currentUser.getRole() != UserRole.TRAINER) {
 
+            log.warn("Потребител {} се опита да изтрие снимката на потребител {} без права!",
+                     currentUserId, targetUserId);
+            throw new AccessDeniedException("Нямате права да изтривате снимката на този потребител!");
         }
 
-        User targetuser = getUserById(targetId);
-        String profilePictureUrl = targetuser.getProfilePicture();
+        User targetUser = getUserById(targetUserId);
+        String profilePictureUrl = targetUser.getProfilePicture();
 
-        if(profilePictureUrl != null && !profilePictureUrl.isEmpty()){
-            try{
-                imageUploadService.deleteImage(profilePictureUrl);
-                log.info("Посочената профилна снимка е изтрита: {}", profilePictureUrl);
-            } catch (Exception e) {
-                log.warn("Профилна снимка -{} - НЕ беше ИЗТРИТА : {}", profilePictureUrl, e.getMessage());
-            }
+        // Ако няма снимка, няма какво да се изтрива
+        if (profilePictureUrl == null || profilePictureUrl.isEmpty()) {
+            log.info("Потребител {} няма профилна снимка за изтриване.", targetUserId);
+            return;
+        }
 
-            try{
-                targetuser = targetuser.toBuilder()
-                        .profilePicture(null)
-                        .build();
+        try {
+            imageUploadService.deleteImage(profilePictureUrl);
+            log.info("Профилната снимка е изтрита от Cloudinary: {}", profilePictureUrl);
+        } catch (Exception e) {
+            log.warn("Не успяхме да изтрием снимката от Cloudinary ({}): {}",
+                     profilePictureUrl, e.getMessage());
+        }
 
-                userRepository.save(targetuser);
-                log.info("Профилната снимка на потребител : [{}] беше премахната успешно!", targetId);
-            } catch (Exception e) {
-                throw new RuntimeException("Грешка при премахването на профилната снимка",e);
-            }
+        try {
+            targetUser = targetUser.toBuilder()
+                    .profilePicture(null)
+                    .build();
 
+            userRepository.save(targetUser);
+            log.info("Профилната снимка на потребител {} беше премахната успешно.", targetUserId);
+        } catch (Exception e) {
+            log.error("Грешка при обновяване на базата данни при премахване на снимка", e);
+            throw new RuntimeException("Грешка при премахването на профилната снимка", e);
         }
 
     }

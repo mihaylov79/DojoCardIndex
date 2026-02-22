@@ -216,6 +216,33 @@ public class UserController {
         }
     }
 
+    @PostMapping("/users/remove-profile-picture/{userId}")
+    public ModelAndView removeProfilePicture(
+            @PathVariable UUID userId,
+            @AuthenticationPrincipal CustomUserDetails details,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request) {
+
+        userService.removeProfilePicture(userId, details.getId());
+
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Профилната снимка беше премахната успешно!");
+
+        // Smart redirect - връща към страницата откъдето е дошъл
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isEmpty()) {
+            // Ако има referer, redirect-ваме там
+            return new ModelAndView("redirect:" + referer.substring(referer.indexOf("/", 8)));
+        } else {
+            // Fallback: ако е собствен профил -> /home, иначе -> /users/details/{userId}
+            if (userId.equals(details.getId())) {
+                return new ModelAndView("redirect:/home");
+            } else {
+                return new ModelAndView("redirect:/users/details/" + userId);
+            }
+        }
+    }
+
 
 // --- Преместени от AdminController методи, с абсолютни пътища /admin/... ---
 
