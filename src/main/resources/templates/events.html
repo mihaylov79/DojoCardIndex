@@ -48,7 +48,7 @@
                 <td data-label="Описание" th:text="${event.eventDescription}">Треньорски семинар</td>
                 <td data-label="Изисквания" th:text="${event.requirements.description}">Треньор</td>
                 <td data-label="Място" th:text="${event.location}">Габрово</td>
-                <td data-label="Участници">
+                <td data-label="Участници" th:classappend="${#lists.isEmpty(event.getUsers())} ? 'empty-participants' : ''">
                     <ul>
                         <li th:each="participant : ${event.getUsers()}"
                             th:text="${participant.firstName + ' ' + participant.lastName}">Име на участник

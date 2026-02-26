@@ -265,6 +265,11 @@
     .actions {
         text-align: center;
     }
+
+    /* Скриваме празни редове с участници на мобилни устройства */
+    .table-container td.empty-participants {
+        display: none;
+    }
 }
 
 @media (max-width: 520px) {
