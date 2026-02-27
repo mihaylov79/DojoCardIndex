@@ -20,7 +20,34 @@
         <span class="credentials-error"></span>
         <form th:action="@{/messages/send}" th:method="POST" th:object="${sendMessageRequest}">
             <label for="recipient">Получател:</label>
-            <select id="recipient" name="recipient" th:field="*{recipient}" required>
+
+            <!-- Custom Dropdown with Search -->
+            <div class="custom-select-wrapper">
+                <div class="custom-select-trigger" id="selectTrigger">
+                    <span class="selected-text">Изберете получател</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="custom-select-dropdown" id="selectDropdown">
+                    <div class="search-box">
+                        <label for="recipientSearch" style="display: none;">Търсене</label>
+                        <input type="text" id="recipientSearch" placeholder="Търсете по име или имейл..." autocomplete="off">
+                    </div>
+                    <div class="options-list" id="optionsList">
+                        <div class="option-item" data-value="" data-name="" data-email="">
+                            Изберете получател
+                        </div>
+                        <div class="option-item"
+                             th:each="recipient : ${recipients}"
+                             th:attr="data-value=${recipient.email}, data-name=${recipient.firstName} + ' ' + ${recipient.lastName}, data-email=${recipient.email}"
+                             th:text="${recipient.firstName} + ' ' + ${recipient.lastName} + ' - ' + ${recipient.email}">
+                            User Name - email@example.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden select for form submission -->
+            <select id="recipient" name="recipient" th:field="*{recipient}" required style="display: none;">
                 <option value="">Изберете получател</option>
                 <option th:each="recipient : ${recipients}"
                         th:value="${recipient.email}"
@@ -28,6 +55,7 @@
                     User1
                 </option>
             </select>
+
             <span class="errors" th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}"></span>
             <span th:text="${messageCanNotBeSentToUser}" class="errors"></span>
 
@@ -42,5 +70,118 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectTrigger = document.getElementById('selectTrigger');
+        const selectDropdown = document.getElementById('selectDropdown');
+        const searchInput = document.getElementById('recipientSearch');
+        const optionsList = document.getElementById('optionsList');
+        const selectedText = selectTrigger.querySelector('.selected-text');
+        const hiddenSelect = document.getElementById('recipient');
+        const optionItems = Array.from(optionsList.querySelectorAll('.option-item'));
+
+        // Toggle dropdown
+        selectTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = selectDropdown.classList.contains('open');
+
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        });
+
+        function openDropdown() {
+            selectDropdown.classList.add('open');
+            selectTrigger.classList.add('active');
+            searchInput.value = '';
+            showAllOptions();
+            // Focus search input when dropdown opens
+            setTimeout(() => searchInput.focus(), 100);
+        }
+
+        function closeDropdown() {
+            selectDropdown.classList.remove('open');
+            selectTrigger.classList.remove('active');
+            searchInput.value = '';
+            showAllOptions();
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+
+            optionItems.forEach(option => {
+                if (option.getAttribute('data-value') === '') {
+                    // Always hide the default "Изберете получател" option during search
+                    option.style.display = searchTerm ? 'none' : '';
+                    return;
+                }
+
+                const name = option.getAttribute('data-name')?.toLowerCase() || '';
+                const email = option.getAttribute('data-email')?.toLowerCase() || '';
+                const optionText = option.textContent.toLowerCase();
+
+                if (name.includes(searchTerm) || email.includes(searchTerm) || optionText.includes(searchTerm)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+
+        function showAllOptions() {
+            optionItems.forEach(option => {
+                option.style.display = '';
+            });
+        }
+
+        // Select option
+        optionItems.forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+
+                // Update display
+                selectedText.textContent = this.textContent.trim();
+
+                // Update hidden select
+                hiddenSelect.value = value;
+
+                // Remove active class from all options
+                optionItems.forEach(opt => opt.classList.remove('selected'));
+
+                // Add active class to selected option
+                this.classList.add('selected');
+
+                // Close dropdown
+                closeDropdown();
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!selectTrigger.contains(e.target) && !selectDropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Prevent dropdown close when clicking inside search
+        searchInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Set initial selected value if exists
+        if (hiddenSelect.value) {
+            const selectedOption = optionItems.find(opt => opt.getAttribute('data-value') === hiddenSelect.value);
+            if (selectedOption) {
+                selectedText.textContent = selectedOption.textContent.trim();
+                selectedOption.classList.add('selected');
+            }
+        }
+    });
+</script>
+
 </body>
 </html>
