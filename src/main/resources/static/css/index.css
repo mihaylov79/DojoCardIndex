@@ -1,0 +1,24 @@
+/* Специфични стилове само за началната страница */
+
+.slogan {
+    margin-top: -0.5em !important;
+    margin-bottom: 0.3em !important;
+    /*padding-top: 0 !important;*/
+}
+
+.slogan .logo-image {
+    width: 20vw;
+    max-width: 350px;
+    min-width: 180px;
+    height: auto;
+    margin-bottom: 0;
+}
+
+/* Responsive за по-малки екрани */
+@media (max-width: 700px) {
+    .slogan .logo-image {
+        width: 40vw;
+        min-width: 120px;
+    }
+}
+
