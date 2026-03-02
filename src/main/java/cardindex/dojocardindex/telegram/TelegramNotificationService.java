@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -75,13 +74,8 @@ public class TelegramNotificationService {
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody,headers);
 
-            ResponseEntity<String> response = restTemplate.postForEntity(url,request, String.class);
+            restTemplate.postForEntity(url, request, String.class);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                log.debug("Telegram нотификация изпратена успешно");
-            }else {
-                log.warn("Telegram API върнаа статус: {}",response.getStatusCode());
-            }
         } catch (Exception e) {
             log.warn("Грешка при изпращане на Telegram нотификация: {}",e.getMessage());
             log.warn("Моля проверете настройките на Телеграм нотификациите в application.proerties" +
