@@ -113,6 +113,21 @@ img {
     background: transparent;
     border: 1px solid var(--red-main);
 }
+
+/* Telegram бутон - без рамка на десктоп */
+.user-buttons button[title="Telegram Канал"] {
+    border: none;
+    padding: 0;
+    min-width: auto;
+}
+
+/* Telegram бутон SVG иконка да е висока колкото бутона */
+.user-buttons button[title="Telegram Канал"] svg {
+    height: 100%;
+    width: auto;
+    display: block;
+}
+
 .user-buttons button:hover,
 .action-buttons button:hover {
     font-weight: 650;
@@ -336,5 +351,20 @@ table caption {
     }
     td:last-child {
         border-bottom: none;
+    }
+
+    /* Telegram бутон - покажи рамка на малки екрани */
+    .user-buttons button[title="Telegram Канал"] {
+        border: 1px solid var(--red-main);
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Центриране на SVG в Telegram бутона на мобилни */
+    .user-buttons button[title="Telegram Канал"] svg {
+        display: block;
+        margin: 0 auto;
     }
 }

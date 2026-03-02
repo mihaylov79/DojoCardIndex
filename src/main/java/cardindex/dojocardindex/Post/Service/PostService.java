@@ -5,6 +5,7 @@ import cardindex.dojocardindex.Post.Repository.PostRepository;
 import cardindex.dojocardindex.Post.models.Post;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.telegram.TelegramNotificationService;
 import cardindex.dojocardindex.web.dto.CreatePostRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final TelegramNotificationService telegramNotificationService;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserService userService) {
+    public PostService(PostRepository postRepository, UserService userService, TelegramNotificationService telegramNotificationService) {
         this.postRepository = postRepository;
         this.userService = userService;
+        this.telegramNotificationService = telegramNotificationService;
     }
 
     public List<Post> getAllUnreadPosts(){
@@ -49,6 +52,13 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        try {
+            telegramNotificationService.notifyNewPost(post);
+            log.info("Telegram нотофикация за пост: {} е изпратена", post.getTitle());
+        } catch (Exception e) {
+            log.error("Грешка при изпращане на Telegram нотификация",e);
+        }
 
     }
 

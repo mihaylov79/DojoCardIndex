@@ -121,6 +121,10 @@ resource "azurerm_linux_web_app" "alwa" {
     "CLOUDINARY_API_KEY"    = var.cloudinary_api_key
     "CLOUDINARY_API_SECRET" = var.cloudinary_api_secret
 
+    # Telegram Configuration
+    "TELEGRAM_BOT_TOKEN"        = var.telegram_bot_token
+    "TELEGRAM_CHANNEL_CHAT_ID"  = var.telegram_channel_chat_id
+
   }
 }
 

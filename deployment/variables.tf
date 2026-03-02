@@ -31,3 +31,14 @@ variable "cloudinary_api_secret" {
   sensitive   = true
 }
 
+variable "telegram_bot_token" {
+  type        = string
+  description = "Telegram Bot Token"
+  sensitive   = true
+}
+
+variable "telegram_channel_chat_id" {
+  type        = string
+  description = "Telegram Channel Chat ID"
+  sensitive   = true
+}
