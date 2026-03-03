@@ -2,6 +2,7 @@ package cardindex.dojocardindex.web.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
 public class CreatePostRequest {
 
     @NotBlank(message = "Това поле не може да бъде празно")
+    @Pattern(regexp = "^[^*]*$", message = "Заглавието не може да съдържа символа *")
     private String title;
 
     @NotBlank(message = "Това поле не може да бъде празно")
