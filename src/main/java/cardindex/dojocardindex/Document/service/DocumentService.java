@@ -2,6 +2,7 @@ package cardindex.dojocardindex.Document.service;
 
 
 import cardindex.dojocardindex.Document.model.Document;
+import cardindex.dojocardindex.Document.model.DocumentCategory;
 import cardindex.dojocardindex.Document.repository.DocumentRepository;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
@@ -140,6 +141,11 @@ public class DocumentService {
     public Document getDocumentByID(UUID documentId){
         return documentRepository.findById(documentId).orElseThrow(() -> new EntityNotFoundException(
                 "Документ с ID [%s] не е намерен".formatted(documentId)));
+    }
+
+    public List<Document> getDocumentsByCategory(DocumentCategory category){
+
+        return documentRepository.findByActiveTrueAndCategory(true,category);
     }
 
 }

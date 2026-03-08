@@ -101,4 +101,33 @@ public class DocumentController {
 
     }
 
+    @PostMapping("/replace/{id}")
+    public ModelAndView replaceDocument(@PathVariable UUID id,
+                                        @RequestParam("file") MultipartFile file,
+                                        RedirectAttributes redirectAttributes){
+
+        documentService.replaceDocument(id,file);
+
+        redirectAttributes.addFlashAttribute("success", "Документър беше заменен успешно!");
+
+        return new ModelAndView("redirect:/documents");
+
+    }
+
+    @GetMapping("/category/{category}")
+    public ModelAndView getDocumentsByCategory(@PathVariable DocumentCategory category,
+                                               @AuthenticationPrincipal CustomUserDetails details){
+
+        User currentUser = userService.getUserById(details.getId());
+        List<Document>documents = documentService.getDocumentsByCategory(category);
+
+        ModelAndView modelAndView = new ModelAndView("documents");
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("documents", documents);
+        modelAndView.addObject("categories", DocumentCategory.values());
+        modelAndView.addObject("selectedCategory", category);
+
+        return modelAndView;
+    }
+
 }

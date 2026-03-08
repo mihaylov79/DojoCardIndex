@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.Document.repository;
 
 import cardindex.dojocardindex.Document.model.Document;
+import cardindex.dojocardindex.Document.model.DocumentCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,8 @@ import java.util.UUID;
 @Repository
 public interface DocumentRepository  extends JpaRepository<Document, UUID> {
     List<Document> findAllByActiveTrueOrderByUpdatedAtDesc();
+
+    List<Document> findByActiveTrueAndCategory(boolean active, DocumentCategory category);
+
+    List<Document> findByActiveTrue(boolean active);
 }
