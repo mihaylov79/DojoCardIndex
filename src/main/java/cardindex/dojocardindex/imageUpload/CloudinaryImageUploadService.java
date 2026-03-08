@@ -60,7 +60,7 @@ public class CloudinaryImageUploadService implements ImageUploadService{
             String imageUrl = uploadResult.get("secure_url").toString();
             log.info("Изображението е качено: {}", imageUrl);
             return imageUrl;
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Грешка при качване на файла: {}", e.getMessage());
 
             // Опростена error message
