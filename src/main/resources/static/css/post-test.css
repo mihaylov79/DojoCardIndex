@@ -7,6 +7,26 @@
     --white: #ffffff;
 }
 
+/* Заглавие */
+.publications-header {
+    margin-bottom: 1.5rem;
+}
+
+.publications-header h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.publications-header h2 i {
+    color: var(--red-main);
+    font-size: 1.3rem;
+}
+
 /* Търсачка */
 .search-container {
     margin: 0 0 1.5rem 0;
