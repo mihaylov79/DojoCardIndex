@@ -22,7 +22,7 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column(columnDefinition = "TEXT")

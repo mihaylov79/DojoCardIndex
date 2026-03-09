@@ -15,8 +15,13 @@
 
 <div class="main-container">
     <!-- Съобщения за грешки -->
-    <div th:if="${error}" class="alert alert-error">
-        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+    <div th:if="${errorMessage}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Съобщение за успех -->
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
     </div>
 
     <div class="upload-form-container">

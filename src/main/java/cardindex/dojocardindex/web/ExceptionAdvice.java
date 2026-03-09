@@ -82,8 +82,19 @@ public class ExceptionAdvice {
         return getRedirectUrl(request);
     }
 
-    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
-    public String handleSecurityAccessDeniedException(org.springframework.security.access.AccessDeniedException e,
+    @ExceptionHandler(InvalidDocumentFileException.class)
+    public String handleInvalidDocumentFileException(InvalidDocumentFileException e,
+                                                     RedirectAttributes redirectAttributes){
+
+        log.warn("Невалиден файл: {}", e.getMessage());
+
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+        return "redirect:/documents/upload";
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleSecurityAccessDeniedException(AccessDeniedException e,
                                                        RedirectAttributes redirectAttributes,
                                                        HttpServletRequest request){
 
@@ -107,6 +118,22 @@ public class ExceptionAdvice {
         return getRedirectUrl(request);
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public String handleFileUploadException(FileUploadException e,
+                                            RedirectAttributes redirectAttributes){
+
+        log.error("Грешка при качването на файл",e);
+
+        String userMessage = e.getMessage();
+
+        if (userMessage == null || userMessage.isEmpty()){
+            userMessage = "Грешка при качване на файла. Моля опитайте отново.";
+        }
+        redirectAttributes.addFlashAttribute("errorMessage", userMessage);
+
+        return "redirect:/documents/upload";
+    }
+
     @ExceptionHandler(ImageDeleteException.class)
     public String handleImageDeleteException(ImageDeleteException e,
                                              RedirectAttributes redirectAttributes,
@@ -118,6 +145,29 @@ public class ExceptionAdvice {
                 "Възникна грешка при изтриване на старата снимка. Моля опитайте отново.");
 
         return getRedirectUrl(request);
+    }
+
+    @ExceptionHandler(FileDeleteException.class)
+    public String handleFileDeleteException(FileDeleteException e,
+                                                  RedirectAttributes redirectAttributes){
+
+        log.error("Грешка при изтриване на файл", e);
+
+        redirectAttributes.addFlashAttribute("errorMessage",
+                "Грешка при изтриване на файла. Моля опитайте отново.");
+
+        return "redirect:/documents";
+    }
+
+    @ExceptionHandler(DocumentNotFoundException.class)
+    public String handleDocumentNotFoundException(DocumentNotFoundException e,
+                                                  RedirectAttributes redirectAttributes){
+
+        log.warn("Документ не е намерен: {}", e.getMessage());
+
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+        return "redirect:/documents";
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)

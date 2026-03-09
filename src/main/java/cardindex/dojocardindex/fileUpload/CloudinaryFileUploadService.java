@@ -2,7 +2,7 @@ package cardindex.dojocardindex.fileUpload;
 
 import cardindex.dojocardindex.exceptions.FileDeleteException;
 import cardindex.dojocardindex.exceptions.FileUploadException;
-import cardindex.dojocardindex.exceptions.InvalidFileException;
+import cardindex.dojocardindex.exceptions.InvalidDocumentFileException;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -134,13 +134,13 @@ public class CloudinaryFileUploadService implements FileUploadService{
 
     private void validateFile(MultipartFile file){
         if (file == null || file.isEmpty()){
-            throw new InvalidFileException("Заредете валиден файл");
+            throw new InvalidDocumentFileException("Заредете валиден файл");
         }
 
         long fileSize = file.getSize();
 
         if (fileSize > MAX_FILE_SIZE || fileSize < MIN_FILE_SIZE) {
-            throw new InvalidFileException(String.format(
+            throw new InvalidDocumentFileException(String.format(
                 "Размерът на файла трябва да бъде между %d KB и %d MB.",
                 MIN_FILE_SIZE / 1024,
                 MAX_FILE_SIZE / (1024 * 1024)
@@ -149,12 +149,12 @@ public class CloudinaryFileUploadService implements FileUploadService{
 
         String fileName = file.getOriginalFilename();
         if (fileName == null || !fileName.contains(".")) {
-            throw new InvalidFileException("Файлът трябва да има разширение");
+            throw new InvalidDocumentFileException("Файлът трябва да има разширение");
         }
 
         String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         if (!ALLOWED_FILES.contains(extension)) {
-            throw new InvalidFileException(String.format(
+            throw new InvalidDocumentFileException(String.format(
                 "Неподдържан тип файл: %s. Разрешени типове: %s",
                 extension,
                 String.join(", ", ALLOWED_FILES)

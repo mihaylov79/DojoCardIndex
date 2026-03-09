@@ -6,10 +6,11 @@ import cardindex.dojocardindex.Document.model.DocumentCategory;
 import cardindex.dojocardindex.Document.repository.DocumentRepository;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
-import cardindex.dojocardindex.exceptions.InvalidFileException;
+import cardindex.dojocardindex.exceptions.DocumentNotFoundException;
+import cardindex.dojocardindex.exceptions.FileUploadException;
+import cardindex.dojocardindex.exceptions.InvalidDocumentFileException;
 import cardindex.dojocardindex.fileUpload.FileUploadService;
 import cardindex.dojocardindex.web.dto.CreateDocumentRequest;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,11 +41,11 @@ public class DocumentService {
                                    MultipartFile file){
 
         if(file==null || file.isEmpty()){
-            throw new InvalidFileException("Моля изберете файл за качване!");
+            throw new InvalidDocumentFileException("Моля изберете файл за качване!");
         }
 
         if (file.getSize() == 0){
-            throw new InvalidFileException("Файлът е празен");
+            throw new InvalidDocumentFileException("Файлът е празен");
         }
 
         User currentUser = userService.getCurrentUser();
@@ -85,7 +86,7 @@ public class DocumentService {
             }
 
 
-            throw new RuntimeException("Грешка при качване на документ: " + e.getMessage(), e);
+            throw new FileUploadException("Грешка при качване на документ: " + e.getMessage(), e);
         }
     }
 
@@ -139,7 +140,7 @@ public class DocumentService {
 
 
     public Document getDocumentByID(UUID documentId){
-        return documentRepository.findById(documentId).orElseThrow(() -> new EntityNotFoundException(
+        return documentRepository.findById(documentId).orElseThrow(() -> new DocumentNotFoundException(
                 "Документ с ID [%s] не е намерен".formatted(documentId)));
     }
 
