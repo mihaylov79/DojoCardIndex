@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документи - Dragon Dojo</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/documents.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+    <div class="table-container">
+        <!-- Заглавие и бутон за качване -->
+        <div class="documents-header">
+            <h2><i class="fas fa-file-alt"></i> Документи на клуба</h2>
+            <div th:if="${currentUser != null && currentUser.role.name() == 'ADMIN'}">
+                <a th:href="@{/documents/upload}" class="btn-upload">
+                    <i class="fas fa-upload"></i> Качи документ
+                </a>
+            </div>
+        </div>
+
+        <!-- Филтри по категория -->
+        <div class="filters-container">
+            <form th:action="@{/documents}" method="get" class="filter-form">
+                <label for="category">Категория:</label>
+                <select id="category" name="category" onchange="this.form.submit()">
+                    <option value="">Всички</option>
+                    <option th:each="cat : ${categories}"
+                            th:value="${cat}"
+                            th:text="${cat.description}"
+                            th:selected="${category != null && category == cat}">
+                    </option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Съобщения -->
+        <span th:if="${message}" th:text="${message}" class="alert alert-success"></span>
+        <span th:if="${error}" th:text="${error}" class="alert alert-error"></span>
+
+        <!-- Няма документи -->
+        <div th:if="${#lists.isEmpty(documents)}" class="no-documents">
+            <i class="fas fa-folder-open"></i>
+            <p>Няма налични документи</p>
+        </div>
+
+        <!-- Table с документи -->
+        <table th:unless="${#lists.isEmpty(documents)}" class="documents-table">
+            <thead>
+            <tr>
+                <th scope="col">Икона</th>
+                <th scope="col">Документ</th>
+                <th scope="col">Описание</th>
+                <th scope="col">Категория</th>
+                <th scope="col">Качено</th>
+                <th scope="col">Обновен</th>
+                <th scope="col">Размер</th>
+                <th scope="col">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="doc : ${documents}">
+                <!-- Икона -->
+                <td data-label="Икона" class="document-icon">
+                    <i class="fas fa-file-pdf" th:if="${doc.fileType == 'application/pdf'}"></i>
+                    <i class="fas fa-file-word" th:if="${doc.fileType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || doc.fileType == 'application/msword'}"></i>
+                    <i class="fas fa-file-excel" th:if="${doc.fileType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || doc.fileType == 'application/vnd.ms-excel'}"></i>
+                    <i class="fas fa-file-alt" th:if="${doc.fileType == 'text/plain'}"></i>
+                    <i class="fas fa-file" th:unless="${doc.fileType == 'application/pdf' || doc.fileType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || doc.fileType == 'application/msword' || doc.fileType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || doc.fileType == 'application/vnd.ms-excel' || doc.fileType == 'text/plain'}"></i>
+                </td>
+
+                <!-- Документ (само заглавие) -->
+                <td data-label="Документ">
+                    <span class="document-title" th:text="${doc.name}">Заглавие</span>
+                </td>
+
+                <!-- Описание -->
+                <td data-label="Описание">
+                    <span th:text="${doc.description}">Описание</span>
+                </td>
+
+                <!-- Категория -->
+                <td data-label="Категория">
+                    <span th:text="${doc.category.description}">Категория</span>
+                </td>
+
+                <!-- Дата на качване -->
+                <td data-label="Качено">
+                    <span th:text="${#temporals.format(doc.uploadedAt, 'dd.MM.yyyy')}">Дата</span>
+                </td>
+
+                <!-- Дата на обновяване -->
+                <td data-label="Обновен">
+                    <span th:if="${doc.updatedAt != null}" th:text="${#temporals.format(doc.updatedAt, 'dd.MM.yyyy')}">-</span>
+                    <span th:if="${doc.updatedAt == null}">-</span>
+                </td>
+
+                <!-- Размер -->
+                <td data-label="Размер">
+                    <span th:text="${doc.fileSize < 1024 * 1024 ?
+                        T(java.lang.String).format('%.0f KB', doc.fileSize / 1024.0) :
+                        T(java.lang.String).format('%.2f MB', doc.fileSize / (1024.0 * 1024.0))}">Размер</span>
+                </td>
+
+                <!-- Действия -->
+                <td data-label="Действия" class="document-actions">
+                    <a th:href="${doc.fileUrl}"
+                       th:attr="data-filename=${doc.fileName}"
+                       class="btn-download"
+                       onclick="return downloadWithCorrectName(event, this);">
+                        <i class="fas fa-download"></i> Изтегли
+                    </a>
+
+                    <div th:if="${currentUser != null && currentUser.role.name() == 'ADMIN'}" class="admin-actions">
+                        <form th:action="@{/documents/delete/{id}(id=${doc.id})}" method="post"
+                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този документ?');">
+                            <button type="submit" class="btn-delete">
+                                <i class="fas fa-trash"></i> Изтрий
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+/**
+ * Прост JavaScript който преименува файла при download
+ * Работи със Cloudinary URLs които нямат разширение или имат грешно име
+ */
+function downloadWithCorrectName(event, link) {
+    event.preventDefault();
+
+    const url = link.href;
+    const fileName = link.getAttribute('data-filename');
+
+    // Fetch-ваме файла и го записваме с правилното име
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                alert('Файлът не може да бъде изтеглен. Моля опитайте отново или се свържете с администратор.');
+                return;
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            if (!blob) return;
+
+            // Създаваме download link с правилното име
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = fileName; // Задаваме оригиналното име с разширение
+            document.body.appendChild(a);
+            a.click();
+
+            // Cleanup
+            window.URL.revokeObjectURL(blobUrl);
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            console.error('Грешка при download:', error);
+            alert('Грешка при изтегляне на файла. Моля опитайте отново.');
+        });
+
+    return false;
+}
+</script>
+
+</body>
+</html>
+

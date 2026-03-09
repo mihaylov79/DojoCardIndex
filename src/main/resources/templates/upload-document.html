@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Качване на документ - Dragon Dojo</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/upload-document.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+    <div class="upload-header">
+        <h2><i class="fas fa-upload"></i> Качване на документ</h2>
+        <a th:href="@{/documents}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Обратно към документите
+        </a>
+    </div>
+
+    <!-- Съобщения за грешки -->
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+    </div>
+
+    <div class="upload-form-container">
+        <form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data" class="upload-form">
+
+            <!-- Заглавие -->
+            <div class="form-group">
+                <label for="title">
+                    <i class="fas fa-heading"></i> Заглавие *
+                </label>
+                <input type="text"
+                       id="title"
+                       name="title"
+                       th:value="${title}"
+                       placeholder="Въведете заглавие на документа"
+                       required
+                       maxlength="200"
+                       class="form-input">
+                <small class="form-help">До 200 символа</small>
+            </div>
+
+            <!-- Описание -->
+            <div class="form-group">
+                <label for="description">
+                    <i class="fas fa-align-left"></i> Описание
+                </label>
+                <textarea id="description"
+                          name="description"
+                          th:text="${description}"
+                          placeholder="Кратко описание на документа (незадължително)"
+                          rows="4"
+                          maxlength="500"
+                          class="form-input"></textarea>
+                <small class="form-help">До 500 символа</small>
+            </div>
+
+            <!-- Категория -->
+            <div class="form-group">
+                <label for="category">
+                    <i class="fas fa-tag"></i> Категория *
+                </label>
+                <select id="category"
+                        name="category"
+                        required
+                        class="form-input">
+                    <option value="">-- Изберете категория --</option>
+                    <option th:each="cat : ${categories}"
+                            th:value="${cat}"
+                            th:text="${cat.description}"
+                            th:selected="${category != null && category == cat}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Файл -->
+            <div class="form-group">
+                <label for="file">
+                    <i class="fas fa-file"></i> Файл *
+                </label>
+                <div class="file-input-wrapper">
+                    <input type="file"
+                           id="file"
+                           name="file"
+                           accept=".pdf,.doc,.docx,.txt,.xls,.xlsx"
+                           required
+                           class="file-input"
+                           onchange="updateFileName(this)">
+                    <label for="file" class="file-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="file-name">Изберете файл</span>
+                    </label>
+                </div>
+                <small class="form-help">
+                    Разрешени формати: PDF, DOC, DOCX, TXT, XLS, XLSX<br>
+                    Максимален размер: 5 MB
+                </small>
+            </div>
+
+            <!-- Бутони -->
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-upload"></i> Качи документа
+                </button>
+                <a th:href="@{/documents}" class="btn-cancel">
+                    <i class="fas fa-times"></i> Отказ
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Информация -->
+    <div class="upload-info">
+        <h3><i class="fas fa-info-circle"></i> Важна информация</h3>
+        <ul>
+            <li>Всички полета маркирани с * са задължителни</li>
+            <li>Максималният размер на файла е 5 MB</li>
+            <li>Поддържани формати: PDF, Word, Excel, текстови файлове</li>
+            <li>Уверете се, че файлът не съдържа лична или чувствителна информация</li>
+            <li>След качване, документът ще бъде достъпен за всички потребители</li>
+        </ul>
+    </div>
+</div>
+
+
+<script>
+function updateFileName(input) {
+    const fileName = input.files[0]?.name || 'Изберете файл';
+    const fileNameSpan = document.getElementById('file-name');
+
+    if (input.files[0]) {
+        const fileSize = (input.files[0].size / (1024 * 1024)).toFixed(2);
+        fileNameSpan.innerHTML = `<strong>${fileName}</strong> (${fileSize} MB)`;
+
+        // Проверка за размер
+        if (input.files[0].size > 5 * 1024 * 1024) {
+            fileNameSpan.innerHTML = '<span style="color: red;">Файлът е твърде голям (макс. 5 MB)</span>';
+            input.value = '';
+        }
+    } else {
+        fileNameSpan.textContent = fileName;
+    }
+}
+</script>
+
+</body>
+</html>
+

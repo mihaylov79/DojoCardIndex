@@ -35,16 +35,17 @@ public class DocumentController {
     }
 
     @GetMapping
-    public ModelAndView getDocumentsPage(@AuthenticationPrincipal
-                                             CustomUserDetails details) {
+    public ModelAndView getDocumentsPage(@AuthenticationPrincipal CustomUserDetails details,
+                                         @RequestParam(required = false) DocumentCategory category) {
 
         User currentUser = userService.getUserById(details.getId());
-        List<Document> documents = documentService.getAllActiveDocuments();
+        List<Document> documents = documentService.getDocuments(category);
 
         ModelAndView modelAndView = new ModelAndView("documents");
         modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("documents", documents);
         modelAndView.addObject("categories", DocumentCategory.values());
+        modelAndView.addObject("selectedCategory", category);
         return modelAndView;
     }
 
@@ -111,23 +112,6 @@ public class DocumentController {
         redirectAttributes.addFlashAttribute("success", "Документър беше заменен успешно!");
 
         return new ModelAndView("redirect:/documents");
-
-    }
-
-    @GetMapping("/category/{category}")
-    public ModelAndView getDocumentsByCategory(@PathVariable DocumentCategory category,
-                                               @AuthenticationPrincipal CustomUserDetails details){
-
-        User currentUser = userService.getUserById(details.getId());
-        List<Document>documents = documentService.getDocumentsByCategory(category);
-
-        ModelAndView modelAndView = new ModelAndView("documents");
-        modelAndView.addObject("currentUser", currentUser);
-        modelAndView.addObject("documents", documents);
-        modelAndView.addObject("categories", DocumentCategory.values());
-        modelAndView.addObject("selectedCategory", category);
-
-        return modelAndView;
     }
 
 }

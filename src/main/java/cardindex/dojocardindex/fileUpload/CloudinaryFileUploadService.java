@@ -64,7 +64,7 @@ public class CloudinaryFileUploadService implements FileUploadService{
             return fileUrl;
 
         } catch (Exception e) {
-            log.error("Грешка при качване на файл: {}", e.getMessage());
+            log.error("Грешка при качване на файл: {}", e.getMessage(), e);
 
             String errorMessage;
             if (e instanceof java.net.UnknownHostException ||

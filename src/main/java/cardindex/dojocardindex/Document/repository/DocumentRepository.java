@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface DocumentRepository  extends JpaRepository<Document, UUID> {
     List<Document> findAllByActiveTrueOrderByUpdatedAtDesc();
 
-    List<Document> findByActiveTrueAndCategory(boolean active, DocumentCategory category);
+    List<Document> findByActiveTrueAndCategoryOrderByUpdatedAtDesc(DocumentCategory category);
 
-    List<Document> findByActiveTrue(boolean active);
+    List<Document> findByActiveTrueOrderByUploadedAtDesc();
 }

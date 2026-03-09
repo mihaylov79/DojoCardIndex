@@ -1,0 +1,385 @@
+/* Документи страница - ТОЧНО в стила на Events */
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgba(0, 0, 0, 0.2);
+    --black: #000000;
+    --white: #ffffff;
+}
+
+/* Main container със СИНИ ТЪНКИ ЛЕНТИ отгоре и отдолу */
+.main-container {
+    padding: 2em 0;
+    position: relative;
+}
+
+/* Сини тънки ленти - като в events */
+.main-container::before,
+.main-container::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    background-color: var(--red-main);
+    width: 80%;
+}
+
+.main-container::after {
+    border-top-left-radius: 0.8em;
+    border-bottom-left-radius: 0.8em;
+}
+
+.main-container::before {
+    border-top-right-radius: 0.8em;
+    border-bottom-right-radius: 0.8em;
+}
+
+.main-container::before {
+    top: 0;
+    left: 0; /* отляво надясно */
+}
+
+.main-container::after {
+    bottom: 0;
+    right: 0; /* отдясно наляво */
+}
+
+/* Table container - бял контейнер */
+.table-container {
+    width: 95%;
+    margin: 40px auto;
+    overflow-x: auto;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+/* Заглавие */
+.documents-header {
+    margin: 1rem 0 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.documents-header h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--black);
+}
+
+.documents-header h2 i {
+    color: var(--red-main);
+    margin-right: 0.5rem;
+}
+
+/* Бутон за качване - БЯЛ със СИН текст и кант */
+.btn-upload {
+    color: var(--red-main);
+    font-weight: 400;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-main);
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-upload:hover {
+    font-weight: 650;
+}
+
+/* Филтри - като в events */
+.filters-container {
+    margin: 1rem 0 1.5rem 0;
+    text-align: right;
+}
+
+.filter-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-form label {
+    color: var(--black);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.filter-form select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    border: 2px solid var(--red-main);
+    border-radius: 0.5rem;
+    background-color: var(--white);
+    color: var(--black);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.filter-form select:focus {
+    border-color: var(--red-main);
+    box-shadow: 0 0 8px rgba(39, 102, 156, 0.3);
+}
+
+/* Съобщения - като в events */
+.alert {
+    margin: 1.5em 0;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.5em;
+    border-radius: 0.5rem;
+}
+
+.alert-success {
+    color: green;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    color: red;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.alert i {
+    margin-right: 0.5rem;
+}
+
+/* Списък с документи */
+.documents-list {
+    margin-top: 1rem;
+}
+
+.no-documents {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+}
+
+.no-documents i {
+    font-size: 4em;
+    margin-bottom: 1rem;
+    display: block;
+    color: var(--red-main);
+}
+
+.no-documents p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Table за документи - като events */
+.documents-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--white);
+    color: var(--black);
+}
+
+/* Хедър */
+.documents-table th {
+    background-color: #f0f2f5;
+    color: var(--red-main);
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: 600;
+}
+
+/* Клетки с ТЪНЪК СИН разделител */
+.documents-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--red-main);
+    vertical-align: middle;
+}
+
+.documents-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Икона в таблицата */
+.document-icon {
+    text-align: center;
+    width: 60px;
+}
+
+.document-icon i {
+    font-size: 2em;
+    color: var(--red-main);
+}
+
+/* Документ заглавие */
+.document-title {
+    color: var(--red-main);
+    font-weight: 600;
+}
+
+.document-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.document-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.document-meta i {
+    color: var(--red-main);
+}
+
+/* Бутони за действия - като в events */
+.document-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+}
+
+.document-actions form,
+.document-actions a,
+.document-actions button {
+    width: 100%;
+}
+
+/* Бутон изтегли - БЯЛ със СИН текст и кант - като в events */
+.btn-download {
+    color: var(--red-main);
+    font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-main);
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-download:hover {
+    font-weight: 650;
+}
+
+/* Бутон изтрий - БЯЛ със СИН текст и кант - като в events */
+.btn-delete {
+    color: var(--red-main);
+    font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-main);
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-delete:hover {
+    font-weight: 650;
+}
+
+.admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+}
+
+.admin-actions form {
+    margin: 0;
+    width: 100%;
+}
+
+/* Responsive - като в events */
+@media screen and (max-width: 1200px) {
+    .documents-table,
+    .documents-table thead,
+    .documents-table tbody,
+    .documents-table th,
+    .documents-table td,
+    .documents-table tr {
+        display: block;
+    }
+
+    .documents-table thead tr {
+        display: none;
+    }
+
+    .documents-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--red-main);
+        border-radius: 10px;
+        padding: 0.5rem;
+        background-color: var(--white);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .documents-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .documents-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-weight: bold;
+        color: var(--red-main);
+        white-space: nowrap;
+        text-align: left;
+    }
+
+    .document-icon {
+        margin: 0 auto;
+        display: block;
+    }
+
+    .document-actions {
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .documents-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .filters-container {
+        text-align: left;
+    }
+}
+
+@media (max-width: 520px) {
+    .filter-form select {
+        min-width: 180px;
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+

@@ -143,9 +143,12 @@ public class DocumentService {
                 "Документ с ID [%s] не е намерен".formatted(documentId)));
     }
 
-    public List<Document> getDocumentsByCategory(DocumentCategory category){
-
-        return documentRepository.findByActiveTrueAndCategory(true,category);
+    public List<Document> getDocuments(DocumentCategory category){
+        if (category != null) {
+            return documentRepository.findByActiveTrueAndCategoryOrderByUpdatedAtDesc(category);
+        }
+        return documentRepository.findAllByActiveTrueOrderByUpdatedAtDesc();
     }
+
 
 }
