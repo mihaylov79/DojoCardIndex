@@ -6,6 +6,7 @@
     <title>Събития</title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}">
     <link rel="stylesheet" th:href="@{/css/events-test.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
@@ -18,16 +19,25 @@
         <span th:if="${eventClosedMessage}" th:text="${eventClosedMessage}" class="credentials-error"></span>
         <span th:if="${successMessage}" th:text="${successMessage}" class="alert-info"></span>
 
+        <!-- Заглавие със иконка -->
+        <div class="events-header">
+            <h2><i class="fas fa-calendar-alt"></i> Спортен календар на Българска Киокушин-кан федерация</h2>
+        </div>
+
         <!-- Търсачка -->
-        <div class="search-container">
+        <div class="search-container" th:unless="${#lists.isEmpty(events)}">
             <label for="searchInput" style="display: none;">Търсене</label>
             <input type="text" id="searchInput" placeholder="Търсене по събитие, място или описание...">
         </div>
 
-        <table>
-            <caption>
-                <div class="caption-right">Спортен календар на Българска Киокушин-кан федерация</div>
-            </caption>
+        <!-- Няма събития -->
+        <div th:if="${#lists.isEmpty(events)}" class="no-events">
+            <i class="fas fa-folder-open"></i>
+            <p>Няма налични събития</p>
+        </div>
+
+        <table th:unless="${#lists.isEmpty(events)}">
+            <!-- Премахнат caption -->
             <thead>
             <tr>
                 <th scope="col">Начална дата</th>

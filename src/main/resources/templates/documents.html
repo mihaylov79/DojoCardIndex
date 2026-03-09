@@ -56,6 +56,7 @@
             <tr>
                 <th scope="col">Икона</th>
                 <th scope="col">Документ</th>
+                <th scope="col">Файл</th>
                 <th scope="col">Описание</th>
                 <th scope="col">Категория</th>
                 <th scope="col">Качено</th>
@@ -78,6 +79,11 @@
                 <!-- Документ (само заглавие) -->
                 <td data-label="Документ">
                     <span class="document-title" th:text="${doc.name}">Заглавие</span>
+                </td>
+
+                <!-- Име на файла -->
+                <td data-label="Файл">
+                    <span class="file-name" th:text="${doc.fileName}">Име на файл</span>
                 </td>
 
                 <!-- Описание -->
@@ -110,18 +116,32 @@
 
                 <!-- Действия -->
                 <td data-label="Действия" class="document-actions">
+                    <!-- Бутон за изтегляне - за всички -->
                     <a th:href="${doc.fileUrl}"
                        th:attr="data-filename=${doc.fileName}"
                        class="btn-download"
+                       title="Изтегли"
                        onclick="return downloadWithCorrectName(event, this);">
-                        <i class="fas fa-download"></i> Изтегли
+                        <i class="fas fa-download"></i>
                     </a>
 
+                    <!-- Бутони за админи -->
                     <div th:if="${currentUser != null && currentUser.role.name() == 'ADMIN'}" class="admin-actions">
+                        <!-- Бутон за замяна на файл -->
+                        <button type="button"
+                                class="btn-replace"
+                                title="Замени файл"
+                                th:attr="data-document-id=${doc.id}, data-document-name=${doc.name}"
+                                onclick="showReplaceModal(this.getAttribute('data-document-id'), this.getAttribute('data-document-name'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+
+                        <!-- Бутон за изтриване -->
                         <form th:action="@{/documents/delete/{id}(id=${doc.id})}" method="post"
-                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този документ?');">
-                            <button type="submit" class="btn-delete">
-                                <i class="fas fa-trash"></i> Изтрий
+                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този документ?');"
+                              style="display: inline; margin: 0;">
+                            <button type="submit" class="btn-delete" title="Изтрий">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </form>
                     </div>
@@ -129,6 +149,44 @@
             </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Modal за замяна на файл -->
+<div id="replaceModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeReplaceModal()">&times;</span>
+        <h3><i class="fas fa-sync-alt"></i> Замени файл</h3>
+        <p>Документ: <strong id="modalDocumentName"></strong></p>
+
+        <form id="replaceForm" method="post" enctype="multipart/form-data">
+            <!-- CSRF Token за Spring Security -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div class="form-group">
+                <label for="replaceFile">Изберете нов файл:</label>
+                <input type="file"
+                       id="replaceFile"
+                       name="file"
+                       required
+                       accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+                       onchange="updateFileNameDisplay(this)">
+                <div id="selectedFileName" class="selected-file-info" style="display: none;">
+                    <i class="fas fa-file"></i>
+                    <span id="fileNameText"></span>
+                    <span id="fileSizeText"></span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-modal-submit">
+                    <i class="fas fa-check"></i> Замени
+                </button>
+                <button type="button" class="btn-modal-cancel" onclick="closeReplaceModal()">
+                    <i class="fas fa-times"></i> Отказ
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -173,6 +231,68 @@ function downloadWithCorrectName(event, link) {
         });
 
     return false;
+}
+
+/**
+ * Показва избрания файл в modal-а
+ */
+function updateFileNameDisplay(input) {
+    const fileInfo = document.getElementById('selectedFileName');
+    const fileNameText = document.getElementById('fileNameText');
+    const fileSizeText = document.getElementById('fileSizeText');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileName = file.name;
+        const fileSize = (file.size / 1024).toFixed(2); // KB
+
+        fileNameText.textContent = fileName;
+        fileSizeText.textContent = `(${fileSize} KB)`;
+        fileInfo.style.display = 'flex';
+    } else {
+        fileInfo.style.display = 'none';
+    }
+}
+
+/**
+ * Показва modal за замяна на файл
+ */
+function showReplaceModal(documentId, documentName) {
+    const modal = document.getElementById('replaceModal');
+    const form = document.getElementById('replaceForm');
+    const nameSpan = document.getElementById('modalDocumentName');
+    const fileInfo = document.getElementById('selectedFileName');
+
+    // Задаваме името на документа
+    nameSpan.textContent = documentName;
+
+    // Задаваме action на формата
+    form.action = '/documents/replace/' + documentId;
+
+    // Скриваме информацията за избран файл
+    fileInfo.style.display = 'none';
+
+    // Показваме modal-а
+    modal.style.display = 'flex';
+}
+
+/**
+ * Скрива modal за замяна на файл
+ */
+function closeReplaceModal() {
+    const modal = document.getElementById('replaceModal');
+    const form = document.getElementById('replaceForm');
+
+    modal.style.display = 'none';
+    form.reset();
+}
+
+// Затваря modal при клик извън него
+window.onclick = function(event) {
+    const modal = document.getElementById('replaceModal');
+    if (event.target === modal) {
+        closeReplaceModal();
+    }
 }
 </script>
 

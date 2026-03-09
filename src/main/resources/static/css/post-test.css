@@ -37,6 +37,25 @@
     box-shadow: 0 0 8px rgba(39, 102, 156, 0.3);
 }
 
+/* Няма публикации - празна папка */
+.no-posts {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+}
+
+.no-posts i {
+    font-size: 4em;
+    margin-bottom: 1rem;
+    display: block;
+    color: var(--red-main);
+}
+
+.no-posts p {
+    font-size: 1.2em;
+    color: #666;
+}
+
 /* Контейнер за публикация */
 .message-container {
     width: 95%;

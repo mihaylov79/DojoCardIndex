@@ -7,7 +7,7 @@
     <title>Публикации</title>
     <link rel="stylesheet" href="/css/default-test.css">
     <link rel="stylesheet" href="/css/post-test.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
@@ -16,9 +16,15 @@
 <div class="main-container">
     <div class="message-container">
         <!-- Търсачка -->
-        <div class="search-container">
+        <div class="search-container" th:unless="${#lists.isEmpty(allActivePosts)}">
             <label for="searchInput" style="display: none;">Търсене</label>
             <input type="text" id="searchInput" placeholder="Търсене по заглавие, автор или съдържание...">
+        </div>
+
+        <!-- Няма публикации -->
+        <div th:if="${#lists.isEmpty(allActivePosts)}" class="no-posts">
+            <i class="fas fa-folder-open"></i>
+            <p>Няма налични публикации</p>
         </div>
 
         <div class="posted" th:each="post : ${allActivePosts}"

@@ -102,6 +102,7 @@ public class DocumentController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TRAINER')")
     @PostMapping("/replace/{id}")
     public ModelAndView replaceDocument(@PathVariable UUID id,
                                         @RequestParam("file") MultipartFile file,
@@ -109,7 +110,7 @@ public class DocumentController {
 
         documentService.replaceDocument(id,file);
 
-        redirectAttributes.addFlashAttribute("success", "Документър беше заменен успешно!");
+        redirectAttributes.addFlashAttribute("success", "Документът беше заменен успешно!");
 
         return new ModelAndView("redirect:/documents");
     }

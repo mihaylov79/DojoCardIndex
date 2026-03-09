@@ -14,19 +14,20 @@
 </header>
 
 <div class="main-container">
-    <div class="upload-header">
-        <h2><i class="fas fa-upload"></i> Качване на документ</h2>
-        <a th:href="@{/documents}" class="btn-back">
-            <i class="fas fa-arrow-left"></i> Обратно към документите
-        </a>
-    </div>
-
     <!-- Съобщения за грешки -->
     <div th:if="${error}" class="alert alert-error">
         <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
     </div>
 
     <div class="upload-form-container">
+        <!-- Header вътре в бялото поле -->
+        <div class="upload-header">
+            <h2><i class="fas fa-upload"></i> Качване на документ</h2>
+            <a th:href="@{/documents}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Обратно към документите
+            </a>
+        </div>
+
         <form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data" class="upload-form">
 
             <!-- Заглавие -->
