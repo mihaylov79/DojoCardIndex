@@ -201,7 +201,7 @@ public class UserService implements UserDetailsService {
 
             log.warn("Потребител {} се опита да изтрие снимката на потребител {} без права!",
                      currentUserId, targetUserId);
-            throw new AccessDeniedException("Нямате права да изтривате снимката на този потребител!");
+            throw new ProfilePictureAccessDeniedException("Нямате права да изтривате снимката на този потребител!");
         }
 
         User targetUser = getUserById(targetUserId);
