@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html lang="bg" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,9 +28,9 @@
 
         <!-- Филтри по категория -->
         <div class="filters-container">
-            <form th:action="@{/documents}" method="get" class="filter-form">
+            <form th:action="@{/documents}" method="get" class="filter-form" id="categoryFilter">
                 <label for="category">Категория:</label>
-                <select id="category" name="category" onchange="this.form.submit()">
+                <select id="category" name="category" onchange="handleCategoryChange()">
                     <option value="">Всички</option>
                     <option th:each="cat : ${categories}"
                             th:value="${cat}"
@@ -118,33 +119,29 @@
                 <td data-label="Действия" class="document-actions">
                     <!-- Бутон за изтегляне - за всички -->
                     <a th:href="${doc.fileUrl}"
-                       th:attr="data-filename=${doc.fileName}"
-                       class="btn-download"
-                       title="Изтегли"
-                       onclick="return downloadWithCorrectName(event, this);">
-                        <i class="fas fa-download"></i>
+                       target="_blank"
+                       class="btn-action btn-download">
+                        Изтегли
                     </a>
 
-                    <!-- Бутони за админи -->
-                    <div th:if="${currentUser != null && currentUser.role.name() == 'ADMIN'}" class="admin-actions">
-                        <!-- Бутон за замяна на файл -->
-                        <button type="button"
-                                class="btn-replace"
-                                title="Замени файл"
-                                th:attr="data-document-id=${doc.id}, data-document-name=${doc.name}"
-                                onclick="showReplaceModal(this.getAttribute('data-document-id'), this.getAttribute('data-document-name'))">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
+                    <!-- Бутони за ADMIN и TRAINER -->
+                    <button sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                            type="button"
+                            class="btn-action"
+                            th:attr="data-document-id=${doc.id}, data-document-name=${doc.name}"
+                            onclick="showReplaceModal(this.getAttribute('data-document-id'), this.getAttribute('data-document-name'))">
+                        Замени
+                    </button>
 
-                        <!-- Бутон за изтриване -->
-                        <form th:action="@{/documents/delete/{id}(id=${doc.id})}" method="post"
-                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този документ?');"
-                              style="display: inline; margin: 0;">
-                            <button type="submit" class="btn-delete" title="Изтрий">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </div>
+                    <form sec:authorize="hasAnyRole('ADMIN', 'TRAINER')"
+                          th:action="@{/documents/delete/{id}(id=${doc.id})}"
+                          method="post"
+                          onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този документ?');"
+                          style="display: inline; margin: 0;">
+                        <button type="submit" class="btn-action">
+                            Изтрий
+                        </button>
+                    </form>
                 </td>
             </tr>
             </tbody>
@@ -292,6 +289,20 @@ window.onclick = function(event) {
     const modal = document.getElementById('replaceModal');
     if (event.target === modal) {
         closeReplaceModal();
+    }
+}
+
+// Филтриране по категория
+function handleCategoryChange() {
+    const select = document.getElementById('category');
+    const selectedValue = select.value;
+
+    if (selectedValue === '' || selectedValue === null) {
+        // Ако е избрано "Всички", redirect без параметри
+        window.location.href = '/documents';
+    } else {
+        // Ако е избрана конкретна категория, submit формата
+        document.getElementById('categoryFilter').submit();
     }
 }
 </script>

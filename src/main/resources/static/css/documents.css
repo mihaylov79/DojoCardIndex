@@ -197,6 +197,11 @@
     font-weight: 600;
 }
 
+/* Центрираме колоната "Икона" в header-а */
+.documents-table th:first-child {
+    text-align: center;
+}
+
 /* Центрираме колоната "Действия" */
 .documents-table th:last-child {
     text-align: center;
@@ -216,13 +221,14 @@
 /* Икона в таблицата */
 .document-icon {
     text-align: center;
-    width: 60px;
+    padding: 12px 15px;
 }
 
 .document-icon i {
     font-size: 2em;
     color: var(--red-main);
 }
+
 
 /* Документ заглавие */
 .document-title {
@@ -256,56 +262,44 @@
     color: var(--red-main);
 }
 
-/* Бутони за действия - компактни, само икони */
+/* Бутони - ТОЧНО КОПИРАНИ от events-test.css */
 .document-actions {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 0.4em;
-    justify-content: center;
-    align-items: center;
 }
 
+.document-actions .btn-action,
 .document-actions form {
-    margin: 0;
-    display: inline;
+    width: 100%;
 }
 
-.admin-actions {
-    display: inline-flex;
-    gap: 0.4em;
-}
-
-/* Бутони - квадратни, само икони */
-.btn-download,
-.btn-delete,
-.btn-replace {
+.document-actions .btn-action,
+.document-actions form button {
     color: var(--red-main);
     font-weight: 400;
-    padding: 0.5rem;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
     border-radius: 0.5rem;
-    border: 2px solid var(--red-main);
+    border: 2px solid;
+    border-color: var(--red-main);
     cursor: pointer;
     background: transparent;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    transition: background 0.3s ease;
     text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
-.btn-download:hover,
-.btn-delete:hover,
-.btn-replace:hover {
+/* Бутон "Изтегли" с ПО-МАЛЪК шрифт */
+.document-actions .btn-download {
+    font-size: 0.85em;
+    font-weight: 400;
+}
+
+.document-actions .btn-action:hover,
+.document-actions form button:hover {
     font-weight: 650;
-    transform: scale(1.1);
-}
-
-.btn-download i,
-.btn-delete i,
-.btn-replace i {
-    font-size: 1rem;
 }
 
 /* Responsive - като в events */
@@ -351,34 +345,30 @@
         text-align: left;
     }
 
+    /* Иконка на телефон - по-голяма и центрирана, без надпис */
     .document-icon {
-        margin: 0 auto;
+        text-align: center;
+        padding: 15px;
         display: block;
+        position: relative;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .document-icon::before {
+        display: none !important;
+    }
+
+    .document-icon i {
+        display: inline-block;
+        font-size: 3em !important;
+        position: relative;
     }
 
     .document-actions {
         text-align: center;
-        flex-direction: column;
-    }
-
-    /* На малки екрани бутоните са по-широки с текст */
-    .btn-download,
-    .btn-delete,
-    .btn-replace {
-        width: auto;
-        padding: 0.5rem 1rem;
-    }
-
-    .btn-download::after {
-        content: " Изтегли";
-    }
-
-    .btn-delete::after {
-        content: " Изтрий";
-    }
-
-    .btn-replace::after {
-        content: " Замени";
+        flex-direction: row;
+        justify-content: center;
     }
 }
 
