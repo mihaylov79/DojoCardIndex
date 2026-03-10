@@ -119,8 +119,9 @@
                 <td data-label="Действия" class="document-actions">
                     <!-- Бутон за изтегляне - за всички -->
                     <a th:href="${doc.fileUrl}"
-                       target="_blank"
-                       class="btn-action btn-download">
+                       th:attr="data-filename=${doc.fileName}"
+                       class="btn-action btn-download"
+                       onclick="return downloadWithCorrectName(event, this);">
                         Изтегли
                     </a>
 
