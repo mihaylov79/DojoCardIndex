@@ -2,8 +2,10 @@ package cardindex.dojocardindex.Event.models;
 
 import cardindex.dojocardindex.User.models.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -15,6 +17,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "events")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Event {
 
     @Id
@@ -63,93 +67,21 @@ public class Event {
     private User thirdPlaceWinner;
 
 
-    public Event() {
-
-    }
-
-    public Event(UUID id, EventType type, String eventDescription, LocalDate startDate, LocalDate endDate, String location, Requirements requirements, boolean closed, boolean result, Set<User> users, User firstPlaceWinner, User secondPlaceWinner, User thirdPlaceWinner) {
-        this.id = id;
-        this.type = type;
-        EventDescription = eventDescription;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.location = location;
-        this.requirements = requirements;
-        this.closed = closed;
-        this.result = result;
-        this.users = users;
-        this.firstPlaceWinner = firstPlaceWinner;
-        this.secondPlaceWinner = secondPlaceWinner;
-        this.thirdPlaceWinner = thirdPlaceWinner;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public User getFirstPlaceWinner() {
-        return firstPlaceWinner;
-    }
-
     public void setFirstPlaceWinner(User firstPlaceWinner) {
         this.firstPlaceWinner = firstPlaceWinner;
     }
-
-    public User getSecondPlaceWinner() {
-        return secondPlaceWinner;
-    }
-
     public void setSecondPlaceWinner(User secondPlaceWinner) {
         this.secondPlaceWinner = secondPlaceWinner;
     }
-
-    public User getThirdPlaceWinner() {
-        return thirdPlaceWinner;
-    }
-
     public void setThirdPlaceWinner(User thirdPlaceWinner) {
         this.thirdPlaceWinner = thirdPlaceWinner;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-
-    public EventType getType() {
-        return type;
-    }
 
     public void setType(EventType type) {
         this.type = type;
     }
-
-    public String getEventDescription() {
-        return EventDescription;
-    }
-
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-
-    public Requirements getRequirements() {
-        return requirements;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-
-    public boolean isClosed() {
-        return closed;
-    }
+  
 
 
     @Override

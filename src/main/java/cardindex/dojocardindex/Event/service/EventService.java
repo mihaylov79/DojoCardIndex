@@ -179,15 +179,6 @@ public class EventService {
             throw new IllegalArgumentException("Победителят трябва да бъде участник в събитието!");
         }
 
-//        switch (place) {
-//            case 1 -> updateWinner(event, event.getFirstPlaceWinner(), user,
-//                    User::getAchievedFirstPlaces, User::setAchievedFirstPlaces);
-//            case 2 -> updateWinner(event, event.getSecondPlaceWinner(), user,
-//                    User::getAchievedSecondPlaces, User::setAchievedSecondPlaces);
-//            case 3 -> updateWinner(event, event.getThirdPlaceWinner(), user,
-//                    User::getAchievedThirdPlaces, User::setAchievedThirdPlaces);
-//            default -> throw new IllegalArgumentException("Невалидна позиция. Позицията може да бъде 1, 2, или 3.");
-//        }
         //Добавяме параметър place - който да използваме в updateWinner за по ясен код
         switch (place) {
             case 1 -> updateWinner(event, event.getFirstPlaceWinner(), user,
@@ -215,16 +206,6 @@ public class EventService {
         if (newWinner != null) {
             setPlaceCount.accept(newWinner, getPlaceCount.apply(newWinner) + 1);
         }
-
-//        int placeCount = getPlaceCount.apply(newWinner);
-//        assert newWinner != null;
-//        if (placeCount == newWinner.getAchievedFirstPlaces()) {
-//            event.setFirstPlaceWinner(newWinner);
-//        } else if (placeCount == newWinner.getAchievedSecondPlaces()) {
-//            event.setSecondPlaceWinner(newWinner);
-//        } else if (placeCount == newWinner.getAchievedThirdPlaces()) {
-//            event.setThirdPlaceWinner(newWinner);
-//        }
 
         // Актуализираме съответната позиция въз основа на параметъра 'place' - place се добавя като параметър на метода
         if (place == 1) {
