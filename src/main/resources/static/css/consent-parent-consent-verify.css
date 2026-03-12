@@ -1,0 +1,93 @@
+/* Unify with main-container and card style from events/posts */
+.main-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 2rem 0;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+.parent-consent-verify-card {
+    max-width: 540px;
+    margin: 2.5rem auto;
+    background: #fff;
+    border: 2px solid var(--red-main);
+    border-radius: 10px;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    box-shadow: 0 2px 12px rgba(39,102,156,0.08);
+    text-align: center;
+}
+.parent-consent-verify-card h2 {
+    color: var(--red-main);
+    margin-bottom: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+.parent-consent-verify-card p {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+/* Alerts unified with events/home */
+.alert-error {
+    margin: 1.5em 0;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.7em;
+    color: #b71c1c;
+    background: #ffeaea;
+    border-radius: 6px;
+    border: 1px solid #f5c2c7;
+    font-size: 1.05rem;
+}
+.alert-success {
+    margin: 1.5em 0;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.7em;
+    color: #1b5e20;
+    background: #e7fbe7;
+    border-radius: 6px;
+    border: 1px solid #b2dfdb;
+    font-size: 1.05rem;
+}
+.alert-info {
+    margin: 1.5em 0;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.7em;
+    color: #1565c0;
+    background: #e3f2fd;
+    border-radius: 6px;
+    border: 1px solid #90caf9;
+    font-size: 1.05rem;
+}
+/* Unified button style */
+.btn-verify, .btn-back {
+    display: inline-block;
+    background: var(--red-main);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin: 1.2rem 0 0 0;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+.btn-verify:hover, .btn-back:hover {
+    background: #0d47a1;
+}
+

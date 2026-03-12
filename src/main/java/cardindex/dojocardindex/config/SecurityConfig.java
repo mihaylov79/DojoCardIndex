@@ -3,6 +3,7 @@ package cardindex.dojocardindex.config;
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.User.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -33,18 +34,31 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers("/", "/register", "/about-us").permitAll()  // Разрешавa достъп до /, /register
+                                .requestMatchers("/", "/register", "/about-us").permitAll()
                                 .requestMatchers("/forgotten-password/**").permitAll()
                                 .requestMatchers("/forgotten-password/reset").permitAll()
+                                .requestMatchers("/parent-consent/**").permitAll()   // Родителят няма акаунт!
+                                .requestMatchers("/consent/**").authenticated()
 //                                .requestMatchers("/actuator/prometheus").permitAll()
                                 .requestMatchers("/actuator/**").hasRole("ADMIN")
-                                .anyRequest().authenticated() // всички останали изискват аутентикация
+                                .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/home",true)
+                        .successHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession(false);
+                            String redirect = (session != null && session.getAttribute("redirectAfterLogin") != null)
+                                    ? session.getAttribute("redirectAfterLogin").toString()
+                                    : null;
+                            if (redirect != null) {
+                                session.removeAttribute("redirectAfterLogin");
+                                response.sendRedirect(redirect);
+                            }else {
+                                response.sendRedirect("/home");
+                            }
+                        })
                         .failureUrl("/login?error")
                         .permitAll()
                 )

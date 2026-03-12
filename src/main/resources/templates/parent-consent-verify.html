@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Потвърждение на родителско съгласие</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/consent-parent-consent-verify.css}">
+</head>
+
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="parent-consent-verify-card">
+        <h2>Потвърждение на родителско съгласие</h2>
+        <div th:if="${exceptionMessage}" class="alert-error" th:text="${exceptionMessage}"></div>
+        <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
+        <div th:if="${infoMessage}" class="alert-info" th:text="${infoMessage}"></div>
+        <div th:if="${!exceptionMessage}">
+            <p>Моля, потвърдете съгласието си като родител/настойник. Ако имате въпроси, свържете се с администратора.</p>
+            <form th:action="@{/parent-consent/verify}" method="post">
+                <button type="submit" class="btn-verify">Потвърди съгласие</button>
+            </form>
+        </div>
+        <a href="/home" class="btn-back">Към начална страница</a>
+    </div>
+</div>
+</body>
+</html>
+

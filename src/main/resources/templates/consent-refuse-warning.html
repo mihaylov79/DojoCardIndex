@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отказ на съгласие</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" href="/css/login-test.css">
+    <link rel="stylesheet" th:href="@{/css/consent-refuse-warning.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="consent-warning-container">
+    <h2>Отказ на съгласие</h2>
+    <p>Сигурни ли сте, че искате да откажете съгласието си?<br>
+        <strong>ВАЖНО:</strong> Ако откажете, <span style="color:#d32f2f; font-weight:600;">Вашият акаунт ще бъде деактивиран</span> и няма да имате достъп до системата.</p>
+    <form th:action="@{/consent/refuse}" method="post" style="margin-bottom:0;">
+        <div class="actions">
+            <a href="/home" class="btn-cancel">Отказ</a>
+            <button type="submit" class="btn-refuse">Потвърди отказа</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

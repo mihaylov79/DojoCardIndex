@@ -58,7 +58,7 @@ public class ForgottenPasswordTokenService {
 
         String token = generateSecureToken();
 
-        String forgottenPasswordLink = "http://localhost:8080/forgotten-password/reset?token=" + token;
+        String forgottenPasswordLink = "https://dragon-dojo.azurewebsites.net/forgotten-password/reset?token=" + token;
 
         ForgottenPasswordRequest request = ForgottenPasswordRequest.builder()
                 .recipient(user.getEmail())

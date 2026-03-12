@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -18,6 +20,8 @@ import java.util.*;
 @Entity
 @Getter
 @Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class User {
 
@@ -89,6 +93,9 @@ public class User {
     @Column(name = "contact_person_phone")
     private String contactPersonPhone;
 
+    @Column(name = "contact_person_email")
+    private String contactPersonEmail;
+
     @Column(name = "ahieved_first_places")
     private int achievedFirstPlaces;
     @Column(name = "ahieved_second_places")
@@ -117,209 +124,45 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<EventParticipationRequest>requests = new ArrayList<>();
+    private List<EventParticipationRequest> requests = new ArrayList<>();
 
     @OneToMany(mappedBy = "processedBy")
     private Set<EventParticipationRequest> processedRequests = new LinkedHashSet<>();
 
-    public User() {
-
-    }
-
-
-    public User(UUID id, String email, String password, UserRole role, UserStatus status, RegistrationStatus registrationStatus, String firstName, String lastName, String userPhone, String profilePicture, LocalDate birthDate, Degree reachedDegree, String interests, AgeGroup ageGroup, boolean isCompetitor, double height, double weight, LocalDate medicalExamsPassed, String contactPerson, String contactPersonPhone, int achievedFirstPlaces, int achievedSecondPlaces, int achievedThirdPlaces, int rating, ForgottenPasswordToken resetToken, Set<Event> events, List<Comment> comments, List<Post> posts, List<EventParticipationRequest> requests, Set<EventParticipationRequest> processedRequests) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.status = status;
-        this.registrationStatus = registrationStatus;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userPhone = userPhone;
-        this.profilePicture = profilePicture;
-        this.birthDate = birthDate;
-        this.reachedDegree = reachedDegree;
-        this.interests = interests;
-        this.ageGroup = ageGroup;
-        this.isCompetitor = isCompetitor;
-        this.height = height;
-        this.weight = weight;
-        this.medicalExamsPassed = medicalExamsPassed;
-        this.contactPerson = contactPerson;
-        this.contactPersonPhone = contactPersonPhone;
-        this.achievedFirstPlaces = achievedFirstPlaces;
-        this.achievedSecondPlaces = achievedSecondPlaces;
-        this.achievedThirdPlaces = achievedThirdPlaces;
-        this.rating = rating;
-        this.resetToken = resetToken;
-        this.events = events;
-        this.comments = comments;
-        this.posts = posts;
-        this.requests = requests;
-        this.processedRequests = processedRequests;
-    }
-
     public void setResetToken(ForgottenPasswordToken resetToken) {
         this.resetToken = resetToken;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-
-
-    public String getPassword() {
-        return password;
-    }
-
-
-    public UserRole getRole() {
-        return role;
-    }
-
-
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-
-
-    public RegistrationStatus getRegistrationStatus() {
-        return registrationStatus;
     }
 
     public void setRegistrationStatus(RegistrationStatus registrationStatus) {
         this.registrationStatus = registrationStatus;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-
-    public String getLastName() {
-        return lastName;
-    }
-
-
-    public String getUserPhone() {
-        return userPhone;
-    }
-
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-
-    public Degree getReachedDegree() {
-        return reachedDegree;
-    }
-
-
-    public String getInterests() {
-        return interests;
     }
 
     public void setInterests(String interests) {
         this.interests = interests;
     }
 
-    public AgeGroup getAgeGroup() {
-        return ageGroup;
-    }
-
-
-    public boolean getIsCompetitor() {
-        return isCompetitor;
-    }
-
-//    public void setCompetitor(boolean competitor) {
-//        isCompetitor = competitor;
-//    }
-
-    public double getHeight() {
-        return height;
-    }
-
-
-    public double getWeight() {
-        return weight;
-    }
-
-
-    public LocalDate getMedicalExamsPassed() {
-        return medicalExamsPassed;
-    }
-
-
-    public String getContactPerson() {
-        return contactPerson;
-    }
-
-
-    public String getContactPersonPhone() {
-        return contactPersonPhone;
-    }
-
-    public int getAchievedFirstPlaces() {
-        return achievedFirstPlaces;
-    }
-
     public void setAchievedFirstPlaces(int achievedFirstPlaces) {
         this.achievedFirstPlaces = achievedFirstPlaces;
-    }
-
-    public int getAchievedSecondPlaces() {
-        return achievedSecondPlaces;
     }
 
     public void setAchievedSecondPlaces(int achievedSecondPlaces) {
         this.achievedSecondPlaces = achievedSecondPlaces;
     }
 
-    public int getAchievedThirdPlaces() {
-        return achievedThirdPlaces;
-    }
-
     public void setAchievedThirdPlaces(int achievedThirdPlaces) {
         this.achievedThirdPlaces = achievedThirdPlaces;
-    }
-
-    public int getRating() {
-        return rating;
     }
 
     public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Set<Event> getEvents() {
-        return events;
-    }
-
     public void setEvents(Set<Event> events) {
         this.events = events;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
     }
 
     public void setComments(List<Comment> comments) {
@@ -344,7 +187,6 @@ public class User {
         log.warn("Премахване на коментарите от потребител с ID: {} за пост с ID: {}", id, post.getId());
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -358,5 +200,3 @@ public class User {
         return Objects.hash(id);
     }
 }
-
-

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изчакване на родителско съгласие</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" href="/css/login-test.css">
+    <link rel="stylesheet" th:href="@{/css/consent-pending-parent.css}">
+</head>
+
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="pending-parent-card">
+        <h2>Изчакване на родителско съгласие</h2>
+        <p>Вашето съгласие е регистрирано, но достъпът до услугата ще бъде напълно активен след потвърждение от родител.</p>
+        <div th:if="${tokenExpired}" class="token-expired">
+            <p>Валидността на линка за родителско съгласие е изтекла.</p>
+            <form th:action="@{/consent/regenerate-token}" method="post">
+                <button type="submit" class="btn-regenerate">Изпрати нов линк към родителя</button>
+            </form>
+        </div>
+        <div th:unless="${tokenExpired}" class="waiting-info">
+            <p>Изпратен е имейл до родителя. Моля, изчакайте потвърждение.</p>
+        </div>
+        <a href="/home" class="btn-back">Към начална страница</a>
+    </div>
+</div>
+</body>
+</html>
+

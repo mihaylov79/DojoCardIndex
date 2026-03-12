@@ -184,6 +184,17 @@ public class ExceptionAdvice {
         return getRedirectUrl(request);
     }
 
+    @ExceptionHandler(InvalidUserConsentException.class)
+    public String handleInvalidUserConsentException(InvalidUserConsentException e,
+                                                    RedirectAttributes redirectAttributes){
+        log.error("Няма мамерема заявка за съгласие този токен - {}", e.getMessage());
+
+        redirectAttributes.addFlashAttribute("Няма мамерема заявка за съгласие този токен");
+
+        return "redirect:/parent-consent/verify";
+    }
+
+
     /**
      * Помощен метод за извличане на URL за redirect.
      * Връща Referer URL ако съществува, иначе /home.

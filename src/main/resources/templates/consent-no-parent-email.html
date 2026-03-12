@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Няма родителски email</title>
+    <link rel="stylesheet" th:href="@{/static/css/consent-no-parent-email.css}" />
+</head>
+<body>
+    <div class="main-container">
+        <div class="no-parent-email-card">
+            <h2>Липсва родителски email</h2>
+            <div th:if="${exceptionMessage}" class="alert-error" th:text="${exceptionMessage}"></div>
+            <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
+            <div th:if="${infoMessage}" class="alert-info" th:text="${infoMessage}"></div>
+            <div th:if="${exceptionMessage == null && successMessage == null && infoMessage == null}">
+                <div class="alert-error">
+                    Няма въведен мейл на родител/настойник. Моля, свържете се с администратор, за да отстрани проблема!
+                </div>
+            </div>
+            <a href="/profile" class="btn-back">Към профила</a>
+        </div>
+    </div>
+</body>
+</html>

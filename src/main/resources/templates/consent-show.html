@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Съгласие за използване на услугата</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" href="/css/login-test.css">
+    <link rel="stylesheet" th:href="@{/css/consent-show.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="consent-container">
+    <h2>Съгласие за използване на услугата</h2>
+    <p th:text="${agreement.text}">Тук ще се визуализира текстът на споразумението/съгласието.</p>
+    <form th:action="@{/consent/accept}" method="post" style="display:inline;">
+        <button type="submit" class="btn-accept">Приемам</button>
+    </form>
+    <a href="/consent/refuse" class="btn-refuse">Отказвам</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+.consent-container {
+    max-width: 540px;
+    margin: 2.5rem auto;
+    background: #fff;
+    border: 2px solid #1976d2;
+    border-radius: 8px;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    box-shadow: 0 2px 12px rgba(25,118,210,0.08);
+    text-align: center;
+}
+.consent-container h2 {
+    color: #1976d2;
+    margin-bottom: 1.2rem;
+}
+.consent-container p {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+.consent-container .actions {
+    display: flex;
+    justify-content: space-between;
+}
+.consent-container button, .consent-container a {
+    min-width: 120px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.consent-container .btn-refuse {
+    background: #dc3545;
+    color: #fff;
+}
+.consent-container .btn-refuse:hover {
+    background: #b71c1c;
+}
+.consent-container .btn-accept {
+    background: #1976d2;
+    color: #fff;
+}
+.consent-container .btn-accept:hover {
+    background: #0d47a1;
+}
+
