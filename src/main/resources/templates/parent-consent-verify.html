@@ -18,6 +18,7 @@
         <div th:if="${exceptionMessage}" class="alert-error" th:text="${exceptionMessage}"></div>
         <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
         <div th:if="${infoMessage}" class="alert-info" th:text="${infoMessage}"></div>
+        <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
         <div th:if="${!exceptionMessage}">
             <p>Моля, потвърдете съгласието си като родител/настойник. Ако имате въпроси, свържете се с администратора.</p>
             <form th:action="@{/parent-consent/verify}" method="post">
@@ -29,4 +30,3 @@
 </div>
 </body>
 </html>
-

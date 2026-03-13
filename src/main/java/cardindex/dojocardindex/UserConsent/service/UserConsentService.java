@@ -8,6 +8,7 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.repository.UserConsentRepository;
+import cardindex.dojocardindex.exceptions.AgreementNotFoundException;
 import cardindex.dojocardindex.exceptions.InvalidUserConsentException;
 import cardindex.dojocardindex.notification.client.NotificationClient;
 import cardindex.dojocardindex.web.dto.ParentConsentRequest;
@@ -82,8 +83,9 @@ public class UserConsentService {
         try {
             agreement = agreementService.getActiveAgreement();
         } catch (Exception e) {
-            log.warn("[CONSENT] Пропуснато родителско съгласие за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
-            return;
+            log.warn("[CONSENT] Мейла за родителско съгласие за потребител {} ({}), не беше изпратен поради липса на активено споразумение(Agreement).", user.getId(), user.getEmail());
+            throw new AgreementNotFoundException("Невъзможно е да се инициира родителско съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
+
         }
         String token = generateSecureToken();
         UserConsent consent = UserConsent.builder()
@@ -103,6 +105,7 @@ public class UserConsentService {
                 .parentEmail(user.getContactPersonEmail())
                 .childFirstName(user.getFirstName())
                 .childLastName(user.getLastName())
+                .agreementContent(agreement.getContent())
                 .consentLink(baseUrl + "/parent-consent/" + token)
                 .build();
         sendParentConsentEmailWithStatus(consent, emailRequest, user);
@@ -140,11 +143,19 @@ public class UserConsentService {
                 .build();
         repository.save(consent);
 
+        Agreement agreement;
+        try {
+            agreement = agreementService.getActiveAgreement();
+        } catch (Exception e) {
+            log.warn("[CONSENT] Пропуснато родителско съгласие за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
+            throw new AgreementNotFoundException("Невъзможно е да се изпрати родителско съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
+        }
         ParentConsentRequest emailRequest = ParentConsentRequest.builder()
                 .parentEmail(user.getContactPersonEmail())
                 .childFirstName(user.getFirstName())
                 .childLastName(user.getLastName())
                 .consentLink(baseUrl + "/parent-consent/" + newToken)
+                .agreementContent(agreement.getContent())
                 .build();
         sendParentConsentEmailWithStatus(consent, emailRequest, user);
     }
@@ -164,7 +175,7 @@ public class UserConsentService {
             agreement = agreementService.getActiveAgreement();
         } catch (Exception e) {
             log.warn("[CONSENT] Пропуснато временно съгласие за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
-            return;
+            throw new AgreementNotFoundException("Невъзможно е да се създаде временно съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
         }
         UserConsent consent = UserConsent.builder()
                 .user(user)

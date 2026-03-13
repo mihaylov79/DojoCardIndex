@@ -16,4 +16,6 @@ public class ParentConsentRequest {
     private String childLastName;
     @NotBlank
     private String consentLink;
+    @NotBlank
+    private String agreementContent;
 }

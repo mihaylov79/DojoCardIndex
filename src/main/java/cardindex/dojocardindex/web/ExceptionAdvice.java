@@ -189,9 +189,18 @@ public class ExceptionAdvice {
                                                     RedirectAttributes redirectAttributes){
         log.error("Няма мамерема заявка за съгласие този токен - {}", e.getMessage());
 
-        redirectAttributes.addFlashAttribute("Няма мамерема заявка за съгласие този токен");
+        redirectAttributes.addFlashAttribute("errorMessage","Няма мамерема заявка за съгласие този токен");
 
         return "redirect:/parent-consent/verify";
+    }
+
+    @ExceptionHandler(AgreementNotFoundException.class)
+    public String handleAgreementNotFoundException(AgreementNotFoundException e,
+                                                   RedirectAttributes redirectAttributes,
+                                                   HttpServletRequest request){
+        log.warn("Активно споразумение не е намерено: {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return getRedirectUrl(request);
     }
 
 

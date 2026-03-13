@@ -17,6 +17,7 @@
     <div class="pending-parent-card">
         <h2>Изчакване на родителско съгласие</h2>
         <p>Вашето съгласие е регистрирано, но достъпът до услугата ще бъде напълно активен след потвърждение от родител.</p>
+        <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
         <div th:if="${tokenExpired}" class="token-expired">
             <p>Валидността на линка за родителско съгласие е изтекла.</p>
             <form th:action="@{/consent/regenerate-token}" method="post">
@@ -31,4 +32,3 @@
 </div>
 </body>
 </html>
-
