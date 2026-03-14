@@ -18,4 +18,8 @@ public interface UserConsentRepository extends JpaRepository<UserConsent, UUID> 
     Optional<UserConsent> findByConsentToken(String consentToken);
 
     List<UserConsent> findAllByPendingTrueOrderByAgreedAtDesc();
+
+//    List<UserConsent> findAllByFinishedFalseAndPendingFalse();
+
+    List<UserConsent> findAllByFinishedFalseAndPendingFalseOrderByCreatedAtDesc();
 }

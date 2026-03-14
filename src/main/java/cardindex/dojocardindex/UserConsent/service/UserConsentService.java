@@ -69,6 +69,7 @@ public class UserConsentService {
                 .agreedAt(LocalDateTime.now())
                 .isMinor(false)
                 .pending(false)
+                .finished(true)
                 .sentMailStatus(MailSendStatus.UNNECESSARY)
                 .build();
         
@@ -97,6 +98,7 @@ public class UserConsentService {
                 .consentToken(token)
                 .tokenExpiresAt(LocalDateTime.now().plusHours(48))
                 .pending(false)
+                .finished(false)
                 .sentMailStatus(MailSendStatus.SENT)
                 .build();
         repository.save(consent);
@@ -125,6 +127,7 @@ public class UserConsentService {
                     .parentConsentedAt(LocalDateTime.now())
                     .pending(false)
                     .pendingReason(null)
+                    .finished(true)
                     .build());
             
         
@@ -139,7 +142,7 @@ public class UserConsentService {
         String newToken = generateSecureToken();
         consent = consent.toBuilder()
                 .consentToken(newToken)
-                .tokenExpiresAt(LocalDateTime.now().plusHours(48))
+                .tokenExpiresAt(LocalDateTime.now().plusHours(24))
                 .build();
         repository.save(consent);
 
@@ -185,12 +188,16 @@ public class UserConsentService {
                 .parentEmail(user.getContactPersonEmail())
                 .pending(true)
                 .pendingReason(reason)
+                .finished(false)
                 .sentMailStatus(MailSendStatus.UNNECESSARY)
                 .build();
         
         repository.save(consent);
     }
-    
+
+    public List<UserConsent>getBlockedConsents(){
+        return repository.findAllByFinishedFalseAndPendingFalseOrderByCreatedAtDesc();
+    }
     public List<UserConsent> getAllConsents(){
         return repository.findAll(Sort.by(Sort.Direction.DESC, "agreedAt"));
     }

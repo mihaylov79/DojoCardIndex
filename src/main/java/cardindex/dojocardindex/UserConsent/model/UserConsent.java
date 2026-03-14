@@ -61,6 +61,9 @@ public class UserConsent {
     @Column(name = "pending_reason")
     private String pendingReason;
 
+    @Column
+    private boolean finished;
+
     //Валидация на съгласието
     public boolean isFullyConsented() {
         if (pending) return true;
