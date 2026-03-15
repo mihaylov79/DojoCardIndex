@@ -1,5 +1,6 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Agreement.model.Agreement;
 import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -35,13 +37,21 @@ public class AgreementConsentController {
     
     @GetMapping("/show")
     public ModelAndView showAgreementForConsent() {
+        Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
+        if (activeAgreementOpt.isEmpty()) {
+            return new ModelAndView("redirect:/home");
+        }
         ModelAndView modelAndView = new ModelAndView("consent-show");
-        modelAndView.addObject("agreement", agreementService.getActiveAgreement());
+        modelAndView.addObject("agreement", activeAgreementOpt.get());
         return modelAndView;
     }
     
     @PostMapping("/accept")
     public String acceptConsent(@AuthenticationPrincipal CustomUserDetails details) {
+
+        if (agreementService.getActiveAgreement().isEmpty()) {
+            return "redirect:/home";
+        }
         User user = userService.findUserByEmail(details.getEmail());
         ConsentActionResult result = userConsentService.processConsentAcceptance(user);
         return switch (result) {
@@ -53,12 +63,20 @@ public class AgreementConsentController {
     
     @GetMapping("/refuse")
     public String showRefuseWarning() {
+
+        if (agreementService.getActiveAgreement().isEmpty()) {
+            return "redirect:/home";
+        }
         return "consent-refuse-warning";
     }
     
     @PostMapping("/refuse")
     public String refuseContent(@AuthenticationPrincipal CustomUserDetails details,
                                 HttpSession session) {
+        if (agreementService.getActiveAgreement().isEmpty()) {
+            return "redirect:/home";
+        }
+
         User user = userService.getUserById(details.getId());
         userConsentService.refuseConsent(user);
         session.invalidate();
@@ -67,6 +85,11 @@ public class AgreementConsentController {
 
     @GetMapping("/pending-parent")
     public ModelAndView pendingParent(@AuthenticationPrincipal CustomUserDetails details) {
+
+        if (agreementService.getActiveAgreement().isEmpty()) {
+            return new ModelAndView("redirect:/home");
+        }
+
         User user = userService.findUserByEmail(details.getEmail());
         if (userConsentService.isParentConsentConfirmed(user)) {
             return new ModelAndView("redirect:/home");
@@ -78,6 +101,11 @@ public class AgreementConsentController {
 
     @PostMapping("/resend-parrent-consent")
     public String resendParentConsent(@AuthenticationPrincipal CustomUserDetails details) {
+
+        if (agreementService.getActiveAgreement().isEmpty()) {
+            return "redirect:/home";
+        }
+
         User user = userService.getUserById(details.getId());
         userConsentService.regenerateParentConsentToken(user);
         return "redirect:/consent/pending-parent";

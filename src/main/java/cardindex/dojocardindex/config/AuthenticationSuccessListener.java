@@ -3,7 +3,6 @@ package cardindex.dojocardindex.config;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.UserConsent.service.UserConsentService;
-import cardindex.dojocardindex.exceptions.AgreementNotFoundException;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.context.event.EventListener;
@@ -34,16 +33,13 @@ public class AuthenticationSuccessListener {
         // Извиквам метода за проверка на предпочитанията за известия
         notificationService.checkNotificationPreference(user.getId(), user.getEmail());
 
-        try {
+        // Проверка дали има валиден consent само ако има активен Agreement
             if (!userConsentService.hasValidConsent(user)) {
                 HttpSession session = ((ServletRequestAttributes)
                         RequestContextHolder.currentRequestAttributes())
                         .getRequest().getSession();
                 session.setAttribute("redirectAfterLogin", "/consent/show");
             }
-        } catch (AgreementNotFoundException e) {
-            // Ако няма активен Agreement, не изискваме съгласие и позволяваме логин
-            // (Без логване – за да не се пълнят логовете излишно)
-        }
+
     }
 }

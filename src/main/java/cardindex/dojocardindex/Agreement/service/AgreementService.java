@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,8 +19,8 @@ public class AgreementService {
         this.repository = repository;
     }
 
-    public Agreement getActiveAgreement(){
-        return repository.findByActiveTrue().orElse(null);
+    public Optional<Agreement> getActiveAgreement(){
+        return repository.findByActiveTrue();
     }
 
     public Agreement getAgreementById(UUID id){
