@@ -1,0 +1,73 @@
+/* all-consents.css - стилизация като users-list2_test.css */
+:root {
+    --red-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);
+    --black: #000000;
+    --white: #fff;
+}
+
+.main-container {
+    width: 95%;
+    margin: 40px auto;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+}
+.search-form input, .search-form select {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-main);
+    background-color: var(--white);
+    color: var(--black);
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+}
+.search-form input:focus, .search-form select:focus {
+    border-color: var(--red-main);
+    box-shadow: 0 0 8px rgba(39, 102, 156, 0.3);
+}
+.search-form label {
+    font-weight: bold;
+}
+
+.consents-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--white);
+    color: var(--black);
+}
+.consents-table th {
+    background-color: #f0f2f5;
+    color: var(--red-main);
+    padding: 12px 8px;
+    text-align: center;
+}
+.consents-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--red-main);
+    vertical-align: middle;
+    text-align: center;
+}
+.status-finished {
+    color: green;
+    font-weight: bold;
+}
+.status-unfinished {
+    color: red;
+    font-weight: bold;
+}
+

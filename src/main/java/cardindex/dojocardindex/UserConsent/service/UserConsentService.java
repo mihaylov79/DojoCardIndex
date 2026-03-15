@@ -8,8 +8,8 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.repository.UserConsentRepository;
-import cardindex.dojocardindex.exceptions.AgreementNotFoundException;
 import cardindex.dojocardindex.exceptions.InvalidUserConsentException;
+import cardindex.dojocardindex.exceptions.UserConsentNotFoundException;
 import cardindex.dojocardindex.notification.client.NotificationClient;
 import cardindex.dojocardindex.web.dto.ParentConsentRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,23 +47,27 @@ public class UserConsentService {
         this.userService = userService;
     }
     
-    @Autowired
-    private UserConsentService self;
-    
     public boolean hasValidConsent(User user){
-        return repository.findByUser(user)
+        Agreement activeAgreement;
+        try {
+            activeAgreement = agreementService.getActiveAgreement();
+        } catch (Exception e) {
+            return false;
+        }
+        if (activeAgreement == null) {
+            // Ако няма Agreement, позволяваме вход (няма нужда от consent)
+            return true;
+        }
+        return repository.findByUserAndAgreement(user, activeAgreement)
                 .map(UserConsent::isFullyConsented)
                 .orElse(false);
     }
     
     private void acceptDirectConsent(User user){
-        Agreement agreement;
-        try {
-            agreement = agreementService.getActiveAgreement();
-        } catch (Exception e) {
-            log.warn("[CONSENT] Пропуснато директно съгласие за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
-            return;
-        }
+        Agreement agreement = getActiveAgreementOrThrow(user,
+                "[CONSENT] Пропуснато директно съгласие за потребител {} ({}), защото няма активно споразумение(Agreement).",
+                "Невъзможно е да се приеме съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
+        
         UserConsent consent = UserConsent.builder()
                 .user(user)
                 .agreement(agreement)
@@ -70,6 +75,7 @@ public class UserConsentService {
                 .isMinor(false)
                 .pending(false)
                 .finished(true)
+                .createdAt(LocalDateTime.now())
                 .sentMailStatus(MailSendStatus.UNNECESSARY)
                 .build();
         
@@ -77,17 +83,12 @@ public class UserConsentService {
     }
     
     
-    
     @Transactional
     public void initiateParentConsent(User user) {
-        Agreement agreement;
-        try {
-            agreement = agreementService.getActiveAgreement();
-        } catch (Exception e) {
-            log.warn("[CONSENT] Мейла за родителско съгласие за потребител {} ({}), не беше изпратен поради липса на активено споразумение(Agreement).", user.getId(), user.getEmail());
-            throw new AgreementNotFoundException("Невъзможно е да се инициира родителско съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
-
-        }
+        Agreement agreement = getActiveAgreementOrThrow(user,
+                "[CONSENT] Мейла за родителско съгласие за потребител {} ({}), не беше изпратен поради липса на активено споразумение(Agreement).",
+                "Невъзможно е да се инициира родителско съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
+        
         String token = generateSecureToken();
         UserConsent consent = UserConsent.builder()
                 .user(user)
@@ -99,6 +100,7 @@ public class UserConsentService {
                 .tokenExpiresAt(LocalDateTime.now().plusHours(48))
                 .pending(false)
                 .finished(false)
+                .createdAt(LocalDateTime.now())
                 .sentMailStatus(MailSendStatus.SENT)
                 .build();
         repository.save(consent);
@@ -107,7 +109,7 @@ public class UserConsentService {
                 .parentEmail(user.getContactPersonEmail())
                 .childFirstName(user.getFirstName())
                 .childLastName(user.getLastName())
-                .agreementContent(agreement.getContent())
+                .agreementContent(agreement != null ? agreement.getContent() : "Няма споразумение")
                 .consentLink(baseUrl + "/parent-consent/" + token)
                 .build();
         sendParentConsentEmailWithStatus(consent, emailRequest, user);
@@ -134,7 +136,11 @@ public class UserConsentService {
     }
     
     public void regenerateParentConsentToken(User user) {
-        UserConsent consent = repository.findByUser(user)
+        Agreement agreement = getActiveAgreementOrThrow(user,
+                "[CONSENT] Пропуснато родителско съгласие за потребител {} ({}), защото няма активен Agreement.",
+                "Невъзможно е да се изпрати родителско съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
+        
+        UserConsent consent = repository.findByUserAndAgreement(user,agreement)
                 .orElseThrow(() -> new RuntimeException("Няма намерено съгласие за потребителя!"));
         if (consent.getParentConsentedAt() != null){
             throw new RuntimeException("Родителят вече е потвърдил - не е нужен токен");
@@ -145,20 +151,13 @@ public class UserConsentService {
                 .tokenExpiresAt(LocalDateTime.now().plusHours(24))
                 .build();
         repository.save(consent);
-
-        Agreement agreement;
-        try {
-            agreement = agreementService.getActiveAgreement();
-        } catch (Exception e) {
-            log.warn("[CONSENT] Пропуснато родителско съгласие за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
-            throw new AgreementNotFoundException("Невъзможно е да се изпрати родителско съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
-        }
+        
         ParentConsentRequest emailRequest = ParentConsentRequest.builder()
                 .parentEmail(user.getContactPersonEmail())
                 .childFirstName(user.getFirstName())
                 .childLastName(user.getLastName())
                 .consentLink(baseUrl + "/parent-consent/" + newToken)
-                .agreementContent(agreement.getContent())
+                .agreementContent(agreement != null ? agreement.getContent() : "Няма споразумение")
                 .build();
         sendParentConsentEmailWithStatus(consent, emailRequest, user);
     }
@@ -173,13 +172,10 @@ public class UserConsentService {
     
     @Transactional
     public void createPendingConsent(User user, String reason) {
-        Agreement agreement;
-        try {
-            agreement = agreementService.getActiveAgreement();
-        } catch (Exception e) {
-            log.warn("[CONSENT] Пропуснато временно съгласие за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
-            throw new AgreementNotFoundException("Невъзможно е да се създаде временно съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор.");
-        }
+        Agreement agreement = getActiveAgreementOrThrow(user,
+                "[CONSENT] Пропуснато временно съгласие за потребител {} ({}), защото няма активен Agreement.",
+                "Невъзможно е да се създаде временно съгласие, защото няма активно споразумение (Agreement).");
+       
         UserConsent consent = UserConsent.builder()
                 .user(user)
                 .agreement(agreement)
@@ -189,21 +185,43 @@ public class UserConsentService {
                 .pending(true)
                 .pendingReason(reason)
                 .finished(false)
+                .createdAt(LocalDateTime.now())
                 .sentMailStatus(MailSendStatus.UNNECESSARY)
                 .build();
         
         repository.save(consent);
     }
 
+    public void setExistingConsentPending(UUID consentId, String reason) {
+        UserConsent consent = getConsentById(consentId);
+        if (consent.isPending()) {
+            throw new RuntimeException("Съгласието вече е в статус 'pending'!");
+        }
+        consent = consent.toBuilder()
+                .pending(true)
+                .pendingReason(reason)
+                .finished(false)
+                .build();
+        repository.save(consent);
+    }
+
+    public UserConsent getConsentById(UUID consentId){
+        return repository.findById(consentId)
+                .orElseThrow(() -> new UserConsentNotFoundException("Няма намерено съгласие с идентификация [%s]!".formatted(consentId)));
+    }
+
     public List<UserConsent>getBlockedConsents(){
         return repository.findAllByFinishedFalseAndPendingFalseOrderByCreatedAtDesc();
     }
     public List<UserConsent> getAllConsents(){
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "agreedAt"));
+        return repository.findAllByOrderByCreatedAtDesc(Sort.by(
+            Sort.Order.asc("user.firstName"),
+            Sort.Order.asc("user.lastName")
+        ));
     }
 
-    public List<UserConsent>getConsentsFailedMails(){
-        return repository.findAllBySentMailStatusFailed().stream().toList();
+    public List<UserConsent> getConsentsFailedMails() {
+        return repository.findAllBySentMailStatus(MailSendStatus.FAILED);
     }
 
     public List<UserConsent>getPendingConsents(){
@@ -230,31 +248,22 @@ public class UserConsentService {
         
     }
 
-    private void sendParentConsentEmailWithStatus(UserConsent consent, ParentConsentRequest emailRequest, User user) {
-        try {
-            notificationClient.sendParentConsentEmail(emailRequest);
-        } catch (Exception e) {
-            consent = consent.toBuilder()
-                    .sentMailStatus(MailSendStatus.FAILED)
-                    .build();
-            repository.save(consent);
-            log.error("Грешка при изпращане на родителски имейл за потребител {}: {}", user.getId(), e.getMessage(), e);
-        }
-    }
 
     public ConsentActionResult processConsentAcceptance(User user) {
-        Agreement agreement;
-        try {
-            agreement = agreementService.getActiveAgreement();
-        } catch (Exception e) {
-            log.warn("[CONSENT] Пропуснато изискване за съгласие при вход за потребител {} ({}), защото няма активен Agreement.", user.getId(), user.getEmail());
+        Agreement agreement = getActiveAgreementOrThrow(
+            user,
+            "[CONSENT] Пропуснато изискване за съгласие при вход за потребител {} ({}), защото няма активен Agreement.",
+            "Невъзможно е да се изиска съгласие, защото няма активно споразумение (Agreement). Моля свържете се с администратор."
+        );
+        if (agreement == null) {
+            // Ако няма Agreement, пропускаме процеса на съгласие и позволяваме вход
             return ConsentActionResult.CONSENT_ACCEPTED;
         }
         if (isMinor(user)) {
             if (user.getContactPersonEmail() == null || user.getContactPersonEmail().isBlank()) {
                 return ConsentActionResult.NO_PARENT_EMAIL;
             }
-            self.initiateParentConsent(user);
+            initiateParentConsent(user);
             return ConsentActionResult.PENDING_PARENT;
         }
         acceptDirectConsent(user);
@@ -271,5 +280,34 @@ public class UserConsentService {
         return repository.findByUser(user)
                 .map(c -> !c.isTokenValid())
                 .orElse(false);
+    }
+
+
+    /**
+     * Универсален метод за взимане на активен Agreement.
+     * Използва се за защита от edge cases – например ако Agreement бъде деактивиран по време на процеса на съгласие.
+     * Ако няма активен Agreement, вече НЕ хвърля Exception, а връща null.
+     * В нормалния flow, ако няма Agreement, UserConsentService не се използва.
+     **/
+    private Agreement getActiveAgreementOrThrow(User user, String warnMessage, String exceptionMessage) {
+        try {
+            return agreementService.getActiveAgreement();
+        } catch (Exception e) {
+            log.warn(warnMessage, user.getId(), user.getEmail());
+            // Вместо Exception връщаме null, за да позволим вход без Agreement
+            return null;
+        }
+    }
+
+    private void sendParentConsentEmailWithStatus(UserConsent consent, ParentConsentRequest emailRequest, User user) {
+        try {
+            notificationClient.sendParentConsentEmail(emailRequest);
+        } catch (Exception e) {
+            consent = consent.toBuilder()
+                    .sentMailStatus(MailSendStatus.FAILED)
+                    .build();
+            repository.save(consent);
+            log.error("Грешка при изпращане на родителски имейл за потребител {}: {}", user.getId(), e.getMessage(), e);
+        }
     }
 }

@@ -14,6 +14,7 @@
 </header>
 <div class="consent-container">
     <h2>Съгласие за използване на услугата</h2>
+    <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
     <p th:text="${agreement.text}">Тук ще се визуализира текстът на споразумението/съгласието.</p>
     <form th:action="@{/consent/accept}" method="post" style="display:inline;">
         <button type="submit" class="btn-accept">Приемам</button>

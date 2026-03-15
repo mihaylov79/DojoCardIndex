@@ -55,6 +55,9 @@ public class UserConsent {
     @Column(name = "parent_consented_at")
     private LocalDateTime parentConsentedAt;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     @Column
     private boolean pending;
 

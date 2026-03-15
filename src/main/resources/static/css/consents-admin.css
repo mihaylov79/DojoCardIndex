@@ -1,0 +1,103 @@
+/* consents-admin.css - стил за pending-consents и blocked-consents */
+:root {
+    --blue-main: #27669c;
+    --red-light: #f44336;
+    --background: #f4f7fa;
+    --shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);
+    --black: #000000;
+    --white: #fff;
+}
+
+.main-container {
+    width: 95%;
+    margin: 40px auto;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: var(--blue-main);
+    margin-bottom: 1.5rem;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--white);
+    color: var(--black);
+}
+.user-table th {
+    background-color: #f0f2f5;
+    color: var(--blue-main);
+    padding: 12px 8px;
+    text-align: center;
+}
+.user-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+.actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+.btn-secondary {
+    background: var(--blue-main);
+    color: var(--white);
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+}
+.btn-secondary:hover {
+    background: var(--red-light);
+}
+.pending-form {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+.input-reason {
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid var(--blue-main);
+    font-size: 1rem;
+}
+.btn-accept {
+    background: var(--blue-main);
+    color: var(--white);
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-accept:hover {
+    background: var(--red-light);
+}
+@media (max-width: 900px) {
+    .card {
+        padding: 1rem;
+    }
+    .user-table th, .user-table td {
+        padding: 8px 4px;
+        font-size: 0.95rem;
+    }
+}
+

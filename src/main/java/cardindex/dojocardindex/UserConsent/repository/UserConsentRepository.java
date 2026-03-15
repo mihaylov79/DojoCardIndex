@@ -1,7 +1,10 @@
 package cardindex.dojocardindex.UserConsent.repository;
 
+import cardindex.dojocardindex.Agreement.model.Agreement;
 import cardindex.dojocardindex.User.models.User;
+import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,13 +16,15 @@ import java.util.UUID;
 public interface UserConsentRepository extends JpaRepository<UserConsent, UUID> {
     Optional<UserConsent> findByUser(User user);
 
-    List<UserConsent> findAllBySentMailStatusFailed();
+    List<UserConsent> findAllBySentMailStatus(MailSendStatus status);
 
     Optional<UserConsent> findByConsentToken(String consentToken);
 
     List<UserConsent> findAllByPendingTrueOrderByAgreedAtDesc();
 
-//    List<UserConsent> findAllByFinishedFalseAndPendingFalse();
-
     List<UserConsent> findAllByFinishedFalseAndPendingFalseOrderByCreatedAtDesc();
+
+    List<UserConsent> findAllByOrderByCreatedAtDesc(Sort sort);
+
+    Optional<UserConsent> findByUserAndAgreement(User user, Agreement activeAgreement);
 }

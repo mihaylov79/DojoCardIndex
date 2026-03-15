@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Блокирани съгласия</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/consents-admin.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="card">
+        <h2>Блокирани съгласия</h2>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Потребител</th>
+                    <th>Agreement</th>
+                    <th>Причина</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="consent : ${blockedConsents}">
+                    <td th:text="${consent.user.email}"></td>
+                    <td th:text="${consent.agreement.title}"></td>
+                    <td th:text="${consent.pendingReason}"></td>
+                    <td>
+                        <form th:action="@{'/consent/admin/set-pending/' + ${consent.id}}" method="post" class="pending-form">
+                            <input type="text" name="reason" placeholder="Причина за освобождаване" required class="input-reason">
+                            <button type="submit" class="btn-accept">Освободи (Pending)</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="actions">
+            <a href="/consent/admin/pending" class="btn-secondary">Виж чакащи съгласия</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

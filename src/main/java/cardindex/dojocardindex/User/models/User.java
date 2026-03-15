@@ -181,6 +181,9 @@ public class User {
         return processedRequests;
     }
 
+    public Boolean getIsCompetitor() {
+        return isCompetitor;
+    }
 
     public void removeCommentsByPost(Post post) {
         comments.removeIf(comment -> comment.getPost().equals(post));

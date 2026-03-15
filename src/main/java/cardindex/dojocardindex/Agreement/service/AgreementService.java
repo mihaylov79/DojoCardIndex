@@ -19,8 +19,7 @@ public class AgreementService {
     }
 
     public Agreement getActiveAgreement(){
-        return  repository.findByActiveTrue().orElseThrow(() ->
-                new RuntimeException("Няма активно споразумение в системата!"));
+        return repository.findByActiveTrue().orElse(null);
     }
 
     public Agreement getAgreementById(UUID id){
