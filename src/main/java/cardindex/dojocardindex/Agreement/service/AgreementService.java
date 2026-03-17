@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,5 +64,9 @@ public class AgreementService {
                 .build();
 
         return repository.save(newAgreement);
+    }
+
+    public List<Agreement> getAllAgreements(){
+        return repository.findAll().stream().toList();
     }
 }
