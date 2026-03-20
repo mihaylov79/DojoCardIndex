@@ -10,11 +10,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/agreements")
@@ -58,6 +60,13 @@ public class AgreementController {
         agreementService.createAgreement(agreementRequest);
         return new ModelAndView("redirect:/agreements/show-all");
 
+    }
+
+    @PostMapping("/publish/{agreementId}")
+    public String publishAgreement(@PathVariable UUID agreementId){
+        agreementService.publishNewAgreement(agreementId);
+
+        return "redirect:/agreements/show-all";
     }
 
 

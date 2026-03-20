@@ -1,33 +1,45 @@
+
 <!DOCTYPE html>
 <html lang="bg" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Блокирани съгласия</title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}">
-    <link rel="stylesheet" th:href="@{/css/consents-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/events-test.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
 <div class="main-container">
-    <div class="card">
-        <h2>Блокирани съгласия</h2>
-        <table class="user-table">
+    <div class="table-container">
+        <div class="events-header">
+            <h2><i class="fas fa-ban"></i> Блокирани съгласия</h2>
+        </div>
+        <div class="search-container" th:unless="${#lists.isEmpty(blockedConsents)}">
+            <label for="searchInput" style="display: none;">Търсене</label>
+            <input type="text" id="searchInput" placeholder="Търсене по email, споразумение, причина...">
+        </div>
+        <div th:if="${#lists.isEmpty(blockedConsents)}" class="no-events">
+            <i class="fas fa-folder-open"></i>
+            <p>Няма налични блокирани съгласия</p>
+        </div>
+        <table th:unless="${#lists.isEmpty(blockedConsents)}">
             <thead>
                 <tr>
                     <th>Потребител</th>
-                    <th>Agreement</th>
+                    <th>Споразумение</th>
                     <th>Причина</th>
                     <th>Действие</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="consent : ${blockedConsents}">
-                    <td th:text="${consent.user.email}"></td>
-                    <td th:text="${consent.agreement.title}"></td>
-                    <td th:text="${consent.pendingReason}"></td>
-                    <td>
+                    <td data-label="Потребител" th:text="${consent.user.email}"></td>
+                    <td data-label="Споразумение" th:text="${consent.agreement.title}"></td>
+                    <td data-label="Причина" th:text="${consent.pendingReason}"></td>
+                    <td data-label="Действие">
                         <form th:action="@{'/consent/admin/set-pending/' + ${consent.id}}" method="post" class="pending-form">
                             <input type="text" name="reason" placeholder="Причина за освобождаване" required class="input-reason">
                             <button type="submit" class="btn-accept">Освободи (Pending)</button>
@@ -41,5 +53,25 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('searchInput')?.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const email = row.querySelector('td[data-label="Потребител"]')?.textContent.toLowerCase() || '';
+            const agreement = row.querySelector('td[data-label="Споразумение"]')?.textContent.toLowerCase() || '';
+            const reason = row.querySelector('td[data-label="Причина"]')?.textContent.toLowerCase() || '';
+            if (
+                email.includes(searchTerm) ||
+                agreement.includes(searchTerm) ||
+                reason.includes(searchTerm)
+            ) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>

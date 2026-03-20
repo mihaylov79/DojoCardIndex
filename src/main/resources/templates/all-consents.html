@@ -4,48 +4,55 @@
     <meta charset="UTF-8">
     <title>Всички съгласия</title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}" />
-    <link rel="stylesheet" th:href="@{/static/css/all-consents.css}" />
-    <link rel="stylesheet" th:href="@{/css/consents-admin.css}" />
+    <link rel="stylesheet" th:href="@{/css/events-test.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
 <div class="main-container">
-    <h2>Всички съгласия</h2>
-    <div class="search-container">
-        <label for="searchInput" style="display: none;">Търсене</label>
-        <input type="text" id="searchInput" placeholder="Търсене по име, фамилия, email, статус, родителско потвърждение...">
+    <div class="table-container">
+        <div class="events-header">
+            <h2><i class="fas fa-file-signature"></i> Всички съгласия</h2>
+        </div>
+        <div class="search-container" th:unless="${#lists.isEmpty(allConsents)}">
+            <label for="searchInput" style="display: none;">Търсене</label>
+            <input type="text" id="searchInput" placeholder="Търсене по име, фамилия, email, статус, родителско потвърждение...">
+        </div>
+        <div th:if="${#lists.isEmpty(allConsents)}" class="no-events">
+            <i class="fas fa-folder-open"></i>
+            <p>Няма налични съгласия</p>
+        </div>
+        <table th:unless="${#lists.isEmpty(allConsents)}">
+            <thead>
+            <tr>
+                <th>Име</th>
+                <th>Фамилия</th>
+                <th>Email</th>
+                <th>Заглавие на споразумение</th>
+                <th>Дата на съгласие</th>
+                <th>Статус</th>
+                <th>Родителско потвърдение</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="consent : ${allConsents}">
+                <td data-label="Име" th:text="${consent.user.firstName}"></td>
+                <td data-label="Фамилия" th:text="${consent.user.lastName}"></td>
+                <td data-label="Email" th:text="${consent.user.email}"></td>
+                <td data-label="Заглавие на споразумение" th:text="${consent.agreement.title}"></td>
+                <td data-label="Дата на съгласие" th:text="${#temporals.format(consent.agreedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td data-label="Статус" th:text="${consent.finished ? 'Приключено' : 'Неприключено'}"
+                    th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'"></td>
+                <td data-label="Родителско потвърдение" th:text="${consent.parentConsentedAt != null ? #temporals.format(consent.parentConsentedAt, 'yyyy-MM-dd HH:mm') : '---'}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <table class="consents-table">
-        <thead>
-        <tr>
-            <th>Име</th>
-            <th>Фамилия</th>
-            <th>Email</th>
-            <th>Заглавие на споразумение</th>
-            <th>Дата на съгласие</th>
-            <th>Статус</th>
-            <th>Родителско потвърдение</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="consent : ${allConsents}">
-            <td data-label="Име" th:text="${consent.user.firstName}"></td>
-            <td data-label="Фамилия" th:text="${consent.user.lastName}"></td>
-            <td data-label="Email" th:text="${consent.user.email}"></td>
-            <td data-label="Заглавие на споразумение" th:text="${consent.agreement.title}"></td>
-            <td data-label="Дата на съгласие" th:text="${#dates.format(consent.agreedAt, 'yyyy-MM-dd HH:mm')}"></td>
-            <td data-label="Статус" th:text="${consent.finished ? 'Приключено' : 'Неприключено'}"
-                th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'"></td>
-            <td data-label="Родителско потвърдение" th:text="${consent.parentConsentedAt != null ? #dates.format(consent.parentConsentedAt, 'yyyy-MM-dd HH:mm') : '---'}"></td>
-        </tr>
-        </tbody>
-    </table>
 </div>
 <script>
-    // JS търсачка за съгласия
-    document.getElementById('searchInput').addEventListener('input', function(e) {
+    document.getElementById('searchInput')?.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase().trim();
         const rows = document.querySelectorAll('tbody tr');
         rows.forEach(row => {
@@ -53,7 +60,7 @@
             const lastName = row.querySelector('td[data-label="Фамилия"]')?.textContent.toLowerCase() || '';
             const email = row.querySelector('td[data-label="Email"]')?.textContent.toLowerCase() || '';
             const status = row.querySelector('td[data-label="Статус"]')?.textContent.toLowerCase() || '';
-            const parentConsent = row.querySelector('td[data-label="Родителско потвържение"]')?.textContent.toLowerCase() || '';
+            const parentConsent = row.querySelector('td[data-label="Родителско потвърдение"]')?.textContent.toLowerCase() || '';
             if (
                 firstName.includes(searchTerm) ||
                 lastName.includes(searchTerm) ||

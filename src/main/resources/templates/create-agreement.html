@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Създай споразумение</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/reply-test.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="container-send">
+        <h2>Създай споразумение</h2>
+        <!-- Глобални грешки се показват само във формата -->
+        <form th:action="@{/agreements/create/new}" th:method="POST" th:object="${agreementRequest}">
+
+            <label for="title">Име на споразумение:</label>
+            <input type="text" id="title" name="title" th:field="*{title}" maxlength="100" placeholder="Въведете име..." required>
+            <span class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+
+            <label for="content">Описание:</label>
+            <textarea id="content" name="content" th:field="*{content}" maxlength="500" placeholder="Въведете описание..." required></textarea>
+            <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+
+            <button type="submit">Създай</button>
+        </form>
+        <div class="back-link">
+            <a href="/agreements/show-all">Назад</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
