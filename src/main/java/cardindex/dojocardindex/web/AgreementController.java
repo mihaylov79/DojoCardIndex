@@ -62,6 +62,7 @@ public class AgreementController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @PostMapping("/publish/{agreementId}")
     public String publishAgreement(@PathVariable UUID agreementId){
         agreementService.publishNewAgreement(agreementId);
