@@ -40,7 +40,7 @@
                 <td data-label="Статус" th:text="${agreement.active} ? 'Активно' : 'Неактивно'">Статус</td>
                 <td data-label="Дата на създаване" th:text="${#temporals.format(agreement.createdAt,'dd-MM-yyyy')}">01-01-2026</td>
                 <td class="actions">
-                    <button th:attr="onclick=|location.href='/agreements/' + '${agreement.id}' + '/details'|">Детайли</button>
+                    <button th:attr="onclick=|location.href='/agreements/details/' + '${agreement.id}'|">Детайли</button>
                     <form th:if="${!agreement.active}" th:action="@{'/agreements/publish/' + ${agreement.id}}" method="post" style="display:inline;">
                         <button type="submit">Активирай</button>
                     </form>

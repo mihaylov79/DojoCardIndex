@@ -70,5 +70,15 @@ public class AgreementController {
         return "redirect:/agreements/show-all";
     }
 
+    @GetMapping("/details/{agreementId}")
+    public ModelAndView checkAgreementDetails(@PathVariable UUID agreementId) {
+
+        Agreement agreement = agreementService.getAgreementById(agreementId);
+        ModelAndView modelAndView = new ModelAndView("agreement-details");
+        modelAndView.addObject("agreement", agreement);
+
+        return modelAndView;
+    }
+
 
 }

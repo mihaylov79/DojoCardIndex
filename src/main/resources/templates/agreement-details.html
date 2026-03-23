@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детайли за споразумение</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/agreement-details.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="agreement-details-container wide">
+        <div class="agreement-details-header">
+            <i class="fas fa-file-contract"></i>
+            <span>Детайли за споразумение</span>
+        </div>
+        <div class="agreement-meta">
+            <span class="created-date"><strong>Създадено:</strong> <span th:text="${#temporals.format(agreement.createdAt,'dd-MM-yyyy')}">01-01-2026</span></span>
+            <span class="agreement-status-meta">
+                <strong>Статус:</strong> <span th:text="${agreement.active} ? 'Активно' : 'Неактивно'">Активно</span>
+            </span>
+        </div>
+        <div class="agreement-title" th:text="${agreement.title}">Заглавие</div>
+        <div class="agreement-content" th:text="${agreement.content}">Описание на споразумението...</div>
+        <div class="agreement-details-actions">
+            <button class="btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Затвори</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
