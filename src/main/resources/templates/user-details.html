@@ -129,6 +129,10 @@
                         <th>Телефон</th>
                         <td data-label="Телефон" th:text="${user.contactPersonPhone}"></td>
                     </tr>
+                    <tr th:if="${user.contactPersonEmail} != null">
+                        <th>Имейл на лице за контакт</th>
+                        <td data-label="Имейл на лице за контакт" th:text="${user.contactPersonEmail}"></td>
+                    </tr>
                     <tr th:if="${user.medicalExamsPassed} != 0">
                         <th>Медицински преглед</th>
                         <td data-label="Медицински преглед" th:text="${user.medicalExamsPassed}"></td>

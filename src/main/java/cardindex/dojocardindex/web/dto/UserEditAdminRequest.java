@@ -1,10 +1,7 @@
 package cardindex.dojocardindex.web.dto;
 
 import cardindex.dojocardindex.User.models.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -50,6 +47,10 @@ public class UserEditAdminRequest {
 //    @Size(min = 10, max = 15, message = "Въведете валиден телефонен номер.")
     @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String contactPersonPhone;
+
+    @Email(message = "Въведете валиден имейл адрес за лице за контакт")
+    @Size(max = 60, message = "Имейлът не може да надвишава 60 символа")
+    private String contactPersonEmail;
 
 
     public boolean getIsCompetitor() {

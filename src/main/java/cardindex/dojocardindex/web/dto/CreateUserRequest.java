@@ -69,6 +69,10 @@ public class CreateUserRequest {
     @Pattern(regexp = "^$|^(?:\\+359|0)?[0-9]{8,9}$", message = "Невалиден телефонен номер")
     private String contactPersonPhone;
 
+    @Email(message = "Въведете валиден имейл адрес за лице за контакт")
+    @Size(max = 60, message = "Имейлът не може да надвишава 60 символа")
+    private String contactPersonEmail;
+
 
     public boolean getIsCompetitor() {
         return isCompetitor;
@@ -87,5 +91,3 @@ public class CreateUserRequest {
     }
 
 }
-
-

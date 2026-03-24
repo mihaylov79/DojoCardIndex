@@ -118,8 +118,13 @@
         <div class="field">
             <label for="field-contactPersonPhone">Телефон на лице за контакт</label>
             <input type="text" id="field-contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">
-            <span class="errors" th:if="${#fields.hasErrors('contactPersonPhone')}"
-                  th:errors="*{contactPersonPhone}"></span>
+            <span class="errors" th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"></span>
+        </div>
+
+        <div class="field">
+            <label for="field-contactPersonEmail">Имейл на лице за контакт</label>
+            <input type="email" id="field-contactPersonEmail" th:field="*{contactPersonEmail}" placeholder="">
+            <span class="errors" th:if="${#fields.hasErrors('contactPersonEmail')}" th:errors="*{contactPersonEmail}"></span>
         </div>
 
         <input type="submit" class="button save" value="Запази">

@@ -107,6 +107,8 @@ public class UserService implements UserDetailsService {
                 .height(createUserRequest.getHeight())
                 .weight(createUserRequest.getWeight())
                 .contactPerson(createUserRequest.getContactPerson())
+                .contactPersonPhone(createUserRequest.getContactPersonPhone())
+                .contactPersonEmail(createUserRequest.getContactPersonEmail())
                 .role(createUserRequest.getRole())
                 .status(UserStatus.ACTIVE)
                 .registrationStatus(RegistrationStatus.NOT_REGISTERED).build();

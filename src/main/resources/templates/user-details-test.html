@@ -142,6 +142,10 @@
                     <th>Телефон</th>
                     <td data-label="Телефон" th:text="${user.contactPersonPhone}"></td>
                 </tr>
+                <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${user.contactPersonEmail} != null">
+                    <th>Имейл на лице за контакт</th>
+                    <td data-label="Имейл на лице за контакт" th:text="${user.contactPersonEmail}"></td>
+                </tr>
                 <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${user.medicalExamsPassed} != null">
                     <th>Медицински преглед</th>
                     <td data-label="Медицински преглед" th:text="${#temporals.format(user.medicalExamsPassed, 'dd-MM-yyyy г.')}"></td>

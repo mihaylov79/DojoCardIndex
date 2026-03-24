@@ -94,6 +94,22 @@
             <textarea id="interests" th:field="*{interests}" placeholder=""></textarea>
         </div>
 
+        <div class="field">
+            <label for="contactPerson">Име на лице за контакт</label>
+            <input type="text" id="contactPerson" th:field="*{contactPerson}" placeholder="">
+            <span class="errors" th:if="${#fields.hasErrors('contactPerson')}" th:errors="*{contactPerson}"></span>
+        </div>
+        <div class="field">
+            <label for="contactPersonPhone">Телефон на лице за контакт</label>
+            <input type="text" id="contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">
+            <span class="errors" th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"></span>
+        </div>
+        <div class="field">
+            <label for="contactPersonEmail">Имейл на лице за контакт</label>
+            <input type="email" id="contactPersonEmail" th:field="*{contactPersonEmail}" placeholder="">
+            <span class="errors" th:if="${#fields.hasErrors('contactPersonEmail')}" th:errors="*{contactPersonEmail}"></span>
+        </div>
+
         <input type="submit" class="button" value="Добави потребител">
     </form>
 </div>

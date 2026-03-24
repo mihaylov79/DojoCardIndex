@@ -79,11 +79,20 @@
                 </ul>
             </div>
 
+            <!-- Секция: Споразумения -->
+            <div class="menu-section">
+                <div class="section-title">Споразумения</div>
+                <ul>
+                    <li><a th:href="@{/agreements/show-all}">Всички споразумения</a></li>
+                </ul>
+            </div>
+
             <!-- Секция: Действия -->
             <div class="menu-section">
                 <div class="section-title">Действия</div>
                 <ul>
                     <li><a th:href="@{/admin/add-user}">Нов потребител</a></li>
+                    <li><a th:href="@{/agreements/create/new}">Ново споразумение</a></li>
                     <li><a th:href="@{/events/new}">Добави събитие</a></li>
                     <li><a th:href="@{/posts/create}">Добави публикация</a></li>
                 </ul>

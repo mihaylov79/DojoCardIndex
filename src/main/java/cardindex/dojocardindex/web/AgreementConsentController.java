@@ -78,7 +78,7 @@ public class AgreementConsentController {
         }
 
         User user = userService.getUserById(details.getId());
-        userConsentService.refuseConsent(user);
+//        userConsentService.refuseConsent(user);
         session.invalidate();
         return "redirect:/login?consentRefused";
     }

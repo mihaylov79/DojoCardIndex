@@ -92,25 +92,6 @@ body {
     border-bottom: 2px solid var(--red-main);
 }
 
-/* Мобилен хамбургер бутон */
-/*.menu-toggle {*/
-/*    display: none;*/
-/*    position: absolute;*/
-/*    top: 15px;*/
-/*    right: 20px;*/
-/*    cursor: pointer;*/
-/*    width: 30px;*/
-/*    height: 25px;*/
-/*    flex-direction: column;*/
-/*    justify-content: space-between;*/
-/*}*/
-
-/*.menu-toggle span {*/
-/*    display: block;*/
-/*    height: 3px;*/
-/*    background-color: var(--red-main);*/
-/*    border-radius: 2px;*/
-/*}*/
 
 /* Респонсив при малки екрани */
 @media (max-width: 768px) {

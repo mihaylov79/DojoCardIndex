@@ -44,6 +44,7 @@ public class DTOMapper {
                 .medicalExamsPassed(user.getMedicalExamsPassed())
                 .contactPerson(user.getContactPerson())
                 .contactPersonPhone(user.getContactPersonPhone())
+                .contactPersonEmail(user.getContactPersonEmail())
                 .build();
     }
 

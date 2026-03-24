@@ -20,7 +20,7 @@
         <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
         <div th:if="${tokenExpired}" class="token-expired">
             <p>Валидността на линка за родителско съгласие е изтекла.</p>
-            <form th:action="@{/consent/regenerate-token}" method="post">
+            <form th:action="@{/consent/resend-parrent-consent}" method="post">
                 <button type="submit" class="btn-regenerate">Изпрати нов линк към родителя</button>
             </form>
         </div>
