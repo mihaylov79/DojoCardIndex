@@ -5,21 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Съгласие за използване на услугата</title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}">
-    <link rel="stylesheet" href="/css/login-test.css">
-    <link rel="stylesheet" th:href="@{/css/consent-show.css}">
+    <link rel="stylesheet" th:href="@{/css/agreement-details.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
     <th:block th:insert="~{fragments/nav :: nav}"></th:block>
 </header>
-<div class="consent-container">
-    <h2>Съгласие за използване на услугата</h2>
-    <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
-    <p th:text="${agreement.content}">Тук ще се визуализира текстът на споразумението/съгласието.</p>
-    <form th:action="@{/consent/accept}" method="post" style="display:inline;">
-        <button type="submit" class="btn-accept">Приемам</button>
-    </form>
-    <a href="/consent/refuse" class="btn-refuse">Отказвам</a>
+<div class="main-container">
+    <div class="agreement-details-container wide">
+        <div class="agreement-details-header">
+            <i class="fas fa-file-contract"></i>
+            <span>Съгласие за използване на услугата</span>
+        </div>
+        <div class="agreement-meta">
+            <span class="created-date">
+                <strong>Създадено:</strong>
+                <span th:text="${#temporals.format(agreement.createdAt,'dd-MM-yyyy')}">01-01-2026</span>
+            </span>
+        </div>
+        <div class="agreement-title" th:text="${agreement.title}">Заглавие</div>
+        <div class="agreement-content" th:utext="${#strings.replace(#strings.replace(#strings.replace(#strings.replace(agreement.content, '<hr>', '<br><br>'), '\r\n', '<br/>'), '\n', '<br/>'), '\r', '<br/>')}">Текст на споразумението...</div>
+        <div class="agreement-details-actions">
+            <form th:action="@{/consent/accept}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-accept"><i class="fas fa-check"></i> Приемам</button>
+            </form>
+            <a href="/consent/refuse" class="btn btn-refuse"><i class="fas fa-times"></i> Отказвам</a>
+        </div>
+    </div>
 </div>
 </body>
 </html>
