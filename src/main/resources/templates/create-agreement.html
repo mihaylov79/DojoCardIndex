@@ -22,7 +22,7 @@
             <span class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
 
             <label for="content">Описание:</label>
-            <textarea id="content" name="content" th:field="*{content}" placeholder="Въведете описание..." required></textarea>
+            <textarea id="content" name="content" th:field="*{content}" placeholder="Въведете описание..." required class="agreement-textarea"></textarea>
             <span class="errors" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
 
             <button type="submit">Създай</button>

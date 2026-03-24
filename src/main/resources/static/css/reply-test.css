@@ -317,6 +317,24 @@ form button:not(.logout-btn):hover {
     border-bottom-left-radius: 1.5em;
 }
 
+/* Специален стил само за textarea в create-agreement */
+.agreement-textarea {
+  width: 100%;
+  min-height: 300px;
+  max-height: 600px;
+  font-size: 1.1em;
+  padding: 0.7em;
+  resize: vertical;
+  box-sizing: border-box;
+}
+@media (max-width: 700px) {
+  .agreement-textarea {
+    min-height: 120px;
+    font-size: 1em;
+    padding: 0.5em;
+  }
+}
+
 .original-message {
   margin-bottom: 1em;
 }
