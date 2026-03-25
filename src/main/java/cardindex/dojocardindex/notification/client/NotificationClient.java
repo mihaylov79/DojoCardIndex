@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "mail-svc", url = "https://mail-svc-app-container-app.yellowdesert-a725fdfe.switzerlandnorth.azurecontainerapps.io/api/v1/notifications")
+//@FeignClient(name = "mail-svc", url = "https://mail-svc-app-container-app.yellowdesert-a725fdfe.switzerlandnorth.azurecontainerapps.io/api/v1/notifications")
+@FeignClient(name = "mail-svc", url = "http://localhost:8081/api/v1/notifications")
 public interface NotificationClient {
 
     @PostMapping("/preferences")
@@ -38,7 +39,7 @@ public interface NotificationClient {
     @PostMapping("/forgotten-password")
     ResponseEntity<Void>sendForgottenPasswordEmail(@RequestBody ForgottenPasswordRequest request);
 
-    @PostMapping("/parrent-consent")
+    @PostMapping("/consents")
     ResponseEntity<Void>sendParentConsentEmail(@RequestBody ParentConsentRequest request);
 
 }

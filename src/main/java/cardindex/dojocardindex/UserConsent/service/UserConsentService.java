@@ -5,10 +5,13 @@ import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.exception.ParentConsentAlreadyConfirmedException;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.repository.UserConsentRepository;
 import cardindex.dojocardindex.exceptions.InvalidUserConsentException;
+import cardindex.dojocardindex.exceptions.TokenExpiredException;
+import cardindex.dojocardindex.exceptions.TokenNotFoundException;
 import cardindex.dojocardindex.exceptions.UserConsentNotFoundException;
 import cardindex.dojocardindex.notification.client.NotificationClient;
 import cardindex.dojocardindex.web.dto.ParentConsentRequest;
@@ -119,21 +122,25 @@ public class UserConsentService {
     
     @Transactional
     public UserConsent verifyParentConsent(String token){
-        
+
         UserConsent consent = repository.findByConsentToken(token)
-                .orElseThrow(() -> new RuntimeException("Невалиден токен!"));
-        
-        if (!consent.isTokenValid()){
-            throw new RuntimeException("Токенът е изтекъл! Моля свържете се с администратор");
+                .orElseThrow(() -> new TokenNotFoundException("Невалиден токен!"));
+
+        if (consent.getParentConsentedAt() != null) {
+            throw new ParentConsentAlreadyConfirmedException("Родителското съгласие вече е потвърдено!");
         }
-        
-            return repository.save(consent.toBuilder()
-                    .parentConsentedAt(LocalDateTime.now())
-                    .pending(false)
-                    .pendingReason(null)
-                    .finished(true)
-                    .build());
-            
+
+        if (!consent.isTokenValid()){
+            throw new TokenExpiredException("Токенът е изтекъл! Моля свържете се с администратор");
+        }
+
+        return repository.save(consent.toBuilder()
+                .parentConsentedAt(LocalDateTime.now())
+                .pending(false)
+                .pendingReason(null)
+                .finished(true)
+                .build());
+
         
     }
     
@@ -151,7 +158,7 @@ public class UserConsentService {
         UserConsent consent = repository.findByUserAndAgreement(user,agreement)
                 .orElseThrow(() -> new UserConsentNotFoundException("Няма намерено съгласие за потребителя!"));
         if (consent.getParentConsentedAt() != null){
-            throw new RuntimeException("Родителят вече е потвърдил - не е нужен токен");
+            throw new ParentConsentAlreadyConfirmedException("Родителят вече е потвърдил - не е нужен токен");
         }
         String newToken = generateSecureToken();
         consent = consent.toBuilder()

@@ -1,7 +1,7 @@
 /* consents-admin.css - стил за pending-consents и blocked-consents */
 :root {
     --blue-main: #27669c;
-    --red-light: #f44336;
+    --red-main: #27669c;
     --background: #f4f7fa;
     --shadow: 0 0 1em 0.2em rgb(0,0,0,0.2);
     --black: #000000;
@@ -52,44 +52,74 @@ h2 {
     margin-top: 1.5rem;
     display: flex;
     gap: 1rem;
+    justify-content: flex-end;
 }
 .btn-secondary {
-    background: var(--blue-main);
-    color: var(--white);
-    border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 5px;
-    font-size: 1rem;
+    background: #fff;
+    color: var(--red-main);
+    border: 2px solid var(--red-main);
+    padding: 0.2rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-family: 'Raleway', Arial, sans-serif;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: font-weight 0.2s;
     text-decoration: none;
+    width: auto;
+    min-width: unset;
+    display: inline-block;
+    box-shadow: none;
 }
 .btn-secondary:hover {
-    background: var(--red-light);
+    font-weight: 700;
+    background: #fff;
+    color: var(--red-main);
+    border: 2px solid var(--red-main);
+}
+.btn-release {
+    color: var(--red-main);
+    font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-main);
+    cursor: pointer;
+    background: transparent;
+    transition: font-weight 0.3s ease;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    box-shadow: none;
+}
+.btn-release:hover {
+    font-weight: 650;
+    background: transparent;
+    color: var(--red-main);
+    border: 2px solid var(--red-main);
 }
 .pending-form {
     display: flex;
-    gap: 0.5rem;
-    justify-content: center;
+    flex-direction: column;
+    gap: 0.5em;
+    align-items: flex-start;
 }
 .input-reason {
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    border: 1px solid var(--blue-main);
+    width: auto;
+    min-width: 240px;
+    padding: 0.5rem 1rem;
     font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    border: 2px solid var(--red-main);
+    border-radius: 0.5rem;
+    background-color: var(--white);
+    color: var(--black);
+    transition: all 0.3s ease;
+    outline: none;
+    margin-bottom: 0.5em;
 }
-.btn-accept {
-    background: var(--blue-main);
-    color: var(--white);
-    border: none;
-    padding: 0.4rem 1rem;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.btn-accept:hover {
-    background: var(--red-light);
+.input-reason:focus {
+    border-color: var(--red-main);
+    box-shadow: 0 0 8px rgba(39, 102, 156, 0.3);
 }
 @media (max-width: 900px) {
     .card {
@@ -100,4 +130,3 @@ h2 {
         font-size: 0.95rem;
     }
 }
-

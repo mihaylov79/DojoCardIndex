@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Dojo - Грешка при потвърждаване на съгласие</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/error-test.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+    <div class="additional-info">
+        <div class="message">
+            <h1>Грешка при потвърждаване на съгласие!</h1>
+            <hr class="line"/>
+            <h3 th:text="${errorMessage}">Възникна проблем при потвърждаване на съгласието.</h3>
+            <hr class="line"/>
+        </div>
+        <p>Ако мислите, че това е грешка, <a href="/contact">свържете се с нас</a>.</p>
+        <a href="/home">Към профилната страница</a>
+    </div>
+</div>
+
+</body>
+</html>
+

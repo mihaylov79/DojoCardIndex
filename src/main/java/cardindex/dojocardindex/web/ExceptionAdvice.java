@@ -1,5 +1,6 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.UserConsent.exception.ParentConsentAlreadyConfirmedException;
 import cardindex.dojocardindex.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -203,6 +204,26 @@ public class ExceptionAdvice {
         return getRedirectUrl(request);
     }
 
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ModelAndView handleTokenNotFound(TokenNotFoundException e) {
+        ModelAndView modelAndView = new ModelAndView("parent-consent-fail");
+        modelAndView.addObject("errorMessage", e.getMessage());
+        return modelAndView;
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ModelAndView handleTokenExpired(TokenExpiredException e) {
+        ModelAndView modelAndView = new ModelAndView("parent-consent-fail");
+        modelAndView.addObject("errorMessage", e.getMessage());
+        return modelAndView;
+    }
+
+    @ExceptionHandler(ParentConsentAlreadyConfirmedException.class)
+    public ModelAndView handleParentConsentAlreadyConfirmed(ParentConsentAlreadyConfirmedException ex) {
+        ModelAndView modelAndView = new ModelAndView("parent-consent-fail");
+        modelAndView.addObject("errorMessage", ex.getMessage());
+        return modelAndView;
+    }
 
     /**
      * Помощен метод за извличане на URL за redirect.

@@ -3,12 +3,10 @@ package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.service.UserConsentService;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -21,26 +19,12 @@ public class ParentConsentController {
         this.userConsentService = userConsentService;
     }
 
-    @GetMapping("/verify")
-    public ModelAndView showParentConsent(@Param("token") String token) {
-        UserConsent consent = userConsentService.getConsentByToken(token);
-
-        ModelAndView modelAndView = new ModelAndView("parent-consent-verify");
-        modelAndView.addObject("consent", consent);
-        modelAndView.addObject("agreement", consent.getAgreement());
-        modelAndView.addObject("token", token);
+    @GetMapping("/{token}")
+    public ModelAndView handleParentConsent(@PathVariable String token) {
+        UserConsent verifiedConsent = userConsentService.verifyParentConsent(token);
+        ModelAndView modelAndView = new ModelAndView("parent-consent-success");
+        modelAndView.addObject("agreementTitle", verifiedConsent.getAgreement().getTitle());
+        modelAndView.addObject("consentId", verifiedConsent.getId());
         return modelAndView;
     }
-
-    @PostMapping("/confirm")
-    public String confirmParentConsent(@RequestParam("token") String token) {
-        userConsentService.verifyParentConsent(token);
-        return "redirect:/parent-consent/success";
-    }
-
-    @GetMapping("/success")
-    public String success() {
-        return "parent-consent-success";
-    }
-
 }

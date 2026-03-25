@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Успешно потвърдено родителско съгласие</title>
+    <link rel="stylesheet" href="/css/default-test.css">
+    <link rel="stylesheet" href="/css/error-test.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="additional-info">
+        <div class="message">
+            <h1>Поздравления!</h1>
+            <hr class="line"/>
+            <h3>Родителското съгласие беше потвърдено успешно.</h3>
+            <hr class="line"/>
+            <p><b>Споразумение:</b> <span th:text="${agreementTitle}"></span></p>
+            <p><b>ID на съгласието:</b> <span th:text="${consentId}"></span></p>
+        </div>
+        <p><a href="/home">Към профилната страница</a></p>
+    </div>
+</div>
+</body>
+</html>
+

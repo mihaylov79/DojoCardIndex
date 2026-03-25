@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bg" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -6,6 +5,7 @@
     <title>Блокирани съгласия</title>
     <link rel="stylesheet" th:href="@{/css/default-test.css}">
     <link rel="stylesheet" th:href="@{/css/events-test.css}">
+    <link rel="stylesheet" th:href="@{/css/consents-admin.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -29,27 +29,33 @@
             <thead>
                 <tr>
                     <th>Потребител</th>
+                    <th>Име на потребител</th>
+                    <!-- Removed: Име на лице за контакт -->
+                    <!-- Removed: Имейл на лице за контакт -->
                     <th>Споразумение</th>
-                    <th>Причина</th>
                     <th>Действие</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="consent : ${blockedConsents}">
                     <td data-label="Потребител" th:text="${consent.user.email}"></td>
+                    <td data-label="Име на потребител"
+                        th:text="${(consent.user.firstName != null or consent.user.lastName != null) ? ((consent.user.firstName != null ? consent.user.firstName : '') + ' ' + (consent.user.lastName != null ? consent.user.lastName : '')) : '-'}"></td>
+                    <!-- Removed: Име на лице за контакт -->
+                    <!-- Removed: Имейл на лице за контакт -->
                     <td data-label="Споразумение" th:text="${consent.agreement.title}"></td>
-                    <td data-label="Причина" th:text="${consent.pendingReason}"></td>
                     <td data-label="Действие">
                         <form th:action="@{'/consent/admin/set-pending/' + ${consent.id}}" method="post" class="pending-form">
-                            <input type="text" name="reason" placeholder="Причина за освобождаване" required class="input-reason">
-                            <button type="submit" class="btn-accept">Освободи (Pending)</button>
+                            <label for="reason-${consent.id}" style="display:none;">Причина за освобождаване</label>
+                            <input type="text" id="reason-${consent.id}" name="reason" placeholder="Причина за освобождаване" required class="input-reason">
+                            <button type="submit" class="btn-release">Освободи</button>
                         </form>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div class="actions">
-            <a href="/consent/admin/pending" class="btn-secondary">Виж чакащи съгласия</a>
+            <!-- Махаме бутона Виж чакащи съгласия -->
         </div>
     </div>
 </div>
