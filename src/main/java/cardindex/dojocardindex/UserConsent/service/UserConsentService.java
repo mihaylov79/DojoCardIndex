@@ -94,6 +94,13 @@ public class UserConsentService {
         }
 
         Agreement activeAgreement = activeAgreementOpt.get();
+        // Проверка за вече съществуващо съгласие
+        Optional<UserConsent> existingConsentOpt = repository.findByUserAndAgreement(user, activeAgreement);
+        if (existingConsentOpt.isPresent()) {
+            // Ако има съгласие (незавършено или завършено), не правим нищо
+            return;
+        }
+
         String token = generateSecureToken();
         UserConsent consent = UserConsent.builder()
                 .user(user)
