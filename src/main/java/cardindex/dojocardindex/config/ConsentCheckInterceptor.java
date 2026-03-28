@@ -50,6 +50,14 @@ public class ConsentCheckInterceptor implements HandlerInterceptor {
         String email = auth.getName();
         User user = userService.findUserByEmail(email);
 
+        // Централизирана проверка за изчакване на родителско съгласие
+        if (userConsentService.isWaitingForParentConsent(user)) {
+            if (!requestURI.equals("/consent/pending-parent")) {
+                response.sendRedirect("/consent/pending-parent");
+                return false;
+            }
+        }
+
         // Проверяваме дали потребителят има валидно съгласие
         if (!userConsentService.hasValidConsent(user)) {
             // Защита от infinite loop

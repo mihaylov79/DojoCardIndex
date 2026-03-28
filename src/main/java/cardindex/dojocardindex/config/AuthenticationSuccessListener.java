@@ -33,13 +33,21 @@ public class AuthenticationSuccessListener {
         // Извиквам метода за проверка на предпочитанията за известия
         notificationService.checkNotificationPreference(user.getId(), user.getEmail());
 
+        // Проверка дали чака родителско съгласие
+        if (userConsentService.isWaitingForParentConsent(user)) {
+            HttpSession session = ((ServletRequestAttributes)
+                    RequestContextHolder.currentRequestAttributes())
+                    .getRequest().getSession();
+            session.setAttribute("redirectAfterLogin", "/consent/pending-parent");
+            return;
+        }
         // Проверка дали има валиден consent само ако има активен Agreement
-            if (!userConsentService.hasValidConsent(user)) {
-                HttpSession session = ((ServletRequestAttributes)
-                        RequestContextHolder.currentRequestAttributes())
-                        .getRequest().getSession();
-                session.setAttribute("redirectAfterLogin", "/consent/show");
-            }
+        if (!userConsentService.hasValidConsent(user)) {
+            HttpSession session = ((ServletRequestAttributes)
+                    RequestContextHolder.currentRequestAttributes())
+                    .getRequest().getSession();
+            session.setAttribute("redirectAfterLogin", "/consent/show");
+        }
 
     }
 }

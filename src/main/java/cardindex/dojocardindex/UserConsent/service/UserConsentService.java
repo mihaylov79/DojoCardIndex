@@ -57,7 +57,7 @@ public class UserConsentService {
         if (activeAgreementOpt.isEmpty()){
             return true;
         }
-        return repository.findByUserAndAgreement(user, activeAgreementOpt.get())
+        return getOptConsent(user, activeAgreementOpt.get())
                 .map(UserConsent::isFullyConsented)
                 .orElse(false);
     }
@@ -95,7 +95,7 @@ public class UserConsentService {
 
         Agreement activeAgreement = activeAgreementOpt.get();
         // Проверка за вече съществуващо съгласие
-        Optional<UserConsent> existingConsentOpt = repository.findByUserAndAgreement(user, activeAgreement);
+        Optional<UserConsent> existingConsentOpt = getOptConsent(user, activeAgreement);
         if (existingConsentOpt.isPresent()) {
             // Ако има съгласие (незавършено или завършено), не правим нищо
             return;
@@ -109,7 +109,7 @@ public class UserConsentService {
                 .isMinor(true)
                 .parentEmail(user.getContactPersonEmail())
                 .consentToken(token)
-                .tokenExpiresAt(LocalDateTime.now().plusHours(48))
+                .tokenExpiresAt(LocalDateTime.now().plusHours(24))
                 .pending(false)
                 .finished(false)
                 .createdAt(LocalDateTime.now())
@@ -162,7 +162,7 @@ public class UserConsentService {
         Agreement agreement = activeAgreementOpt.get();
 
 
-        UserConsent consent = repository.findByUserAndAgreement(user,agreement)
+        UserConsent consent = getOptConsent(user,agreement)
                 .orElseThrow(() -> new UserConsentNotFoundException("Няма намерено съгласие за потребителя!"));
         if (consent.getParentConsentedAt() != null){
             throw new ParentConsentAlreadyConfirmedException("Родителят вече е потвърдил - не е нужен токен");
@@ -306,6 +306,25 @@ public class UserConsentService {
                 .orElse(false);
     }
 
+    public boolean isWaitingForParentConsent(User user) {
+        Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
+        if (activeAgreementOpt.isPresent()) {
+            Optional<UserConsent> consentOpt = getOptConsent(user, activeAgreementOpt.get());
+            if (consentOpt.isPresent()) {
+                UserConsent consent = consentOpt.get();
+                // Ако е pending (от админ), не чака родител
+                if (consent.isPending()) return false;
+                return consent.isMinor() &&
+                        consent.getConsentToken() != null &&
+                        consent.getTokenExpiresAt() != null &&
+                        consent.getTokenExpiresAt().isAfter(LocalDateTime.now()) &&
+                        !consent.isFinished() &&
+                        consent.getParentConsentedAt() == null;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Универсален метод за взимане на активен Agreement.
@@ -342,5 +361,25 @@ public class UserConsentService {
             repository.save(consent);
             log.error("Грешка при изпращане на родителски имейл за потребител {}: {}", user.getId(), e.getMessage(), e);
         }
+    }
+
+    public Optional<UserConsent> getOptConsent(User user, Agreement agreement) {
+        return repository.findByUserAndAgreement(user, agreement);
+    }
+
+    /**
+     * Връща оставащите секунди до изтичане на токена за родителско съгласие,
+     * ако има такъв. Ако няма активен токен, връща 0.
+     */
+    public long getParentConsentTokenSecondsLeft(User user) {
+        Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
+        if (activeAgreementOpt.isPresent()) {
+            Optional<UserConsent> consentOpt = getOptConsent(user, activeAgreementOpt.get());
+            if (consentOpt.isPresent() && consentOpt.get().getTokenExpiresAt() != null) {
+                long secondsLeft = java.time.Duration.between(java.time.LocalDateTime.now(), consentOpt.get().getTokenExpiresAt()).getSeconds();
+                return Math.max(secondsLeft, 0);
+            }
+        }
+        return 0;
     }
 }

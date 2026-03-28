@@ -96,6 +96,11 @@ public class AgreementConsentController {
         }
         ModelAndView modelAndView = new ModelAndView("consent-pending-parent");
         modelAndView.addObject("tokenExpired", userConsentService.isParentConsentTokenExpired(user));
+        // Добавяме оставащо време до изтичане на токена
+        long tokenSecondsLeft = userConsentService.getParentConsentTokenSecondsLeft(user);
+        if (tokenSecondsLeft > 0) {
+            modelAndView.addObject("tokenSecondsLeft", tokenSecondsLeft);
+        }
         return modelAndView;
     }
 

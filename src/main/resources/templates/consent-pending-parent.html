@@ -26,8 +26,12 @@
         </div>
         <div th:unless="${tokenExpired}" class="waiting-info">
             <p>Изпратен е имейл до родителя. Моля, изчакайте потвърждение.</p>
+            <div th:if="${tokenSecondsLeft}">
+                <p>Оставащо време до изтичане на линка: <span th:text="${#numbers.formatInteger(tokenSecondsLeft/60, 0)}"></span> минути</p>
+            </div>
         </div>
-        <a href="/home" class="btn-back">Към начална страница</a>
+        <!-- <a href="/home" class="btn-back">Към начална страница</a> -->
+        <!-- Бутонът за връщане към начална страница е премахнат по изискване -->
     </div>
 </div>
 </body>
