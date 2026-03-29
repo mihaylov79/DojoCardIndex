@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Родителско съгласие</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/agreement-details.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="agreement-details-container wide">
+        <div class="agreement-details-header">
+            <i class="fas fa-file-contract"></i>
+            <span>Съгласие за използване на услугата</span>
+        </div>
+        <div class="agreement-title" th:text="${agreement.title}">Заглавие</div>
+        <div class="agreement-content" th:utext="${agreement.content}">Текст на споразумението...</div>
+        <form th:action="@{'/parent-consent/' + ${token} + '/accept'}" method="post">
+            <div>
+                <input type="checkbox" id="readAndAgree" name="readAndAgree" required>
+                <label for="readAndAgree">Прочетох и съм съгласен с настоящото споразумение</label>
+            </div>
+            <div>
+                <input type="checkbox" id="isParent" name="isParent" required>
+                <label for="isParent">Декларирам, че съм родител/настойник на детето и предоставям вярна информация</label>
+            </div>
+            <div class="agreement-details-actions">
+                <button type="submit" class="btn btn-accept">Съгласен съм</button>
+                <a th:href="@{'/parent-consent/' + ${token} + '/refuse'}" class="btn btn-refuse">Отказвам</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
