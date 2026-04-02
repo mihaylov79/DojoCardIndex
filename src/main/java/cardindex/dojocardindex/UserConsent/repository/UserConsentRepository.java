@@ -14,9 +14,6 @@ import java.util.UUID;
 
 @Repository
 public interface UserConsentRepository extends JpaRepository<UserConsent, UUID> {
-    Optional<UserConsent> findByUser(User user);
-
-    List<UserConsent> findAllBySentMailStatus(MailSendStatus status);
 
     Optional<UserConsent> findByConsentToken(String consentToken);
 
@@ -27,4 +24,8 @@ public interface UserConsentRepository extends JpaRepository<UserConsent, UUID> 
     List<UserConsent> findAllByOrderByCreatedAtDesc(Sort sort);
 
     Optional<UserConsent> findByUserAndAgreement(User user, Agreement activeAgreement);
+
+    List<UserConsent> findAllBySentInvitationMailStatus(MailSendStatus sentInvitationMailStatus);
+
+    List<UserConsent> findAllBySentConfirmationMailStatus(MailSendStatus sentConfirmationMailStatus);
 }

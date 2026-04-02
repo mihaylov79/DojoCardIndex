@@ -6,7 +6,8 @@ import cardindex.dojocardindex.notification.client.dto.NotificationPreferenceReq
 import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
 import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
 import cardindex.dojocardindex.web.dto.ForgottenPasswordRequest;
-import cardindex.dojocardindex.web.dto.ParentConsentRequest;
+import cardindex.dojocardindex.web.dto.ParentConsentConfirmationRequest;
+import cardindex.dojocardindex.web.dto.ParentConsentInvitationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,9 @@ public interface NotificationClient {
     ResponseEntity<Void>sendForgottenPasswordEmail(@RequestBody ForgottenPasswordRequest request);
 
     @PostMapping("/consents")
-    ResponseEntity<Void>sendParentConsentEmail(@RequestBody ParentConsentRequest request);
+    ResponseEntity<Void> sendParentConsentInvitationEmail(@RequestBody ParentConsentInvitationRequest request);
+
+    @PostMapping("/consents/confirm")
+    ResponseEntity<Void> sendParentConsentConfirmationEmail(@RequestBody ParentConsentConfirmationRequest request);
 
 }

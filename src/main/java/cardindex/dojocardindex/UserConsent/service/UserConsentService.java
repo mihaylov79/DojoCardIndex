@@ -14,7 +14,8 @@ import cardindex.dojocardindex.exceptions.TokenExpiredException;
 import cardindex.dojocardindex.exceptions.TokenNotFoundException;
 import cardindex.dojocardindex.exceptions.UserConsentNotFoundException;
 import cardindex.dojocardindex.notification.client.NotificationClient;
-import cardindex.dojocardindex.web.dto.ParentConsentRequest;
+import cardindex.dojocardindex.web.dto.ParentConsentConfirmationRequest;
+import cardindex.dojocardindex.web.dto.ParentConsentInvitationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +78,8 @@ public class UserConsentService {
                 .pending(false)
                 .finished(true)
                 .createdAt(LocalDateTime.now())
-                .sentMailStatus(MailSendStatus.UNNECESSARY)
+                .sentInvitationMailStatus(MailSendStatus.UNNECESSARY)
+                .sentConfirmationMailStatus(MailSendStatus.UNNECESSARY)
                 .build();
         
         repository.save(consent);
@@ -113,18 +115,18 @@ public class UserConsentService {
                 .pending(false)
                 .finished(false)
                 .createdAt(LocalDateTime.now())
-                .sentMailStatus(MailSendStatus.SENT)
+                .sentInvitationMailStatus(MailSendStatus.SENT)
                 .build();
         repository.save(consent);
 
-        ParentConsentRequest emailRequest = ParentConsentRequest.builder()
+        ParentConsentInvitationRequest emailRequest = ParentConsentInvitationRequest.builder()
                 .parentEmail(user.getContactPersonEmail())
                 .childFirstName(user.getFirstName())
                 .childLastName(user.getLastName())
-                .agreementContent(activeAgreement.getContent())
+                .agreementTitle(activeAgreement.getTitle())
                 .consentLink(baseUrl + "/parent-consent/" + token)
                 .build();
-        sendParentConsentEmailWithStatus(consent, emailRequest, user);
+        sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
     }
     
     @Transactional
@@ -141,12 +143,38 @@ public class UserConsentService {
             throw new TokenExpiredException("Токенът е изтекъл! Моля свържете се с администратор");
         }
 
-        return repository.save(consent.toBuilder()
+        consent = consent.toBuilder()
                 .parentConsentedAt(LocalDateTime.now())
                 .pending(false)
                 .pendingReason(null)
                 .finished(true)
-                .build());
+                .sentConfirmationMailStatus(MailSendStatus.SENT)
+                .build();
+
+        repository.save(consent);
+
+        User user = consent.getUser();
+
+        ParentConsentConfirmationRequest confirmationRequest = ParentConsentConfirmationRequest.builder()
+                .parentEmail(user.getContactPersonEmail())
+                .childFirstName(user.getFirstName())
+                .childLastName(user.getLastName())
+                .agreementTitle(consent.getAgreement().getTitle())
+                .agreementContent(consent.getAgreement().getContent())
+                .parentConsentAt(consent.getParentConsentedAt())
+                .consentId(consent.getId())
+                .build();
+
+        sendParentConsentConfirmationEmailWithStatus(consent, confirmationRequest, user);
+
+        return consent;
+
+//        return repository.save(consent.toBuilder()
+//                .parentConsentedAt(LocalDateTime.now())
+//                .pending(false)
+//                .pendingReason(null)
+//                .finished(true)
+//                .build());
 
         
     }
@@ -174,14 +202,14 @@ public class UserConsentService {
                 .build();
         repository.save(consent);
         
-        ParentConsentRequest emailRequest = ParentConsentRequest.builder()
+        ParentConsentInvitationRequest emailRequest = ParentConsentInvitationRequest.builder()
                 .parentEmail(user.getContactPersonEmail())
                 .childFirstName(user.getFirstName())
                 .childLastName(user.getLastName())
                 .consentLink(baseUrl + "/parent-consent/" + newToken)
-                .agreementContent(agreement.getContent())
+                .agreementTitle(agreement.getTitle())
                 .build();
-        sendParentConsentEmailWithStatus(consent, emailRequest, user);
+        sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
     }
     
     @Transactional
@@ -211,7 +239,8 @@ public class UserConsentService {
                 .pendingReason(reason)
                 .finished(false)
                 .createdAt(LocalDateTime.now())
-                .sentMailStatus(MailSendStatus.UNNECESSARY)
+                .sentInvitationMailStatus(MailSendStatus.UNNECESSARY)
+                .sentConfirmationMailStatus(MailSendStatus.UNNECESSARY)
                 .build();
         
         repository.save(consent);
@@ -245,8 +274,15 @@ public class UserConsentService {
         ));
     }
 
-    public List<UserConsent> getConsentsFailedMails() {
-        return repository.findAllBySentMailStatus(MailSendStatus.FAILED);
+
+    public List<UserConsent> getConsentsInvitationFailedMails() {
+
+        return repository.findAllBySentInvitationMailStatus(MailSendStatus.INVITATION_FAILED);
+    }
+
+    public List<UserConsent> getConsentsConfirmationFailedMails() {
+
+        return repository.findAllBySentConfirmationMailStatus(MailSendStatus.CONFIRMATION_FAILED);
     }
 
     public List<UserConsent>getPendingConsents(){
@@ -295,13 +331,17 @@ public class UserConsentService {
     }
 
     public boolean isParentConsentConfirmed(User user) {
-        return repository.findByUser(user)
+        Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
+        if (activeAgreementOpt.isEmpty()) return false;
+        return repository.findByUserAndAgreement(user, activeAgreementOpt.get())
                 .map(c -> c.getParentConsentedAt() != null)
                 .orElse(false);
     }
 
     public boolean isParentConsentTokenExpired(User user) {
-        return repository.findByUser(user)
+        Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
+        if (activeAgreementOpt.isEmpty()) return false;
+        return repository.findByUserAndAgreement(user, activeAgreementOpt.get())
                 .map(c -> !c.isTokenValid())
                 .orElse(false);
     }
@@ -351,15 +391,27 @@ public class UserConsentService {
         return activeAgreementOpt;
     }
 
-    private void sendParentConsentEmailWithStatus(UserConsent consent, ParentConsentRequest emailRequest, User user) {
+    private void sendParentConsentInvitationEmailWithStatus(UserConsent consent, ParentConsentInvitationRequest emailRequest, User user) {
         try {
-            notificationClient.sendParentConsentEmail(emailRequest);
+            notificationClient.sendParentConsentInvitationEmail(emailRequest);
         } catch (Exception e) {
             consent = consent.toBuilder()
-                    .sentMailStatus(MailSendStatus.FAILED)
+                    .sentInvitationMailStatus(MailSendStatus.INVITATION_FAILED)
                     .build();
             repository.save(consent);
-            log.error("Грешка при изпращане на родителски имейл за потребител {}: {}", user.getId(), e.getMessage(), e);
+            log.error("Грешка при изпращане на мейл (INVITATION) за родителско съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
+        }
+    }
+
+    private void sendParentConsentConfirmationEmailWithStatus(UserConsent consent, ParentConsentConfirmationRequest emailRequest, User user) {
+        try {
+            notificationClient.sendParentConsentConfirmationEmail(emailRequest);
+        } catch (Exception e) {
+            consent = consent.toBuilder()
+                    .sentConfirmationMailStatus(MailSendStatus.CONFIRMATION_FAILED)
+                    .build();
+            repository.save(consent);
+            log.error("Грешка при изпращане на мейл (INVITATION) за родителско съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
         }
     }
 

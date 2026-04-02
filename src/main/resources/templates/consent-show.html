@@ -27,12 +27,26 @@
         <div class="agreement-title" th:text="${agreement.title}">Заглавие</div>
         <div class="agreement-content" th:utext="${#strings.replace(#strings.replace(#strings.replace(#strings.replace(agreement.content, '<hr>', '<br><br>'), '\r\n', '<br/>'), '\n', '<br/>'), '\r', '<br/>')}">Текст на споразумението...</div>
         <div class="agreement-details-actions">
+            <div class="consent-accept-checkbox">
+                <input type="checkbox" id="agreeCheckbox" aria-label="Прочетох и съм съгласен">
+                <label for="agreeCheckbox">Прочетох и съм съгласен с настоящото споразумение</label>
+            </div>
             <form th:action="@{/consent/accept}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-accept"><i class="fas fa-check"></i> Приемам</button>
+                <button id="acceptBtn" type="submit" class="btn btn-accept" disabled><i class="fas fa-check"></i> Приемам</button>
             </form>
             <a href="/consent/refuse" class="btn btn-refuse"><i class="fas fa-times"></i> Изход</a>
         </div>
     </div>
 </div>
+<script>
+    (function(){
+        var checkbox = document.getElementById('agreeCheckbox');
+        var acceptBtn = document.getElementById('acceptBtn');
+        if (!checkbox || !acceptBtn) return;
+        checkbox.addEventListener('change', function(e){
+            acceptBtn.disabled = !e.target.checked;
+        });
+    })();
+</script>
 </body>
 </html>

@@ -42,9 +42,13 @@ public class UserConsent {
     @Column(name = "parent_email")
     private String parentEmail;
 
-    @Column(name = "sent_mail_status")
+    @Column(name = "sent_invitation_mail_status")
     @Enumerated(EnumType.STRING)
-    private MailSendStatus sentMailStatus;
+    private MailSendStatus sentInvitationMailStatus;
+
+    @Column(name = "sent_confirmation_mail_status")
+    @Enumerated(EnumType.STRING)
+    private MailSendStatus sentConfirmationMailStatus;
 
     @Column(name = "consent_token", unique = true)
     private String consentToken;

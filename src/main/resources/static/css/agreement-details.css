@@ -113,10 +113,25 @@
 }
 
 .agreement-details-actions .btn:hover {
-    background: var(--red-main);
-    color: #fff;
-    font-weight: 650;
+    /* Only bold the text on hover; do not change background or text color */
+    font-weight: 700;
+    background: transparent !important;
+    color: var(--red-main) !important;
+    box-shadow: none !important;
 }
+
+.agreement-details-actions .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.consent-accept-checkbox {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.consent-accept-checkbox label { font-weight: 500; }
 
 /*---границите на слайдъра---*/
 .main-container {
