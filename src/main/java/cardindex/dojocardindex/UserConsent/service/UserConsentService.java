@@ -5,7 +5,7 @@ import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.service.UserService;
-import cardindex.dojocardindex.UserConsent.exception.ParentConsentAlreadyConfirmedException;
+import cardindex.dojocardindex.exceptions.ParentConsentAlreadyConfirmedException;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.repository.UserConsentRepository;

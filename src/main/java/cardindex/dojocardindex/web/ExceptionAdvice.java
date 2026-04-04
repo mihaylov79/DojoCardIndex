@@ -1,6 +1,6 @@
 package cardindex.dojocardindex.web;
 
-import cardindex.dojocardindex.UserConsent.exception.ParentConsentAlreadyConfirmedException;
+import cardindex.dojocardindex.exceptions.ParentConsentAlreadyConfirmedException;
 import cardindex.dojocardindex.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
