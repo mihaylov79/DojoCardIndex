@@ -155,5 +155,17 @@ public class AgreementConsentController {
         modelAndView.addObject("allConsents", allConsents);
         return modelAndView;
     }
+
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
+    @GetMapping("/failed-mails")
+    public ModelAndView getFailedMails(){
+        List<UserConsent> failedInvitationMails = userConsentService.getConsentsInvitationFailedMails();
+        List<UserConsent> failedConfirmationMails = userConsentService.getConsentsConfirmationFailedMails();
+
+        ModelAndView modelAndView = new ModelAndView("failed-mails");
+        modelAndView.addObject("failedInvitationMails",failedInvitationMails);
+        modelAndView.addObject("failedConfirmationMails", failedConfirmationMails);
+        return modelAndView;
+    }
 }
 

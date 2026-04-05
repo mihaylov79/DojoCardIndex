@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Неизпратени имейли</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}" />
+    <link rel="stylesheet" th:href="@{/css/events-test.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Минимални стилове за табовете - няма inline стилове върху елементите */
+        .tab { overflow: hidden; border-bottom: 1px solid #ccc; }
+        .tab button { background: none; border: none; padding: 12px 16px; cursor: pointer; font-size: 16px; }
+        .tab button:hover { font-weight: 700; }
+        .tab button.active { border-bottom: 3px solid #2c3e50; }
+        .tabcontent { display: none; padding-top: 16px; }
+        .table-container table { width: 100%; border-collapse: collapse; }
+        .table-container th, .table-container td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e6e6e6; }
+    </style>
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+<div class="main-container">
+    <div class="table-container">
+        <div class="events-header">
+            <h2><i class="fas fa-envelope-circle-xmark"></i> Консенти с неуспешни имейли</h2>
+        </div>
+
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'invitation')" id="defaultOpen">Покани (INVITATION_FAILED)</button>
+            <button class="tablinks" onclick="openTab(event, 'confirmation')">Потвърждения (CONFIRMATION_FAILED)</button>
+        </div>
+
+        <div id="invitation" class="tabcontent" style="display:block;">
+            <div th:if="${#lists.isEmpty(failedInvitationMails)}" class="no-events">
+                <i class="fas fa-folder-open"></i>
+                <p>Няма консенти с INVITATION_FAILED</p>
+            </div>
+            <table th:unless="${#lists.isEmpty(failedInvitationMails)}">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Потребител</th>
+                    <th>Статус на консента</th>
+                    <th>mailSentStatus</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consent : ${failedInvitationMails}">
+                    <td th:text="${consent.id}"></td>
+                    <td th:text="${consent.user.firstName} + ' ' + ${consent.user.lastName} + ' (' + ${consent.user.email} + ')' "></td>
+                    <td th:text="${consent.status != null ? consent.status : (consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно'))}"></td>
+                    <td th:text="${consent.mailSentStatus}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="confirmation" class="tabcontent">
+            <div th:if="${#lists.isEmpty(failedConfirmationMails)}" class="no-events">
+                <i class="fas fa-folder-open"></i>
+                <p>Няма консенти с CONFIRMATION_FAILED</p>
+            </div>
+            <table th:unless="${#lists.isEmpty(failedConfirmationMails)}">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Потребител</th>
+                    <th>Статус на консента</th>
+                    <th>mailSentStatus</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consent : ${failedConfirmationMails}">
+                    <td th:text="${consent.id}"></td>
+                    <td th:text="${consent.user.firstName} + ' ' + ${consent.user.lastName} + ' (' + ${consent.user.email} + ')' "></td>
+                    <td th:text="${consent.status != null ? consent.status : (consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно'))}"></td>
+                    <td th:text="${consent.mailSentStatus}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Set default open
+    document.getElementById('defaultOpen')?.click();
+</script>
+</body>
+</html>
+
