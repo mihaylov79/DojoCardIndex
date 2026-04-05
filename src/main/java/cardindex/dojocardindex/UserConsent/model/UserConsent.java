@@ -71,6 +71,21 @@ public class UserConsent {
     @Column
     private boolean finished;
 
+    @Column
+    private boolean canceled = false;
+
+    @Column
+    private LocalDateTime canceledAt;
+
+    @ManyToOne
+    @JoinColumn(name = "canceled_by_id")
+    private User canceledBy;
+
+    @Column
+    private String canselReason;
+
+
+
     //Валидация на съгласието
     public boolean isFullyConsented() {
         if (pending) return true;

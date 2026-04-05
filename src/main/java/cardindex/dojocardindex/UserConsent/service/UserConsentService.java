@@ -5,14 +5,10 @@ import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.service.UserService;
-import cardindex.dojocardindex.exceptions.ParentConsentAlreadyConfirmedException;
+import cardindex.dojocardindex.exceptions.*;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.repository.UserConsentRepository;
-import cardindex.dojocardindex.exceptions.InvalidUserConsentException;
-import cardindex.dojocardindex.exceptions.TokenExpiredException;
-import cardindex.dojocardindex.exceptions.TokenNotFoundException;
-import cardindex.dojocardindex.exceptions.UserConsentNotFoundException;
 import cardindex.dojocardindex.notification.client.NotificationClient;
 import cardindex.dojocardindex.web.dto.ParentConsentConfirmationRequest;
 import cardindex.dojocardindex.web.dto.ParentConsentInvitationRequest;
@@ -218,6 +214,37 @@ public class UserConsentService {
                 .status(UserStatus.INACTIVE)
                 .build();
         userService.saveUser(deactivated);
+    }
+
+    private UserConsent cancelConsentByUser(){
+
+        User loggedUser = userService.getCurrentUser();
+        Optional<Agreement> optActiveAgreement = agreementService.getActiveAgreement();
+
+        if (optActiveAgreement.isEmpty()){
+            throw new AgreementNotFoundException("Няма намерено активно споразумение!");
+        }
+        Agreement activeAgreement = optActiveAgreement.get();
+
+        Optional<UserConsent> optConsent = getOptConsent(loggedUser, activeAgreement);
+
+        if (optConsent.isEmpty()){
+            throw new UserConsentNotFoundException("Няма съгласие на този потребител за Активното споразумение");
+        }
+
+        UserConsent consent = optConsent.get();
+
+//        if (!loggedUser.getId().equals(consent.getUser().getId())) {
+//            throw new RuntimeException("Не можете да извършите това действие за друг потребител!");
+//        }
+
+        consent = consent.toBuilder()
+                .canceled(true)
+                .canceledAt(LocalDateTime.now())
+                .canceledBy(loggedUser)
+                .build();
+
+        return repository.save(consent);
     }
     
     @Transactional
