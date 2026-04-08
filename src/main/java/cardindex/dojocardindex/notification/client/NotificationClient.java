@@ -5,6 +5,7 @@ import cardindex.dojocardindex.notification.client.dto.Notification;
 import cardindex.dojocardindex.notification.client.dto.NotificationPreferenceRequest;
 import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
 import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
+import cardindex.dojocardindex.web.dto.CancellationConfirmationRequest;
 import cardindex.dojocardindex.web.dto.ForgottenPasswordRequest;
 import cardindex.dojocardindex.web.dto.ParentConsentConfirmationRequest;
 import cardindex.dojocardindex.web.dto.ParentConsentInvitationRequest;
@@ -45,5 +46,8 @@ public interface NotificationClient {
 
     @PostMapping("/consents/confirm")
     ResponseEntity<Void> sendParentConsentConfirmationEmail(@RequestBody ParentConsentConfirmationRequest request);
+
+    @PostMapping("/consents/cancel")
+    ResponseEntity<Void> sendCancelConfirmationEmail(@RequestBody CancellationConfirmationRequest request);
 
 }

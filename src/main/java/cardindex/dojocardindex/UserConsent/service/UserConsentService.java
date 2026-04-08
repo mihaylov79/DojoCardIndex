@@ -10,6 +10,7 @@ import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.repository.UserConsentRepository;
 import cardindex.dojocardindex.notification.client.NotificationClient;
+import cardindex.dojocardindex.web.dto.CancellationConfirmationRequest;
 import cardindex.dojocardindex.web.dto.ParentConsentConfirmationRequest;
 import cardindex.dojocardindex.web.dto.ParentConsentInvitationRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -216,9 +217,10 @@ public class UserConsentService {
         userService.saveUser(deactivated);
     }
 
-    private UserConsent cancelConsentByUser(){
+    public UserConsent cancelConsentByUser(){
 
         User loggedUser = userService.getCurrentUser();
+        
         Optional<Agreement> optActiveAgreement = agreementService.getActiveAgreement();
 
         if (optActiveAgreement.isEmpty()){
@@ -233,6 +235,22 @@ public class UserConsentService {
         }
 
         UserConsent consent = optConsent.get();
+        
+        if (consent.isCanceled()){
+            throw  new RuntimeException("Това съгласие е вече ОТТЕГЛЕНО!");
+        }
+        
+        if (consent.isMinor()){
+            throw new RuntimeException("Съгласието за малолетни потребители може да бъде оттеглено от родител(настойник). Моля свържете се с ръководството на клуба!");
+        }
+
+        if (consent.isPending()){
+            throw new RuntimeException("Това съгласие е служебно одобрено от Администратор и за да бъде оттеглено трябва да се свържете се с ръководството на клуба");
+        }
+
+        if (!consent.isFinished()){
+            throw new RuntimeException("Съгласието не е окончателно потвърдено, и не може да бъде оттеглено на този етап! Моля свържете се с ръководството на клуба");
+        }
 
 //        if (!loggedUser.getId().equals(consent.getUser().getId())) {
 //            throw new RuntimeException("Не можете да извършите това действие за друг потребител!");
@@ -242,9 +260,24 @@ public class UserConsentService {
                 .canceled(true)
                 .canceledAt(LocalDateTime.now())
                 .canceledBy(loggedUser)
+                .cancellationConfirmationMailStatus(MailSendStatus.SENT)
                 .build();
 
-        return repository.save(consent);
+        repository.save(consent);
+        
+        
+        CancellationConfirmationRequest emailRequest = CancellationConfirmationRequest.builder()
+                .recipientMail(loggedUser.getEmail())
+                .userFirstName(loggedUser.getFirstName())
+                .userLastName(loggedUser.getLastName())
+                .agreementTitle(consent.getAgreement().getTitle())
+                .cancelledAt(consent.getCanceledAt())
+                .consentId(consent.getId())
+                .build();
+        
+        sendCancelConsentConfirmationEmailWithStatus(consent, emailRequest, loggedUser);
+        
+        return consent;
     }
     
     @Transactional
@@ -438,7 +471,19 @@ public class UserConsentService {
                     .sentConfirmationMailStatus(MailSendStatus.CONFIRMATION_FAILED)
                     .build();
             repository.save(consent);
-            log.error("Грешка при изпращане на мейл (INVITATION) за родителско съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
+            log.error("Грешка при изпращане на мейл за ПОТВЪРЖДЕНИЕ на родителско съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
+        }
+    }
+
+    private void sendCancelConsentConfirmationEmailWithStatus(UserConsent consent, CancellationConfirmationRequest emailRequest, User user) {
+        try {
+            notificationClient.sendCancelConfirmationEmail(emailRequest);
+        } catch (Exception e) {
+            consent = consent.toBuilder()
+                    .sentConfirmationMailStatus(MailSendStatus.CANCELLATION_FAILED)
+                    .build();
+            repository.save(consent);
+            log.error("Грешка при изпращане на мейл за ОТКАЗ от съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
         }
     }
 

@@ -50,6 +50,9 @@ public class UserConsent {
     @Enumerated(EnumType.STRING)
     private MailSendStatus sentConfirmationMailStatus;
 
+    @Column(name = "cancellation_confirmation_mail_status")
+    private MailSendStatus cancellationConfirmationMailStatus;
+
     @Column(name = "consent_token", unique = true)
     private String consentToken;
 
