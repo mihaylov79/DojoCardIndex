@@ -280,6 +280,7 @@ public class UserConsentService {
                 .userLastName(loggedUser.getLastName())
                 .agreementTitle(consent.getAgreement().getTitle())
                 .cancelledAt(consent.getCanceledAt())
+                .cancelInitiatedBy(CancelInitiator.USER)
                 .consentId(consent.getId())
                 .build();
         
@@ -289,7 +290,7 @@ public class UserConsentService {
     }
 
     @Transactional
-    public UserConsent cancelConsentByParent(UUID consentId, CancelInitiator consentInitiator){
+    public UserConsent cancelConsentByParent(UUID consentId){
 
        UserConsent consent = getConsentById(consentId);
 
@@ -297,7 +298,9 @@ public class UserConsentService {
            throw  new RuntimeException("Родитеското съгасие е необходимо само за непълнолетни потребитеи! Този отказ е неприложим за пълнолетни потребители!");
        }
 
-        cancelConsentByAdmin(consentId, consentInitiator);
+       CancelInitiator cancelInitiator = CancelInitiator.PARENT;
+
+        cancelConsentByAdmin(consentId, cancelInitiator);
         //TODO да довърша метода
 
         CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
@@ -305,6 +308,34 @@ public class UserConsentService {
                 .userFirstName(consent.getUser().getFirstName())
                 .userLastName(consent.getUser().getLastName())
                 .agreementTitle(consent.getAgreement().getTitle())
+                .cancelInitiatedBy(CancelInitiator.PARENT)
+                .consentId(consent.getId())
+                .build();
+
+        sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+
+        return consent;
+    }
+
+    @Transactional
+    public UserConsent cancelUserConsentByAdmin(UUID consentId){
+
+        UserConsent consent = getConsentById(consentId);
+
+        if (consent.isMinor()){
+            throw new RuntimeException("Оттеглянето на съгласието за малолетни потребители става чрез пислмена заявка от родител(настойник");
+        }
+
+        CancelInitiator cancelInitiator = CancelInitiator.ADMIN;
+
+        cancelConsentByAdmin(consentId, cancelInitiator);
+
+        CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
+                .recipientMail(consent.getUser().getEmail())
+                .userFirstName(consent.getUser().getFirstName())
+                .userLastName(consent.getUser().getLastName())
+                .agreementTitle(consent.getAgreement().getTitle())
+                .cancelInitiatedBy(CancelInitiator.ADMIN)
                 .consentId(consent.getId())
                 .build();
 
