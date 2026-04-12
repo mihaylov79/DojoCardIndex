@@ -84,8 +84,9 @@ public class UserConsent {
     @JoinColumn(name = "canceled_by_id")
     private User canceledBy;
 
-    @Column
-    private String canselReason;
+    @Column(name = "cancel_initiated_by")
+    @Enumerated(EnumType.STRING)
+    private CancelInitiator cancelInitiatedBy;
 
 
 

@@ -3,8 +3,10 @@ package cardindex.dojocardindex.UserConsent.service;
 import cardindex.dojocardindex.Agreement.model.Agreement;
 import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.User.models.User;
+import cardindex.dojocardindex.User.models.UserRole;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.model.CancelInitiator;
 import cardindex.dojocardindex.exceptions.*;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
@@ -217,6 +219,7 @@ public class UserConsentService {
         userService.saveUser(deactivated);
     }
 
+    @Transactional
     public UserConsent cancelConsentByUser(){
 
         User loggedUser = userService.getCurrentUser();
@@ -235,11 +238,11 @@ public class UserConsentService {
         }
 
         UserConsent consent = optConsent.get();
-        
+
         if (consent.isCanceled()){
             throw  new RuntimeException("Това съгласие е вече ОТТЕГЛЕНО!");
         }
-        
+
         if (consent.isMinor()){
             throw new RuntimeException("Съгласието за малолетни потребители може да бъде оттеглено от родител(настойник). Моля свържете се с ръководството на клуба!");
         }
@@ -260,11 +263,16 @@ public class UserConsentService {
                 .canceled(true)
                 .canceledAt(LocalDateTime.now())
                 .canceledBy(loggedUser)
+                .cancelInitiatedBy(CancelInitiator.USER)
                 .cancellationConfirmationMailStatus(MailSendStatus.SENT)
                 .build();
 
         repository.save(consent);
-        
+
+        loggedUser = loggedUser.toBuilder()
+                .status(UserStatus.INACTIVE)
+                .build();
+        userService.saveUser(loggedUser);
         
         CancellationConfirmationRequest emailRequest = CancellationConfirmationRequest.builder()
                 .recipientMail(loggedUser.getEmail())
@@ -279,7 +287,69 @@ public class UserConsentService {
         
         return consent;
     }
-    
+
+    @Transactional
+    public UserConsent cancelConsentByParent(UUID consentId, CancelInitiator consentInitiator){
+
+       UserConsent consent = getConsentById(consentId);
+
+       if (!consent.isMinor()){
+           throw  new RuntimeException("Родитеското съгасие е необходимо само за непълнолетни потребитеи! Този отказ е неприложим за пълнолетни потребители!");
+       }
+
+        cancelConsentByAdmin(consentId, consentInitiator);
+        //TODO да довърша метода
+
+        CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
+                .recipientMail(consent.getParentEmail())
+                .userFirstName(consent.getUser().getFirstName())
+                .userLastName(consent.getUser().getLastName())
+                .agreementTitle(consent.getAgreement().getTitle())
+                .consentId(consent.getId())
+                .build();
+
+        sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+
+        return consent;
+    }
+
+
+    private UserConsent cancelConsentByAdmin(UUID consentId, CancelInitiator cancelInitiator){
+
+        //TODO Да преценя какви проверки да заложа за този метод - да има ли finished и pending
+        User loggedUser = userService.getCurrentUser();
+
+        if (loggedUser.getRole() != UserRole.ADMIN && loggedUser.getRole() != UserRole.TRAINER) {
+            throw new RuntimeException("За да извършите това действие е необходимо да имате администраторски права!");
+        }
+
+        UserConsent consent = getConsentById(consentId);
+
+        if(consent.isCanceled()){
+            throw new RuntimeException("Това съгласие е вече ОТТЕГЛЕНО");
+        }
+
+        consent = consent.toBuilder()
+                .canceled(true)
+                .canceledAt(LocalDateTime.now())
+                .canceledBy(loggedUser)
+                .cancellationConfirmationMailStatus(MailSendStatus.SENT)
+                .cancelInitiatedBy(cancelInitiator)
+                .build();
+
+        repository.save(consent);
+
+        User consentUser = consent.getUser();
+        consentUser =  consentUser.toBuilder()
+                .status(UserStatus.INACTIVE)
+                .build();
+        userService.saveUser(consentUser);
+
+        return consent;
+
+
+    }
+
     @Transactional
     public void createPendingConsent(User user, String reason) {
         Optional<Agreement> activeAgreementOpt = getActiveAgreementSafely(user,
