@@ -392,9 +392,9 @@ public class UserConsentService {
     private void validateConsentIsForActiveAgreement(UserConsent consent) {
         Agreement activeAgreement = agreementService.getActiveAgreement()
                 .orElseThrow(() -> new AgreementNotFoundException("Няма намерено активно споразумение!"));
-            //TODO: Да заменя RuntimeException с подходящ ексепшън
+            //TODO: Да добава UserConsentMismatchException и UserConsentNotFoundException в ExceptionAdvice
         if (!activeAgreement.getId().equals(consent.getAgreement().getId())) {
-            throw new RuntimeException("Оттеглянето е позволено само за съгласие към активното споразумение.");
+            throw new UserConsentMismatchException("Оттеглянето е позволено само за съгласие към активното споразумение.");
         }
     }
 
