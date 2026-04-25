@@ -69,6 +69,12 @@ public class UserConsentService {
         if (activeAgreementOpt.isEmpty()){
             return;
         }
+        Optional<UserConsent>optConsent = getOptConsent(user,activeAgreementOpt.get());
+
+        if (optConsent.isPresent()){
+            return;
+        }
+
         UserConsent consent = UserConsent.builder()
                 .user(user)
                 .agreement(activeAgreementOpt.get())
@@ -114,7 +120,6 @@ public class UserConsentService {
                 .pending(false)
                 .finished(false)
                 .createdAt(LocalDateTime.now())
-                .sentInvitationMailStatus(MailSendStatus.SENT)
                 .build();
         repository.save(consent);
 
@@ -147,7 +152,6 @@ public class UserConsentService {
                 .pending(false)
                 .pendingReason(null)
                 .finished(true)
-                .sentConfirmationMailStatus(MailSendStatus.SENT)
                 .build();
 
         repository.save(consent);
@@ -240,7 +244,7 @@ public class UserConsentService {
         UserConsent consent = optConsent.get();
 
         if (consent.isCanceled()){
-            throw  new RuntimeException("Това съгласие е вече ОТТЕГЛЕНО!");
+            throw  new ConsentCanceledException("Това съгласие е вече ОТТЕГЛЕНО!");
         }
 
         if (consent.isMinor()){
@@ -264,7 +268,6 @@ public class UserConsentService {
                 .canceledAt(LocalDateTime.now())
                 .canceledBy(loggedUser)
                 .cancelInitiatedBy(CancelInitiator.USER)
-                .cancellationConfirmationMailStatus(MailSendStatus.SENT)
                 .build();
 
         repository.save(consent);
@@ -300,7 +303,7 @@ public class UserConsentService {
 
        CancelInitiator cancelInitiator = CancelInitiator.PARENT;
 
-        cancelConsentByAdmin(consentId, cancelInitiator);
+        consent = cancelConsentByAdmin(consentId, cancelInitiator);
         //TODO да довърша метода
 
         CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
@@ -309,6 +312,7 @@ public class UserConsentService {
                 .userLastName(consent.getUser().getLastName())
                 .agreementTitle(consent.getAgreement().getTitle())
                 .cancelInitiatedBy(CancelInitiator.PARENT)
+                .cancelledAt(consent.getCanceledAt())
                 .consentId(consent.getId())
                 .build();
 
@@ -328,7 +332,7 @@ public class UserConsentService {
 
         CancelInitiator cancelInitiator = CancelInitiator.ADMIN;
 
-        cancelConsentByAdmin(consentId, cancelInitiator);
+        consent = cancelConsentByAdmin(consentId, cancelInitiator);
 
         CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
                 .recipientMail(consent.getUser().getEmail())
@@ -336,6 +340,7 @@ public class UserConsentService {
                 .userLastName(consent.getUser().getLastName())
                 .agreementTitle(consent.getAgreement().getTitle())
                 .cancelInitiatedBy(CancelInitiator.ADMIN)
+                .cancelledAt(consent.getCanceledAt())
                 .consentId(consent.getId())
                 .build();
 
@@ -356,16 +361,19 @@ public class UserConsentService {
 
         UserConsent consent = getConsentById(consentId);
 
+        validateConsentIsForActiveAgreement(consent);
+
         if(consent.isCanceled()){
-            throw new RuntimeException("Това съгласие е вече ОТТЕГЛЕНО");
+            throw new ConsentCanceledException("Това съгласие е вече ОТТЕГЛЕНО");
         }
 
         consent = consent.toBuilder()
                 .canceled(true)
                 .canceledAt(LocalDateTime.now())
                 .canceledBy(loggedUser)
-                .cancellationConfirmationMailStatus(MailSendStatus.SENT)
                 .cancelInitiatedBy(cancelInitiator)
+                .pending(false)
+                .pendingReason(null)
                 .build();
 
         repository.save(consent);
@@ -379,6 +387,15 @@ public class UserConsentService {
         return consent;
 
 
+    }
+
+    private void validateConsentIsForActiveAgreement(UserConsent consent) {
+        Agreement activeAgreement = agreementService.getActiveAgreement()
+                .orElseThrow(() -> new AgreementNotFoundException("Няма намерено активно споразумение!"));
+            //TODO: Да заменя RuntimeException с подходящ ексепшън
+        if (!activeAgreement.getId().equals(consent.getAgreement().getId())) {
+            throw new RuntimeException("Оттеглянето е позволено само за съгласие към активното споразумение.");
+        }
     }
 
     @Transactional
@@ -437,13 +454,15 @@ public class UserConsentService {
 
 
     public List<UserConsent> getConsentsInvitationFailedMails() {
-
-        return repository.findAllBySentInvitationMailStatus(MailSendStatus.INVITATION_FAILED);
+        return repository.findAllBySentInvitationMailStatusInOrSentInvitationMailStatusIsNull(
+                List.of(MailSendStatus.INVITATION_FAILED, MailSendStatus.FAILED)
+        );
     }
 
     public List<UserConsent> getConsentsConfirmationFailedMails() {
-
-        return repository.findAllBySentConfirmationMailStatus(MailSendStatus.CONFIRMATION_FAILED);
+        return repository.findAllBySentConfirmationMailStatusInOrSentConfirmationMailStatusIsNull(
+                List.of(MailSendStatus.CONFIRMATION_FAILED, MailSendStatus.FAILED)
+        );
     }
 
     public List<UserConsent>getPendingConsents(){
@@ -479,6 +498,28 @@ public class UserConsentService {
         if (activeAgreementOpt.isEmpty()) {
             return ConsentActionResult.CONSENT_ACCEPTED ;
         }
+
+        Agreement activeAgreement = activeAgreementOpt.get();
+        Optional<UserConsent> existingConsentOpt = getOptConsent(user,activeAgreement);
+
+        if (existingConsentOpt.isPresent()){
+            UserConsent existingConsent = existingConsentOpt.get();
+
+            if (existingConsent.isCanceled()){
+                return ConsentActionResult.CONSENT_CANCELED;
+            }
+
+            if (existingConsent.isMinor() && !existingConsent.isPending() && !existingConsent.isFinished()) {
+                if (existingConsent.getParentEmail() == null || existingConsent.getParentEmail().isBlank()) {
+                    return ConsentActionResult.NO_PARENT_EMAIL;
+                }
+                return ConsentActionResult.PENDING_PARENT;
+            }
+
+            return ConsentActionResult.CONSENT_ACCEPTED;
+
+        }
+
 
         if (isMinor(user)) {
             if (user.getContactPersonEmail() == null || user.getContactPersonEmail().isBlank()) {
@@ -555,6 +596,10 @@ public class UserConsentService {
     private void sendParentConsentInvitationEmailWithStatus(UserConsent consent, ParentConsentInvitationRequest emailRequest, User user) {
         try {
             notificationClient.sendParentConsentInvitationEmail(emailRequest);
+            consent = consent.toBuilder()
+                    .sentInvitationMailStatus(MailSendStatus.SENT)
+                    .build();
+            repository.save(consent);
         } catch (Exception e) {
             consent = consent.toBuilder()
                     .sentInvitationMailStatus(MailSendStatus.INVITATION_FAILED)
@@ -567,6 +612,10 @@ public class UserConsentService {
     private void sendParentConsentConfirmationEmailWithStatus(UserConsent consent, ParentConsentConfirmationRequest emailRequest, User user) {
         try {
             notificationClient.sendParentConsentConfirmationEmail(emailRequest);
+            consent = consent.toBuilder()
+                    .sentConfirmationMailStatus(MailSendStatus.SENT)
+                    .build();
+            repository.save(consent);
         } catch (Exception e) {
             consent = consent.toBuilder()
                     .sentConfirmationMailStatus(MailSendStatus.CONFIRMATION_FAILED)
@@ -579,9 +628,13 @@ public class UserConsentService {
     private void sendCancelConsentConfirmationEmailWithStatus(UserConsent consent, CancellationConfirmationRequest emailRequest, User user) {
         try {
             notificationClient.sendCancelConfirmationEmail(emailRequest);
+            consent = consent.toBuilder()
+                    .cancellationConfirmationMailStatus(MailSendStatus.SENT)
+                    .build();
+            repository.save(consent);
         } catch (Exception e) {
             consent = consent.toBuilder()
-                    .sentConfirmationMailStatus(MailSendStatus.CANCELLATION_FAILED)
+                    .cancellationConfirmationMailStatus(MailSendStatus.CANCELLATION_FAILED)
                     .build();
             repository.save(consent);
             log.error("Грешка при изпращане на мейл за ОТКАЗ от съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);

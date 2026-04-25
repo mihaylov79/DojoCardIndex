@@ -92,6 +92,7 @@ public class UserConsent {
 
     //Валидация на съгласието
     public boolean isFullyConsented() {
+        if(canceled) return false;
         if (pending) return true;
         if (!isMinor) return agreedAt != null;
         return agreedAt != null && parentConsentedAt != null;

@@ -55,6 +55,7 @@ public class AgreementConsentController {
         User user = userService.findUserByEmail(details.getEmail());
         ConsentActionResult result = userConsentService.processConsentAcceptance(user);
         return switch (result) {
+            case CONSENT_CANCELED -> "redirect:/consent/canceled";
             case NO_PARENT_EMAIL -> "redirect:/consent/no-parent-email";
             case PENDING_PARENT -> "redirect:/consent/pending-parent";
             default -> "redirect:/home";
@@ -119,6 +120,11 @@ public class AgreementConsentController {
     @GetMapping("/no-parent-email")
     public String noParentEmail() {
         return "consent-no-parent-email";
+    }
+
+    @GetMapping("/canceled")
+    public String alreadyCanceled(){
+        return "already-canceled";
     }
 
     @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")

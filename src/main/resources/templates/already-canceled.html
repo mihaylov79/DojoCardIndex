@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Съгласието е оттеглено</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/login-test.css}">
+    <link rel="stylesheet" th:href="@{/css/already-canceled.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+    <div class="already-canceled-card">
+        <h2>Това съгласие вече е оттеглено</h2>
+
+        <div th:if="${exceptionMessage}" class="alert-error" th:text="${exceptionMessage}"></div>
+
+        <div th:unless="${exceptionMessage}" class="alert-error">
+            Профилът на потребителят е деактивиран. Ако желаете профилът да бъде активиран отново моля свържете се с ръководството на клуба.
+        </div>
+
+        <a href="/login" class="btn-back">Към вход</a>
+    </div>
+</div>
+</body>
+</html>

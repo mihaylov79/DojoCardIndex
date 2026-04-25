@@ -2,6 +2,7 @@ package cardindex.dojocardindex.web.dto;
 
 import cardindex.dojocardindex.UserConsent.model.CancelInitiator;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -24,11 +25,11 @@ public class CancellationConfirmationRequest {
     @NotBlank
     private String agreementTitle;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime cancelledAt;
 
     private CancelInitiator cancelInitiatedBy;
 
-    @NotBlank
+    @NotNull
     private UUID consentId;
 }

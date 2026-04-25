@@ -225,6 +225,14 @@ public class ExceptionAdvice {
         return modelAndView;
     }
 
+    @ExceptionHandler(ConsentCanceledException.class)
+    public ModelAndView handleConsentCancelException(ConsentCanceledException e) {
+
+        ModelAndView modelAndView = new ModelAndView("already-canceled");
+        modelAndView.addObject("errorMessage", e.getMessage());
+        return modelAndView;
+    }
+
     /**
      * Помощен метод за извличане на URL за redirect.
      * Връща Referer URL ако съществува, иначе /home.
