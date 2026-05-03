@@ -261,7 +261,9 @@ public class ExceptionAdvice {
                        UserNotFoundException.class,
                        IllegalUserStatusException.class,
                        ExportIOException.class,
-                       IllegalEventOperationException.class})
+                       IllegalEventOperationException.class,
+                       ConsentOperationNotAllowedException.class,
+                       UserConsentMismatchException.class})
     public ModelAndView handleBadRequestException(Exception exception, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bad-request");
@@ -275,11 +277,38 @@ public class ExceptionAdvice {
         return modelAndView;
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ModelAndView handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("access-denied");
+        modelAndView.addObject("errorMessage", ex.getMessage());
+
+        log.warn("Handled 403 Access Denied exception at [{}], Message: {}",
+                request.getRequestURI(),
+                ex.getMessage());
+
+        return modelAndView;
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({AccessDeniedException.class,
-                      NoResourceFoundException.class,
-                      MethodArgumentTypeMismatchException.class,
-                      MissingRequestValueException.class})
+    @ExceptionHandler(UserConsentNotFoundException.class)
+    public ModelAndView handleUserConsentNotFound(UserConsentNotFoundException ex, HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("consent-not-found");
+        modelAndView.addObject("errorMessage", ex.getMessage());
+
+        log.warn("Handled UserConsentNotFoundException at [{}], Message: {}",
+                request.getRequestURI(),
+                ex.getMessage());
+
+        return modelAndView;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler({NoResourceFoundException.class,
+                       MethodArgumentTypeMismatchException.class,
+                       MissingRequestValueException.class})
     public ModelAndView handleNotFoundExceptions(Exception ex, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("not-found");

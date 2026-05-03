@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Dojo - Съгласие не е намерено</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/error-test.css}">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container">
+
+    <div class="additional-info">
+        <div class="message">
+            <h1>Съгласие не е намерено</h1>
+            <hr class="line"/>
+            <h3 th:text="${errorMessage}"></h3>
+            <hr class="line"/>
+
+            <h3 class="reasons">Възможни причини:</h3>
+            <ul class="error-list">
+                <li>Идентификаторът за съгласие е невалиден или вече не съществува.</li>
+                <li>Съгласието може да е застаряло/архивирано и не е достъпно в текущия контекст.</li>
+            </ul>
+
+        </div>
+
+        <p>Ако мислите, че това е грешка, <a href="/contact">свържете се с нас</a>.</p>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="history.back();">← Върни се назад</button>
+            <a href="/home" class="btn-secondary">Към профилната страница</a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

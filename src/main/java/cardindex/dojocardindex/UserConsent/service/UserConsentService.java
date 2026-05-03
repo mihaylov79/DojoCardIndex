@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -298,7 +299,7 @@ public class UserConsentService {
        UserConsent consent = getConsentById(consentId);
 
        if (!consent.isMinor()){
-           throw  new RuntimeException("Родитеското съгасие е необходимо само за непълнолетни потребитеи! Този отказ е неприложим за пълнолетни потребители!");
+           throw  new ConsentOperationNotAllowedException("Родитеското съгасие е необходимо само за непълнолетни потребитеи! Този отказ е неприложим за пълнолетни потребители!");
        }
 
        CancelInitiator cancelInitiator = CancelInitiator.PARENT;
@@ -327,7 +328,7 @@ public class UserConsentService {
         UserConsent consent = getConsentById(consentId);
 
         if (consent.isMinor()){
-            throw new RuntimeException("Оттеглянето на съгласието за малолетни потребители става чрез пислмена заявка от родител(настойник");
+            throw new ConsentOperationNotAllowedException("Оттеглянето на съгласието за малолетни потребители става чрез пислмена заявка от родител(настойник");
         }
 
         CancelInitiator cancelInitiator = CancelInitiator.ADMIN;
@@ -356,7 +357,7 @@ public class UserConsentService {
         User loggedUser = userService.getCurrentUser();
 
         if (loggedUser.getRole() != UserRole.ADMIN && loggedUser.getRole() != UserRole.TRAINER) {
-            throw new RuntimeException("За да извършите това действие е необходимо да имате администраторски права!");
+            throw new AccessDeniedException("За да извършите това действие е необходимо да имате администраторски права!");
         }
 
         UserConsent consent = getConsentById(consentId);

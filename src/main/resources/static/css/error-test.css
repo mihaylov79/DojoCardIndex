@@ -106,3 +106,41 @@ body {
 .additional-info a:hover {
     color: var(--red-light);
 }
+
+/* Button group styles for access-denied and error pages */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.button-group a,
+.button-group button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.button-group .btn-primary {
+    background-color: #d4a574;
+    color: white;
+}
+
+.button-group .btn-primary:hover {
+    background-color: #c1934a;
+}
+
+.button-group .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.button-group .btn-secondary:hover {
+    background-color: #5a6268;
+}
