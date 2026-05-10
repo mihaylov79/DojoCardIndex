@@ -140,6 +140,10 @@ public class UserConsentService {
         UserConsent consent = repository.findByConsentToken(token)
                 .orElseThrow(() -> new TokenNotFoundException("Невалиден токен!"));
 
+        if(consent.isCanceled()){
+            throw new ConsentCanceledException("Това съгласие е било ОТТЕГЛЕНО!");
+        }
+
         if (consent.getParentConsentedAt() != null) {
             throw new ParentConsentAlreadyConfirmedException("Родителското съгласие вече е потвърдено!");
         }
@@ -199,6 +203,11 @@ public class UserConsentService {
         if (consent.getParentConsentedAt() != null){
             throw new ParentConsentAlreadyConfirmedException("Родителят вече е потвърдил - не е нужен токен");
         }
+
+        if (consent.isCanceled()){
+            throw new ConsentCanceledException("Това съгласие е било ОТТЕГЛЕНО!");
+        }
+
         String newToken = generateSecureToken();
         consent = consent.toBuilder()
                 .consentToken(newToken)
@@ -249,15 +258,15 @@ public class UserConsentService {
         }
 
         if (consent.isMinor()){
-            throw new RuntimeException("Съгласието за малолетни потребители може да бъде оттеглено от родител(настойник). Моля свържете се с ръководството на клуба!");
+            throw new ConsentOperationNotAllowedException("Съгласието за малолетни потребители може да бъде оттеглено от родител(настойник). Моля свържете се с ръководството на клуба!");
         }
 
         if (consent.isPending()){
-            throw new RuntimeException("Това съгласие е служебно одобрено от Администратор и за да бъде оттеглено трябва да се свържете се с ръководството на клуба");
+            throw new ConsentOperationNotAllowedException("Това съгласие е служебно одобрено от Администратор и за да бъде оттеглено трябва да се свържете се с ръководството на клуба");
         }
 
         if (!consent.isFinished()){
-            throw new RuntimeException("Съгласието не е окончателно потвърдено, и не може да бъде оттеглено на този етап! Моля свържете се с ръководството на клуба");
+            throw new ConsentOperationNotAllowedException("Съгласието не е окончателно потвърдено, и не може да бъде оттеглено на този етап! Моля свържете се с ръководството на клуба");
         }
 
 //        if (!loggedUser.getId().equals(consent.getUser().getId())) {
@@ -490,7 +499,7 @@ public class UserConsentService {
         
     }
 
-
+    @Transactional
     public ConsentActionResult processConsentAcceptance(User user) {
         Optional<Agreement> activeAgreementOpt = getActiveAgreementSafely(
             user, "[CONSENT] Невъзможно е да се изиска съгласие за потребител {} ({}), защото няма активно споразумение (Agreement)."
