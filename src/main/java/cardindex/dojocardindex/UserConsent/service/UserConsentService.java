@@ -436,6 +436,15 @@ public class UserConsentService {
 
     public void setExistingConsentPending(UUID consentId, String reason) {
         UserConsent consent = getConsentById(consentId);
+
+        if (consent.isCanceled()){
+            throw  new ConsentCanceledException("Това съгласие е било ОТТЕГЛЕНО и не може да бъде поставено в статус 'pending'!");
+        }
+
+        if (consent.isFinished()){
+            throw new ConsentOperationNotAllowedException("Това съгласие е вече завършено и не може да бъде поставено в статус 'pending'!");
+        }
+
         if (consent.isPending()) {
             throw new RuntimeException("Съгласието вече е в статус 'pending'!");
         }
