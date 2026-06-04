@@ -7,6 +7,8 @@ import cardindex.dojocardindex.User.models.UserRole;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.UserConsent.model.CancelInitiator;
+import cardindex.dojocardindex.UserConsentHistory.model.ConsentHistoryAction;
+import cardindex.dojocardindex.UserConsentHistory.service.UserConsentHistoryService;
 import cardindex.dojocardindex.exceptions.*;
 import cardindex.dojocardindex.UserConsent.model.MailSendStatus;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
@@ -40,16 +42,18 @@ public class UserConsentService {
     private final AgreementService agreementService;
     private final NotificationClient notificationClient;
     private final UserService userService;
+    private final UserConsentHistoryService historyService;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
     @Autowired
-    public UserConsentService(UserConsentRepository repository, AgreementService agreementService, NotificationClient notificationClient, UserService userService) {
+    public UserConsentService(UserConsentRepository repository, AgreementService agreementService, NotificationClient notificationClient, UserService userService, UserConsentHistoryService historyService) {
         this.repository = repository;
         this.agreementService = agreementService;
         this.notificationClient = notificationClient;
         this.userService = userService;
+        this.historyService = historyService;
     }
     
     public boolean hasValidConsent(User user){
@@ -89,6 +93,8 @@ public class UserConsentService {
                 .build();
         
         repository.save(consent);
+
+        historyService.log(consent, ConsentHistoryAction.CREATED, user,"Създадено е директно съгласие за потребител " + user.getEmail());
     }
     
     
@@ -131,7 +137,16 @@ public class UserConsentService {
                 .agreementTitle(activeAgreement.getTitle())
                 .consentLink(baseUrl + "/parent-consent/" + token)
                 .build();
-        sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
+        consent = sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
+
+        //TODO Да добавя методи за resend ако мейла не е изпратен успешно
+        if (consent.getSentInvitationMailStatus() == MailSendStatus.SENT){
+            historyService.log(consent, ConsentHistoryAction.PARENT_INVITED, user,"Инициирано е родителско съгласие за потребител " + user.getEmail());
+        }
+        if (consent.getSentInvitationMailStatus() == MailSendStatus.INVITATION_FAILED){
+            historyService.log(consent, ConsentHistoryAction.PARENT_INVITATION_FAILED, user, "Неуспещно изпращане на покана за родителско съгласие на потребител " + user.getEmail());
+        }
+
     }
     
     @Transactional
@@ -173,9 +188,18 @@ public class UserConsentService {
                 .consentId(consent.getId())
                 .build();
 
-        sendParentConsentConfirmationEmailWithStatus(consent, confirmationRequest, user);
+        consent = sendParentConsentConfirmationEmailWithStatus(consent, confirmationRequest, user);
+
+        //TODO Да добавя методи за resend ако мейла не е изпратен успешно
+        historyService.log(consent, ConsentHistoryAction.PARENT_CONFIRMED, user,"Получено родителско съгласие за потребител " + user.getEmail());
+
+        if (consent.getSentConfirmationMailStatus() == MailSendStatus.CONFIRMATION_FAILED){
+            historyService.log(consent, ConsentHistoryAction.PARENT_CONFIRMATION_MAIL_FAILED, user, "Неуспешно изпращане на потвърждение на родителско съгласие за потребител " + user.getEmail());
+        }
 
         return consent;
+
+
 
 //        return repository.save(consent.toBuilder()
 //                .parentConsentedAt(LocalDateTime.now())
@@ -222,7 +246,9 @@ public class UserConsentService {
                 .consentLink(baseUrl + "/parent-consent/" + newToken)
                 .agreementTitle(agreement.getTitle())
                 .build();
-        sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
+        consent = sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
+
+        historyService.log(consent, ConsentHistoryAction.PARENT_CONSENT_TOKEN_REGENERATED, user, "Генериран е нов токен за родителско съгласие за потребител " + user.getEmail());
     }
     
     @Transactional
@@ -296,8 +322,14 @@ public class UserConsentService {
                 .cancelInitiatedBy(CancelInitiator.USER)
                 .consentId(consent.getId())
                 .build();
-        
-        sendCancelConsentConfirmationEmailWithStatus(consent, emailRequest, loggedUser);
+
+        consent = sendCancelConsentConfirmationEmailWithStatus(consent, emailRequest, loggedUser);
+
+        historyService.log(consent, ConsentHistoryAction.CANCELED_BY_USER, loggedUser, "Потребителят оттегли съгласието си за участие в клуба");
+
+        if (consent.getCancellationConfirmationMailStatus() == MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED){
+            historyService.log(consent, ConsentHistoryAction.CANCELLATION_CONFIRMATION_MAIL_FAILED, loggedUser, "Неуспешно изпращане на мейл за потвърждение за оттегляне на съгласието от потребител " + loggedUser.getEmail());
+        }
         
         return consent;
     }
@@ -326,7 +358,13 @@ public class UserConsentService {
                 .consentId(consent.getId())
                 .build();
 
-        sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+        consent = sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+
+        historyService.log(consent, ConsentHistoryAction.CANCELED_BY_PARENT_REQUEST, userService.getCurrentUser(), "Изпратено мейл за потвърждение за оттегляне на съгласието от родител на потребителя " + consent.getUser().getEmail());
+
+        if (consent.getCancellationConfirmationMailStatus() == MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED){
+            historyService.log(consent, ConsentHistoryAction.CANCELLATION_CONFIRMATION_MAIL_FAILED, userService.getCurrentUser(), "Неуспешно изпращане на мейл за потвърждение за оттегляне на съгласието от родител на потребителя " + consent.getUser().getEmail());
+        }
 
         return consent;
     }
@@ -354,7 +392,13 @@ public class UserConsentService {
                 .consentId(consent.getId())
                 .build();
 
-        sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+        consent = sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+
+        historyService.log(consent, ConsentHistoryAction.CANCELED_BY_ADMIN, userService.getCurrentUser(), "Изпратен мейл за потвърждение за слубебно оттеглено съгласие от администратор за потребител " + consent.getUser().getEmail());
+
+        if (consent.getCancellationConfirmationMailStatus() == MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED){
+            historyService.log(consent, ConsentHistoryAction.CANCELLATION_CONFIRMATION_MAIL_FAILED, userService.getCurrentUser(), "Неуспешно изпращане на мейл за потвърждение за слубебно оттеглено съгласие от администратор за потребител " + consent.getUser().getEmail());
+        }
 
         return consent;
     }
@@ -454,6 +498,9 @@ public class UserConsentService {
                 .finished(false)
                 .build();
         repository.save(consent);
+
+        historyService.log(consent, ConsentHistoryAction.PENDING_SET, consent.getUser(), "Поставено съгласие в статус 'pending' от администратор за потребител " + consent.getUser().getEmail());
+
     }
 
     public UserConsent getConsentById(UUID consentId){
@@ -612,51 +659,51 @@ public class UserConsentService {
         return activeAgreementOpt;
     }
 
-    private void sendParentConsentInvitationEmailWithStatus(UserConsent consent, ParentConsentInvitationRequest emailRequest, User user) {
+    private UserConsent sendParentConsentInvitationEmailWithStatus(UserConsent consent, ParentConsentInvitationRequest emailRequest, User user) {
         try {
             notificationClient.sendParentConsentInvitationEmail(emailRequest);
             consent = consent.toBuilder()
                     .sentInvitationMailStatus(MailSendStatus.SENT)
                     .build();
-            repository.save(consent);
+            return repository.save(consent);
         } catch (Exception e) {
             consent = consent.toBuilder()
                     .sentInvitationMailStatus(MailSendStatus.INVITATION_FAILED)
                     .build();
-            repository.save(consent);
             log.error("Грешка при изпращане на мейл (INVITATION) за родителско съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
+            return repository.save(consent);
         }
     }
 
-    private void sendParentConsentConfirmationEmailWithStatus(UserConsent consent, ParentConsentConfirmationRequest emailRequest, User user) {
+    private UserConsent sendParentConsentConfirmationEmailWithStatus(UserConsent consent, ParentConsentConfirmationRequest emailRequest, User user) {
         try {
             notificationClient.sendParentConsentConfirmationEmail(emailRequest);
             consent = consent.toBuilder()
                     .sentConfirmationMailStatus(MailSendStatus.SENT)
                     .build();
-            repository.save(consent);
+            return repository.save(consent);
         } catch (Exception e) {
             consent = consent.toBuilder()
                     .sentConfirmationMailStatus(MailSendStatus.CONFIRMATION_FAILED)
                     .build();
-            repository.save(consent);
             log.error("Грешка при изпращане на мейл за ПОТВЪРЖДЕНИЕ на родителско съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
+            return repository.save(consent);
         }
     }
 
-    private void sendCancelConsentConfirmationEmailWithStatus(UserConsent consent, CancellationConfirmationRequest emailRequest, User user) {
+    private UserConsent sendCancelConsentConfirmationEmailWithStatus(UserConsent consent, CancellationConfirmationRequest emailRequest, User user) {
         try {
             notificationClient.sendCancelConfirmationEmail(emailRequest);
             consent = consent.toBuilder()
                     .cancellationConfirmationMailStatus(MailSendStatus.SENT)
                     .build();
-            repository.save(consent);
+            return repository.save(consent);
         } catch (Exception e) {
             consent = consent.toBuilder()
-                    .cancellationConfirmationMailStatus(MailSendStatus.CANCELLATION_FAILED)
+                    .cancellationConfirmationMailStatus(MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED)
                     .build();
-            repository.save(consent);
             log.error("Грешка при изпращане на мейл за ОТКАЗ от съгласие за consent {} user {}: {}", consent.getId(), user.getId(), e.getMessage(), e);
+            return repository.save(consent);
         }
     }
 

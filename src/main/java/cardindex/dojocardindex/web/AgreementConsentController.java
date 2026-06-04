@@ -154,6 +154,7 @@ public class AgreementConsentController {
         return "redirect:/consent/admin/blocked";
     }
 
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
     @GetMapping("/show/all")
     public ModelAndView showAllConsents() {
         List<UserConsent> allConsents = userConsentService.getAllConsents();
@@ -161,6 +162,22 @@ public class AgreementConsentController {
         modelAndView.addObject("allConsents", allConsents);
         return modelAndView;
     }
+
+    @PostMapping("/admin/cancel/{consentId}")
+    public ModelAndView cancelConsent(@PathVariable UUID consentId) {
+
+        UserConsent consent = userConsentService.getConsentById(consentId);
+
+        if(consent.isMinor()) {
+            userConsentService.cancelConsentByParent(consentId);
+        } else {
+            userConsentService.cancelUserConsentByAdmin(consentId);
+        }
+
+            return new ModelAndView("redirect:/consent/show/all");
+
+    }
+
 
     @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
     @GetMapping("/failed-mails")

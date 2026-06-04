@@ -33,7 +33,8 @@
                 <th>Заглавие на споразумение</th>
                 <th>Дата на съгласие</th>
                 <th>Статус</th>
-                <th>Родителско потвърдение</th>
+                <th>Родителско потвърждение</th>
+                <th>Действие</th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +46,12 @@
                 <td data-label="Дата на съгласие" th:text="${#temporals.format(consent.agreedAt, 'yyyy-MM-dd HH:mm')}"></td>
                 <td data-label="Статус" th:text="${consent.finished ? 'Приключено' : 'Неприключено'}"
                     th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'"></td>
-                <td data-label="Родителско потвърдение" th:text="${consent.parentConsentedAt != null ? #temporals.format(consent.parentConsentedAt, 'yyyy-MM-dd HH:mm') : '---'}"></td>
+                <td data-label="Родителско потвърждение" th:text="${consent.parentConsentedAt != null ? #temporals.format(consent.parentConsentedAt, 'yyyy-MM-dd HH:mm') : '---'}"></td>
+                <td data-label="Действие">
+                    <form th:action="@{'/consent/admin/cancel/' + ${consent.id} + '?redirect=all'}" method="post">
+                        <button type="submit">Оттегли</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -60,7 +66,7 @@
             const lastName = row.querySelector('td[data-label="Фамилия"]')?.textContent.toLowerCase() || '';
             const email = row.querySelector('td[data-label="Email"]')?.textContent.toLowerCase() || '';
             const status = row.querySelector('td[data-label="Статус"]')?.textContent.toLowerCase() || '';
-            const parentConsent = row.querySelector('td[data-label="Родителско потвърдение"]')?.textContent.toLowerCase() || '';
+            const parentConsent = row.querySelector('td[data-label="Родителско потвърждение"]')?.textContent.toLowerCase() || '';
             if (
                 firstName.includes(searchTerm) ||
                 lastName.includes(searchTerm) ||
