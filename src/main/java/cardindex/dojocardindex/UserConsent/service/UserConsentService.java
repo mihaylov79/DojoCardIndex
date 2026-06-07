@@ -148,6 +148,47 @@ public class UserConsentService {
         }
 
     }
+
+    @Transactional
+    public void resendParentConsentInvitationMail(UUID consentId){
+        UserConsent consent = getConsentById(consentId);
+
+        if(consent.isCanceled()){
+            throw new ConsentCanceledException("Съгласието е отменено и не може да бъде изпратена покана.");
+        }
+
+        if(consent.isFinished()){
+            throw new ParentConsentAlreadyConfirmedException("Съгласието вече е завършено и не може да бъде изпратена покана.");
+        }
+
+        if (!consent.isMinor()){
+            throw new ConsentOperationNotAllowedException("Този метод е само за родителски съгласия!");
+        }
+
+        if(consent.getParentConsentedAt() != null){
+            throw new ParentConsentAlreadyConfirmedException("Родителят вече е дал съгласие, не може да бъде изпратена покана.");
+        }
+
+
+        User user = consent.getUser();
+        Agreement activeAgreement = consent.getAgreement();
+        String newToken = generateSecureToken();
+        consent = consent.toBuilder()
+                .consentToken(newToken)
+                .tokenExpiresAt(LocalDateTime.now().plusHours(24))
+                .build();
+        repository.save(consent);
+
+        ParentConsentInvitationRequest emailRequest = ParentConsentInvitationRequest.builder()
+                .parentEmail(user.getContactPersonEmail())
+                .childFirstName(user.getFirstName())
+                .childLastName(user.getLastName())
+                .agreementTitle(activeAgreement.getTitle())
+                .consentLink(baseUrl + "/parent-consent/" + newToken)
+                .build();
+        consent = sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
+        historyService.log(consent, ConsentHistoryAction.PARENT_INVITATION_MAIL_RESENT, userService.getCurrentUser(), "Повторно изпратена покана за родителско съгласие с НОВ токен за потребител " + user.getEmail());
+    }
     
     @Transactional
     public UserConsent verifyParentConsent(String token){
@@ -178,15 +219,7 @@ public class UserConsentService {
 
         User user = consent.getUser();
 
-        ParentConsentConfirmationRequest confirmationRequest = ParentConsentConfirmationRequest.builder()
-                .parentEmail(user.getContactPersonEmail())
-                .childFirstName(user.getFirstName())
-                .childLastName(user.getLastName())
-                .agreementTitle(consent.getAgreement().getTitle())
-                .agreementContent(consent.getAgreement().getContent())
-                .parentConsentAt(consent.getParentConsentedAt())
-                .consentId(consent.getId())
-                .build();
+        ParentConsentConfirmationRequest confirmationRequest = generateNewParentConfirmationMail(consent, user);
 
         consent = sendParentConsentConfirmationEmailWithStatus(consent, confirmationRequest, user);
 
@@ -200,7 +233,6 @@ public class UserConsentService {
         return consent;
 
 
-
 //        return repository.save(consent.toBuilder()
 //                .parentConsentedAt(LocalDateTime.now())
 //                .pending(false)
@@ -209,6 +241,39 @@ public class UserConsentService {
 //                .build());
 
         
+    }
+
+    @Transactional
+    public void resendParentConfirmationMail(UUID consentId){
+
+        UserConsent consent = getConsentById(consentId);
+
+        if(consent.isCanceled()){
+            throw new ConsentOperationNotAllowedException("Повторно изпращане на мейл за потвърждение на родителско съгласие е позволено само за непотвърденото съгласие!");
+        }
+        if (!consent.isFinished()){
+            throw new ConsentOperationNotAllowedException("Повторно изпращане на мейл за потвърждение на родителско съгласие е позволено само за потвърденото съгласие!");
+        }
+
+        User user = consent.getUser();
+
+        ParentConsentConfirmationRequest confirmationRequest = generateNewParentConfirmationMail(consent, user);
+
+        consent = sendParentConsentConfirmationEmailWithStatus(consent, confirmationRequest, user);
+
+        historyService.log(consent, ConsentHistoryAction.PARENT_CONFIRMATION_MAIL_RESENT, userService.getCurrentUser(), "Повторно изпратено потвърждение на родителско съгласие за потребител " + user.getEmail());
+    }
+
+    private ParentConsentConfirmationRequest generateNewParentConfirmationMail(UserConsent consent, User user){
+        return ParentConsentConfirmationRequest.builder()
+                .parentEmail(user.getContactPersonEmail())
+                .childFirstName(user.getFirstName())
+                .childLastName(user.getLastName())
+                .agreementTitle(consent.getAgreement().getTitle())
+                .agreementContent(consent.getAgreement().getContent())
+                .parentConsentAt(consent.getParentConsentedAt())
+                .consentId(consent.getId())
+                .build();
     }
     
     public void regenerateParentConsentToken(User user) {
@@ -259,6 +324,7 @@ public class UserConsentService {
         userService.saveUser(deactivated);
     }
 
+    //TODO Да добавя метод за екстракт на фаилнали мейли за потвърждение на канселирани съгласия!
     @Transactional
     public UserConsent cancelConsentByUser(){
 
@@ -313,15 +379,7 @@ public class UserConsentService {
                 .build();
         userService.saveUser(loggedUser);
         
-        CancellationConfirmationRequest emailRequest = CancellationConfirmationRequest.builder()
-                .recipientMail(loggedUser.getEmail())
-                .userFirstName(loggedUser.getFirstName())
-                .userLastName(loggedUser.getLastName())
-                .agreementTitle(consent.getAgreement().getTitle())
-                .cancelledAt(consent.getCanceledAt())
-                .cancelInitiatedBy(CancelInitiator.USER)
-                .consentId(consent.getId())
-                .build();
+        CancellationConfirmationRequest emailRequest = generateNewCancellationConfirmationMail(consent);
 
         consent = sendCancelConsentConfirmationEmailWithStatus(consent, emailRequest, loggedUser);
 
@@ -346,17 +404,9 @@ public class UserConsentService {
        CancelInitiator cancelInitiator = CancelInitiator.PARENT;
 
         consent = cancelConsentByAdmin(consentId, cancelInitiator);
-        //TODO да довърша метода
+        //TODO да довърша метода - може би съм имал предвид да проверя има ли нужда от друго проверки!
 
-        CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
-                .recipientMail(consent.getParentEmail())
-                .userFirstName(consent.getUser().getFirstName())
-                .userLastName(consent.getUser().getLastName())
-                .agreementTitle(consent.getAgreement().getTitle())
-                .cancelInitiatedBy(CancelInitiator.PARENT)
-                .cancelledAt(consent.getCanceledAt())
-                .consentId(consent.getId())
-                .build();
+        CancellationConfirmationRequest request = generateNewCancellationConfirmationMail(consent);
 
         consent = sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
 
@@ -382,15 +432,7 @@ public class UserConsentService {
 
         consent = cancelConsentByAdmin(consentId, cancelInitiator);
 
-        CancellationConfirmationRequest request = CancellationConfirmationRequest.builder()
-                .recipientMail(consent.getUser().getEmail())
-                .userFirstName(consent.getUser().getFirstName())
-                .userLastName(consent.getUser().getLastName())
-                .agreementTitle(consent.getAgreement().getTitle())
-                .cancelInitiatedBy(CancelInitiator.ADMIN)
-                .cancelledAt(consent.getCanceledAt())
-                .consentId(consent.getId())
-                .build();
+        CancellationConfirmationRequest request = generateNewCancellationConfirmationMail(consent);
 
         consent = sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
 
@@ -441,6 +483,36 @@ public class UserConsentService {
         return consent;
 
 
+    }
+
+    @Transactional
+    public void resendCancellationConfirmationEmail(UUID consentId) {
+        UserConsent consent = getConsentById(consentId);
+
+        if (!consent.isCanceled()){
+            throw new ConsentOperationNotAllowedException("Мейл за потвърждение за оттегляне на съгласието може да бъде изпратен само за оттеглено съгласие!");
+        }
+
+        CancellationConfirmationRequest request = generateNewCancellationConfirmationMail(consent);
+
+        consent = sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
+
+        historyService.log(consent, ConsentHistoryAction.CANCELLATION_CONFIRMATION_MAIL_RESENT, userService.getCurrentUser(), "Препращане на мейл за потвърждение за оттегляне на съгласието за потребител " + consent.getUser().getEmail());
+    }
+
+    private CancellationConfirmationRequest generateNewCancellationConfirmationMail(UserConsent consent) {
+
+        String recipientEmail = (consent.getCancelInitiatedBy() == CancelInitiator.PARENT) ? consent.getUser().getContactPersonEmail() : consent.getUser().getEmail();
+
+        return CancellationConfirmationRequest.builder()
+                .recipientMail(recipientEmail)
+                .userFirstName(consent.getUser().getFirstName())
+                .userLastName(consent.getUser().getLastName())
+                .agreementTitle(consent.getAgreement().getTitle())
+                .cancelInitiatedBy(consent.getCancelInitiatedBy())
+                .cancelledAt(consent.getCanceledAt())
+                .consentId(consent.getId())
+                .build();
     }
 
     private void validateConsentIsForActiveAgreement(UserConsent consent) {
@@ -529,6 +601,22 @@ public class UserConsentService {
         return repository.findAllBySentConfirmationMailStatusInOrSentConfirmationMailStatusIsNull(
                 List.of(MailSendStatus.CONFIRMATION_FAILED, MailSendStatus.FAILED)
         );
+    }
+
+    public List<UserConsent> getConsentsCancellationFailedMails() {
+        return repository.findAllByCancellationConfirmationMailStatusInOrCancellationConfirmationMailStatusIsNull(
+                List.of(MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED, MailSendStatus.FAILED)
+        );
+    }
+
+    @Transactional
+    public void resendMail(UUID consentId, String mailType) {
+        switch (mailType.toUpperCase()) {
+            case "INVITATION" -> resendParentConsentInvitationMail(consentId);
+            case "CONFIRMATION" -> resendParentConfirmationMail(consentId);
+            case "CANCELLATION" -> resendCancellationConfirmationEmail(consentId);
+            default -> throw new IllegalArgumentException("Невалиден тип мейл за препращане: " + mailType);
+        }
     }
 
     public List<UserConsent>getPendingConsents(){

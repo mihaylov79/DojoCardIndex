@@ -184,11 +184,20 @@ public class AgreementConsentController {
     public ModelAndView getFailedMails(){
         List<UserConsent> failedInvitationMails = userConsentService.getConsentsInvitationFailedMails();
         List<UserConsent> failedConfirmationMails = userConsentService.getConsentsConfirmationFailedMails();
+        List<UserConsent> failedCancellationMails = userConsentService.getConsentsCancellationFailedMails();
 
         ModelAndView modelAndView = new ModelAndView("failed-mails");
         modelAndView.addObject("failedInvitationMails",failedInvitationMails);
         modelAndView.addObject("failedConfirmationMails", failedConfirmationMails);
+        modelAndView.addObject("failedCancellationMails", failedCancellationMails);
         return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
+    @PostMapping("/admin/resend/{consentId}")
+    public String resendMail(@PathVariable UUID consentId, @RequestParam String type) {
+        userConsentService.resendMail(consentId, type);
+        return "redirect:/consent/failed-mails";
     }
 }
 

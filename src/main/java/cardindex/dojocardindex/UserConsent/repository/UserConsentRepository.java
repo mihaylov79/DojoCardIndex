@@ -28,4 +28,6 @@ public interface UserConsentRepository extends JpaRepository<UserConsent, UUID> 
     List<UserConsent> findAllBySentInvitationMailStatusInOrSentInvitationMailStatusIsNull(List<MailSendStatus> statuses);
 
     List<UserConsent> findAllBySentConfirmationMailStatusInOrSentConfirmationMailStatusIsNull(List<MailSendStatus> statuses);
+
+    List<UserConsent> findAllByCancellationConfirmationMailStatusInOrCancellationConfirmationMailStatusIsNull(List<MailSendStatus> statuses);
 }
