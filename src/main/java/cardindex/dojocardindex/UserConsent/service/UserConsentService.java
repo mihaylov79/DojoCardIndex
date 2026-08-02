@@ -505,7 +505,7 @@ public class UserConsentService {
         String recipientEmail = (consent.getCancelInitiatedBy() == CancelInitiator.PARENT) ? consent.getUser().getContactPersonEmail() : consent.getUser().getEmail();
 
         return CancellationConfirmationRequest.builder()
-                .recipientMail(recipientEmail)
+                .recipientEmail(recipientEmail)
                 .userFirstName(consent.getUser().getFirstName())
                 .userLastName(consent.getUser().getLastName())
                 .agreementTitle(consent.getAgreement().getTitle())

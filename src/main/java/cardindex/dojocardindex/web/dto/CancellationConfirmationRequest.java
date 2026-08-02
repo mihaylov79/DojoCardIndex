@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CancellationConfirmationRequest {
 
     @NotBlank
-    private String recipientMail;
+    private String recipientEmail;
 
     @NotBlank
     private String userFirstName;
