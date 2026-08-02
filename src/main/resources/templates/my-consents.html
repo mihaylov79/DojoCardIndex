@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моите съгласия</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}"/>
+    <link rel="stylesheet" th:href="@{/css/events-test.css}"/>
+    <link rel="stylesheet" th:href="@{/css/my-consents.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<!--
+Expected model attributes:
+- currentConsent (nullable)
+- consentAuditTrail (nullable list)
+- canRevokeConsent (boolean)
+- successMessage/errorMessage (flash, optional)
+-->
+<div class="main-container my-consents-page">
+    <div class="table-container">
+        <div class="events-header">
+            <h2><i class="fas fa-file-signature"></i> Моите съгласия</h2>
+        </div>
+
+        <p class="my-consents-intro">
+            На тази страница виждате активното си съгласие и пълната история (audit trail) на предишни съгласия.
+        </p>
+
+        <div th:if="${errorMessage}" class="credentials-error" th:text="${errorMessage}"></div>
+        <div th:if="${successMessage}" class="alert-info" th:text="${successMessage}"></div>
+
+        <div class="my-consents-section">
+            <h3>Активно съгласие</h3>
+
+            <div th:if="${currentConsent == null}" class="no-events my-consents-empty">
+                <p>Няма активно съгласие за текущото споразумение.</p>
+            </div>
+
+            <table th:if="${currentConsent != null}" class="my-consents-table">
+                <thead>
+                <tr>
+                    <th>Споразумение</th>
+                    <th>Дата на съгласие</th>
+                    <th>Статус</th>
+                    <th>Родителско потвърждение</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td data-label="Споразумение" th:text="${currentConsent.agreement.title}">Споразумение</td>
+                    <td data-label="Дата на съгласие"
+                        th:text="${currentConsent.agreedAt != null ? #temporals.format(currentConsent.agreedAt, 'dd-MM-yyyy HH:mm') : '---'}">---</td>
+                    <td data-label="Статус">
+                        <span th:text="${currentConsent.finished ? 'Приключено' : 'Неприключено'}"
+                              th:classappend="${currentConsent.finished} ? 'status-finished' : 'status-unfinished'"></span>
+                    </td>
+                    <td data-label="Родителско потвърждение"
+                        th:text="${currentConsent.parentConsentedAt != null ? #temporals.format(currentConsent.parentConsentedAt, 'dd-MM-yyyy HH:mm') : '---'}">---</td>
+                    <td data-label="Действия">
+                        <div class="my-consents-actions">
+                            <a th:href="@{'/agreements/details/' + ${currentConsent.agreement.id}}" class="btn-view">Споразумение</a>
+
+                            <form th:if="${canRevokeConsent}"
+                                  th:action="@{'/users/consents/' + ${currentConsent.id} + '/revoke'}"
+                                  method="post">
+                                <button type="submit"
+                                        class="btn-cancel"
+                                        onclick="return confirm('Сигурен ли сте, че искате да оттеглите това съгласие?');">
+                                    Оттегли
+                                </button>
+                            </form>
+
+                            <span th:unless="${canRevokeConsent}" class="minor-note">
+                                Оттегляне за малолетни става по служебен път.
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="my-consents-section">
+            <h3>История на съгласията (audit trail)</h3>
+
+            <div th:if="${consentAuditTrail == null or #lists.isEmpty(consentAuditTrail)}" class="no-events my-consents-empty">
+                <p>Няма записани съгласия за показване в историята.</p>
+            </div>
+
+            <table th:if="${consentAuditTrail != null and !#lists.isEmpty(consentAuditTrail)}" class="my-consents-table">
+                <thead>
+                <tr>
+                    <th>Споразумение</th>
+                    <th>Дата на съгласие</th>
+                    <th>Оттеглено на</th>
+                    <th>Статус</th>
+                    <th>Родителско потвърждение</th>
+                    <th>Инициатор</th>
+                    <th>Преглед</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consent : ${consentAuditTrail}"
+                    th:classappend="${consent.canceled} ? 'row-canceled' : ''">
+                    <td data-label="Споразумение" th:text="${consent.agreement.title}">Споразумение</td>
+                    <td data-label="Дата на съгласие"
+                        th:text="${consent.agreedAt != null ? #temporals.format(consent.agreedAt, 'dd-MM-yyyy HH:mm') : '---'}">---</td>
+                    <td data-label="Оттеглено на"
+                        th:text="${consent.canceledAt != null ? #temporals.format(consent.canceledAt, 'dd-MM-yyyy HH:mm') : '---'}">---</td>
+                    <td data-label="Статус">
+                        <span th:if="${consent.canceled}" class="status-canceled">Оттеглено</span>
+                        <span th:unless="${consent.canceled}"
+                              th:text="${consent.finished ? 'Приключено' : 'Неприключено'}"
+                              th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'"></span>
+                    </td>
+                    <td data-label="Родителско потвърждение"
+                        th:text="${consent.parentConsentedAt != null ? #temporals.format(consent.parentConsentedAt, 'dd-MM-yyyy HH:mm') : '---'}">---</td>
+                    <td data-label="Инициатор"
+                        th:text="${consent.cancelInitiatedBy != null ? consent.cancelInitiatedBy : '---'}">---</td>
+                    <td data-label="Преглед">
+                        <a th:href="@{'/consent/my-consents/details/' + ${consent.id}}" class="btn-view btn-view-small">Отвори</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

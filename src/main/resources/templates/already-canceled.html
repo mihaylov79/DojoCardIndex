@@ -23,6 +23,11 @@
             Профилът на потребителят е деактивиран. Ако желаете профилът да бъде активиран отново моля свържете се с ръководството на клуба.
         </div>
 
+        <div th:if="${consent != null && consent.canceledAt != null}" class="cancellation-info">
+            <p><strong>Дата на отмена:</strong> <span th:text="${#temporals.format(consent.canceledAt, 'dd-MM-yyyy HH:mm')}"></span></p>
+            <p th:if="${consent.canceledBy != null}"><strong>Отменено от:</strong> <span th:text="${consent.canceledBy}"></span></p>
+        </div>
+
         <a href="/login" class="btn-back">Към вход</a>
     </div>
 </div>

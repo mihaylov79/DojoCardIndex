@@ -18,7 +18,7 @@
         </div>
         <div class="search-container" th:unless="${#lists.isEmpty(allConsents)}">
             <label for="searchInput" style="display: none;">Търсене</label>
-            <input type="text" id="searchInput" placeholder="Търсене по име, фамилия, email, статус, родителско потвърждение...">
+            <input type="text" id="searchInput" placeholder="Търсене по име, фамилия, email, статус (вкл. Оттеглено)...">
         </div>
         <div th:if="${#lists.isEmpty(allConsents)}" class="no-events">
             <i class="fas fa-folder-open"></i>
@@ -32,25 +32,49 @@
                 <th>Email</th>
                 <th>Заглавие на споразумение</th>
                 <th>Дата на съгласие</th>
+                <th>Оттеглено на</th>
                 <th>Статус</th>
                 <th>Родителско потвърждение</th>
                 <th>Действие</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="consent : ${allConsents}">
+            <tr th:each="consent : ${allConsents}"
+                th:classappend="${consent.canceled} ? 'row-canceled' : ''">
                 <td data-label="Име" th:text="${consent.user.firstName}"></td>
                 <td data-label="Фамилия" th:text="${consent.user.lastName}"></td>
                 <td data-label="Email" th:text="${consent.user.email}"></td>
                 <td data-label="Заглавие на споразумение" th:text="${consent.agreement.title}"></td>
-                <td data-label="Дата на съгласие" th:text="${#temporals.format(consent.agreedAt, 'yyyy-MM-dd HH:mm')}"></td>
-                <td data-label="Статус" th:text="${consent.finished ? 'Приключено' : 'Неприключено'}"
-                    th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'"></td>
-                <td data-label="Родителско потвърждение" th:text="${consent.parentConsentedAt != null ? #temporals.format(consent.parentConsentedAt, 'yyyy-MM-dd HH:mm') : '---'}"></td>
+                <td data-label="Дата на съгласие" th:text="${#temporals.format(consent.agreedAt, 'dd-MM-yyyy HH:mm')}"></td>
+                <td data-label="Оттеглено на" th:text="${consent.canceledAt != null ? #temporals.format(consent.canceledAt,'dd-MM-yyyy HH:mm') : '---'}"></td>
+                <td data-label="Статус">
+                    <span th:if="${consent.canceled}"
+                          class="status-canceled">
+                        Оттеглено
+                    </span>
+
+                    <span th:unless="${consent.canceled}"
+                          th:text="${consent.finished ? 'Приключено' : 'Неприключено'}"
+                          th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'">
+                    </span>
+                </td>
+                <td data-label="Родителско потвърждение" th:text="${consent.parentConsentedAt != null ? #temporals.format(consent.parentConsentedAt, 'dd-MM-yyyy HH:mm') : '---'}"></td>
                 <td data-label="Действие">
-                    <form th:action="@{'/consent/admin/cancel/' + ${consent.id} + '?redirect=all'}" method="post">
-                        <button type="submit">Оттегли</button>
-                    </form>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <a th:href="@{'/consent/my-consents/details/' + ${consent.id}}"
+                           class="btn-cancel"
+                           title="Преглед на детайли и аудит трейл"
+                           style="padding: 5px 10px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-info-circle" style="color: var(--red-main);"></i>
+                            <span>Детайли</span>
+                        </a>
+
+                        <form th:if="${!consent.canceled}"
+                              th:action="@{'/consent/admin/cancel/' + ${consent.id} + '?redirect=all'}"
+                              method="post" style="margin: 0;">
+                            <button type="submit" class="btn-cancel" style="padding: 5px 10px; font-size: 0.8rem;">Оттегли</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             </tbody>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детайли за съгласие</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}"/>
+    <link rel="stylesheet" th:href="@{/css/events-test.css}"/>
+    <link rel="stylesheet" th:href="@{/css/my-consents.css}"/>
+    <link rel="stylesheet" th:href="@{/css/consent-details.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container consent-details-page">
+    <div class="table-container">
+        <div class="events-header">
+            <h2><i class="fas fa-file-signature"></i> Детайли за съгласие</h2>
+        </div>
+
+        <div class="details-card">
+            <h3>Основна информация</h3>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Потребител</span>
+                    <span class="detail-value" th:text="${consent.user.firstName + ' ' + consent.user.lastName}">Потребител</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Имейл</span>
+                    <span class="detail-value" th:text="${consent.user.email}">Имейл</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Споразумение
+                        <a th:href="@{'/agreements/details/' + ${consent.agreement.id}}" 
+                           class="btn-view" style="padding: 2px 8px; font-size: 0.7rem; margin-left: 10px; vertical-align: middle;">
+                           Прегледай текста
+                        </a>
+                    </span>
+                    <span class="detail-value" th:text="${consent.agreement.title}">Споразумение</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Дата на създаване</span>
+                    <span class="detail-value" th:text="${#temporals.format(consent.createdAt, 'dd-MM-yyyy HH:mm')}">Дата</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Статус</span>
+                    <span class="detail-value">
+                        <span th:if="${consent.canceled}" class="status-canceled">ОТТЕГЛЕНО</span>
+                        <span th:unless="${consent.canceled}"
+                              th:text="${consent.finished ? 'ПРИКЛЮЧЕНО' : 'НЕПРИКЛЮЧЕНО'}"
+                              th:classappend="${consent.finished} ? 'status-finished' : 'status-unfinished'"></span>
+                    </span>
+                </div>
+                <div th:if="${consent.isMinor}" class="detail-item">
+                    <span class="detail-label">Родителски имейл</span>
+                    <span class="detail-value" th:text="${consent.parentEmail}">Родител</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="audit-section">
+            <h3>Пълен одит трейл (Audit Trail)</h3>
+            
+            <div th:if="${#lists.isEmpty(auditTrail)}" class="no-events my-consents-empty">
+                <p>Няма записи в историята за това съгласие.</p>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(auditTrail)}" class="audit-timeline">
+                <div th:each="history : ${auditTrail}" class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="action-badge" th:text="${history.action}">ДЕЙСТВИЕ</span>
+                            <span class="action-time" th:text="${#temporals.format(history.actionAt, 'dd-MM-yyyy HH:mm:ss')}">Време</span>
+                        </div>
+                        <span class="action-by">
+                            Извършено от: <strong th:text="${history.actionBy.firstName + ' ' + history.actionBy.lastName}">Система</strong>
+                        </span>
+                        <p class="action-reason" th:text="${history.reason}">Причина/Описание</p>
+                        <div th:if="${history.notes != null and !#strings.isEmpty(history.notes)}" class="action-notes">
+                            <p th:text="${history.notes}">Бележки</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-actions">
+            <a href="javascript:history.back()" class="btn-view">← Назад</a>
+<!--            <a th:href="@{/consent/my-consents}" class="btn-view">Моите съгласия</a>-->
+        </div>
+    </div>
+</div>
+</body>
+</html>

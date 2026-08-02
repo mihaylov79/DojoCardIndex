@@ -45,11 +45,20 @@
                     <!-- Removed: Имейл на лице за контакт -->
                     <td data-label="Споразумение" th:text="${consent.agreement.title}"></td>
                     <td data-label="Действие">
-                        <form th:action="@{'/consent/admin/set-pending/' + ${consent.id}}" method="post" class="pending-form">
-                            <label for="reason-${consent.id}" style="display:none;">Причина за освобождаване</label>
-                            <input type="text" id="reason-${consent.id}" name="reason" placeholder="Причина за освобождаване" required class="input-reason">
-                            <button type="submit" class="btn-release">Освободи</button>
-                        </form>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <a th:href="@{'/consent/my-consents/details/' + ${consent.id}}"
+                               class="btn-cancel"
+                               title="Преглед на детайли и аудит трейл"
+                               style="padding: 5px 10px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-info-circle" style="color: var(--red-main);"></i>
+                                <span>Детайли</span>
+                            </a>
+                            <form th:action="@{'/consent/admin/set-pending/' + ${consent.id}}" method="post" class="pending-form" style="margin: 0; display: flex; gap: 5px; align-items: center;">
+                                <label for="reason-${consent.id}" style="display:none;">Причина за освобождаване</label>
+                                <input type="text" id="reason-${consent.id}" name="reason" placeholder="Причина за освобождаване" required class="input-reason" style="margin: 0;">
+                                <button type="submit" class="btn-release" style="margin: 0;">Освободи</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             </tbody>

@@ -15,7 +15,7 @@
 <div class="main-container">
     <div class="table-container">
         <div class="events-header">
-            <h2><i class="fas fa-envelope-circle-xmark"></i> Консенти с неуспешни имейли</h2>
+            <h2><i class="fas fa-file-signature"></i> Съгласия с неуспешно изпратени мейли</h2>
         </div>
 
         <div class="tab">
@@ -27,7 +27,7 @@
         <div id="invitation" class="tabcontent">
             <div th:if="${#lists.isEmpty(failedInvitationMails)}" class="no-events">
                 <i class="fas fa-folder-open"></i>
-                <p>Няма консенти с INVITATION_FAILED</p>
+                <p>Няма съгласия с INVITATION_FAILED</p>
             </div>
             <table th:unless="${#lists.isEmpty(failedInvitationMails)}">
                 <thead>
@@ -35,21 +35,29 @@
                     <th>ID</th>
                     <th>Потребител</th>
                     <th>Статус на консента</th>
+                    <th>Оттеглено на</th>
                     <th>mailSentStatus</th>
                     <th>Действие</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="consent : ${failedInvitationMails}">
+                <tr th:each="consent : ${failedInvitationMails}"
+                    th:classappend="${consent.canceled} ? 'row-canceled' : ''">
                     <td th:text="${consent.id}"></td>
                     <td th:text="${consent.user.firstName} + ' ' + ${consent.user.lastName} + ' (' + ${consent.user.email} + ')' "></td>
-                    <td th:text="${consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно')}"></td>
+                    <td>
+                        <span th:if="${consent.canceled}" class="status-canceled">Оттеглено</span>
+                        <span th:unless="${consent.canceled}" th:text="${consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно')}"></span>
+                    </td>
+                    <td data-label="Оттеглено на" th:text="${consent.canceledAt != null ? #temporals.format(consent.canceledAt,'dd-MM-yyyy HH:mm') : '---'}"></td>
                     <td th:text="${consent.sentInvitationMailStatus}"></td>
                     <td>
-                        <form th:action="@{/consent/admin/resend/{id}(id=${consent.id})}" method="post">
+                        <!-- За Покани показваме бутона само ако съгласието НЕ е оттеглено -->
+                        <form th:if="${!consent.canceled}" th:action="@{/consent/admin/resend/{id}(id=${consent.id})}" method="post">
                             <input type="hidden" name="type" value="INVITATION">
                             <button type="submit" class="btn-resend"><i class="fas fa-redo"></i> Препрати</button>
                         </form>
+                        <span th:if="${consent.canceled}">---</span>
                     </td>
                 </tr>
                 </tbody>
@@ -59,7 +67,7 @@
         <div id="confirmation" class="tabcontent">
             <div th:if="${#lists.isEmpty(failedConfirmationMails)}" class="no-events">
                 <i class="fas fa-folder-open"></i>
-                <p>Няма консенти с CONFIRMATION_FAILED</p>
+                <p>Няма съгласия с CONFIRMATION_FAILED</p>
             </div>
             <table th:unless="${#lists.isEmpty(failedConfirmationMails)}">
                 <thead>
@@ -67,21 +75,29 @@
                     <th>ID</th>
                     <th>Потребител</th>
                     <th>Статус на консента</th>
+                    <th>Оттеглено на</th>
                     <th>mailSentStatus</th>
                     <th>Действие</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="consent : ${failedConfirmationMails}">
+                <tr th:each="consent : ${failedConfirmationMails}"
+                    th:classappend="${consent.canceled} ? 'row-canceled' : ''">
                     <td th:text="${consent.id}"></td>
                     <td th:text="${consent.user.firstName} + ' ' + ${consent.user.lastName} + ' (' + ${consent.user.email} + ')' "></td>
-                    <td th:text="${consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно')}"></td>
+                    <td>
+                        <span th:if="${consent.canceled}" class="status-canceled">Оттеглено</span>
+                        <span th:unless="${consent.canceled}" th:text="${consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно')}"></span>
+                    </td>
+                    <td data-label="Оттеглено на" th:text="${consent.canceledAt != null ? #temporals.format(consent.canceledAt,'dd-MM-yyyy HH:mm') : '---'}"></td>
                     <td th:text="${consent.sentConfirmationMailStatus}"></td>
                     <td>
-                        <form th:action="@{/consent/admin/resend/{id}(id=${consent.id})}" method="post">
+                        <!-- За Потвърждения показваме бутона само ако съгласието НЕ е оттеглено -->
+                        <form th:if="${!consent.canceled}" th:action="@{/consent/admin/resend/{id}(id=${consent.id})}" method="post">
                             <input type="hidden" name="type" value="CONFIRMATION">
                             <button type="submit" class="btn-resend"><i class="fas fa-redo"></i> Препрати</button>
                         </form>
+                        <span th:if="${consent.canceled}">---</span>
                     </td>
                 </tr>
                 </tbody>
@@ -91,29 +107,37 @@
         <div id="cancellation" class="tabcontent">
             <div th:if="${#lists.isEmpty(failedCancellationMails)}" class="no-events">
                 <i class="fas fa-folder-open"></i>
-                <p>Няма консенти с CANCELLATION_FAILED</p>
+                <p>Няма съгласия с CANCELLATION_FAILED</p>
             </div>
             <table th:unless="${#lists.isEmpty(failedCancellationMails)}">
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Потребител</th>
-                    <th>Статус на консента</th>
+                    <th>Статус на съгласието</th>
+                    <th>Оттеглено на</th>
                     <th>mailSentStatus</th>
                     <th>Действие</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="consent : ${failedCancellationMails}">
+                <tr th:each="consent : ${failedCancellationMails}"
+                    th:classappend="${consent.canceled} ? 'row-canceled' : ''">
                     <td th:text="${consent.id}"></td>
                     <td th:text="${consent.user.firstName} + ' ' + ${consent.user.lastName} + ' (' + ${consent.user.email} + ')' "></td>
-                    <td th:text="${consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно')}"></td>
+                    <td>
+                        <span th:if="${consent.canceled}" class="status-canceled">Оттеглено</span>
+                        <span th:unless="${consent.canceled}" th:text="${consent.finished ? 'Приключено' : (consent.pending ? 'В процес' : 'Активно')}"></span>
+                    </td>
+                    <td data-label="Оттеглено на" th:text="${consent.canceledAt != null ? #temporals.format(consent.canceledAt,'dd-MM-yyyy HH:mm') : '---'}"></td>
                     <td th:text="${consent.cancellationConfirmationMailStatus}"></td>
                     <td>
-                        <form th:action="@{/consent/admin/resend/{id}(id=${consent.id})}" method="post">
+                        <!-- За Откази бутонът трябва да се показва само ако съгласието Е оттеглено -->
+                        <form th:if="${consent.canceled}" th:action="@{/consent/admin/resend/{id}(id=${consent.id})}" method="post">
                             <input type="hidden" name="type" value="CANCELLATION">
                             <button type="submit" class="btn-resend"><i class="fas fa-redo"></i> Препрати</button>
                         </form>
+                        <span th:unless="${consent.canceled}">---</span>
                     </td>
                 </tr>
                 </tbody>

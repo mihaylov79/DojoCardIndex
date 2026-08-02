@@ -76,6 +76,7 @@
                     <li><a th:href="@{/consent/show/all}">Всички</a></li>
                     <li><a th:href="@{/consent/admin/blocked}">Задържани</a></li>
                     <li><a th:href="@{/consent/admin/pending}">Временни</a></li>
+                    <li><a th:href="@{/consent/failed-mails}">Неизпратени имейли</a></li>
                 </ul>
             </div>
 
@@ -149,6 +150,7 @@
                         <button th:attr="onclick=|location.href='/events/requests/' + '${user.id}'|">Заявки</button>
                         <button onclick="location.href='/users/list'">Потребители</button>
                         <button onclick="location.href='/users/details/edit/password'">Нова парола</button>
+                        <button onclick="location.href='/consent/my-consents'">Моите съгласия</button>
                         <button onclick="window.open('https://t.me/+YD1B8IPga7tjNmQ0', '_blank')"
                                 title="Telegram Канал">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">

@@ -592,19 +592,19 @@ public class UserConsentService {
 
 
     public List<UserConsent> getConsentsInvitationFailedMails() {
-        return repository.findAllBySentInvitationMailStatusInOrSentInvitationMailStatusIsNull(
+        return repository.findAllBySentInvitationMailStatusIn(
                 List.of(MailSendStatus.INVITATION_FAILED, MailSendStatus.FAILED)
         );
     }
 
     public List<UserConsent> getConsentsConfirmationFailedMails() {
-        return repository.findAllBySentConfirmationMailStatusInOrSentConfirmationMailStatusIsNull(
+        return repository.findAllBySentConfirmationMailStatusIn(
                 List.of(MailSendStatus.CONFIRMATION_FAILED, MailSendStatus.FAILED)
         );
     }
 
     public List<UserConsent> getConsentsCancellationFailedMails() {
-        return repository.findAllByCancellationConfirmationMailStatusInOrCancellationConfirmationMailStatusIsNull(
+        return repository.findAllByCancellationConfirmationMailStatusIn(
                 List.of(MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED, MailSendStatus.FAILED)
         );
     }
@@ -689,7 +689,7 @@ public class UserConsentService {
     public boolean isParentConsentConfirmed(User user) {
         Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
         if (activeAgreementOpt.isEmpty()) return false;
-        return repository.findByUserAndAgreement(user, activeAgreementOpt.get())
+        return repository.findByUserAndAgreementAndCanceledFalse(user, activeAgreementOpt.get())
                 .map(c -> c.getParentConsentedAt() != null)
                 .orElse(false);
     }
@@ -697,7 +697,7 @@ public class UserConsentService {
     public boolean isParentConsentTokenExpired(User user) {
         Optional<Agreement> activeAgreementOpt = agreementService.getActiveAgreement();
         if (activeAgreementOpt.isEmpty()) return false;
-        return repository.findByUserAndAgreement(user, activeAgreementOpt.get())
+        return repository.findByUserAndAgreementAndCanceledFalse(user, activeAgreementOpt.get())
                 .map(c -> !c.isTokenValid())
                 .orElse(false);
     }
@@ -719,6 +719,16 @@ public class UserConsentService {
             }
         }
         return false;
+    }
+
+    public List<UserConsent> getUserConsents(User user) {
+        return repository.findByUser(user);
+    }
+
+    public void validateUserAccessToConsent(UserConsent consent, User loggedUser) {
+        if (!consent.getUser().equals(loggedUser) && loggedUser.getRole() != UserRole.ADMIN && loggedUser.getRole() != UserRole.TRAINER) {
+            throw new ConsentOperationNotAllowedException("Нямате достъп до това съгласие!");
+        }
     }
 
 
@@ -796,8 +806,21 @@ public class UserConsentService {
     }
 
     public Optional<UserConsent> getOptConsent(User user, Agreement agreement) {
-        return repository.findByUserAndAgreement(user, agreement);
+        return repository.findByUserAndAgreementAndCanceledFalse(user, agreement);
     }
+
+
+
+    public Optional<UserConsent> getUserActiveConsent(User user) {
+        return agreementService.getActiveAgreement()
+                .flatMap(agreement -> getOptConsent(user, agreement));
+    }
+
+    public boolean canRevokeConsent(UserConsent consent) {
+        return consent !=null && !consent.isMinor();
+    }
+
+
 
     /**
      * Връща оставащите секунди до изтичане на токена за родителско съгласие,

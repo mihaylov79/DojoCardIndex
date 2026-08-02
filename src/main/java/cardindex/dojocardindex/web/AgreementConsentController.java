@@ -7,6 +7,8 @@ import cardindex.dojocardindex.User.service.UserService;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.service.ConsentActionResult;
 import cardindex.dojocardindex.UserConsent.service.UserConsentService;
+import cardindex.dojocardindex.UserConsentHistory.model.UserConsentHistory;
+import cardindex.dojocardindex.UserConsentHistory.service.UserConsentHistoryService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,47 @@ public class AgreementConsentController {
     private final AgreementService agreementService;
     private final UserService userService;
     private final UserConsentService userConsentService;
+    private final UserConsentHistoryService userConsentHistoryService;
 
     @Autowired
-    public AgreementConsentController(AgreementService agreementService, UserService userService, UserConsentService userConsentService) {
+    public AgreementConsentController(AgreementService agreementService, UserService userService, UserConsentService userConsentService, UserConsentHistoryService userConsentHistoryService) {
         this.agreementService = agreementService;
         this.userService = userService;
         this.userConsentService = userConsentService;
+        this.userConsentHistoryService = userConsentHistoryService;
     }
+
+    @GetMapping("/my-consents")
+    public ModelAndView getMyConsents(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        User user = userService.getUserById(customUserDetails.getId());
+
+       UserConsent currentConsent = userConsentService.getUserActiveConsent(user).orElse(null);
+
+        ModelAndView modelAndView = new ModelAndView("my-consents");
+        modelAndView.addObject("currentConsent", currentConsent);
+        modelAndView.addObject("consentAuditTrail", userConsentService.getUserConsents(user));
+        modelAndView.addObject("canRevokeConsent", userConsentService.canRevokeConsent(currentConsent));
+
+        return modelAndView;
+    }
+
+    @GetMapping("/my-consents/details/{consentId}")
+    public ModelAndView getConsentDetails(@PathVariable UUID consentId, @AuthenticationPrincipal CustomUserDetails details) {
+        User user = userService.getUserById(details.getId());
+        UserConsent consent = userConsentService.getConsentById(consentId);
+
+        userConsentService.validateUserAccessToConsent(consent, user);
+
+        List<UserConsentHistory> auditTrail = userConsentHistoryService.getHistoryForConsent(consent);
+
+        ModelAndView modelAndView = new ModelAndView("consent-details");
+        modelAndView.addObject("consent", consent);
+        modelAndView.addObject("auditTrail", auditTrail);
+        return modelAndView;
+    }
+
+
     
     @GetMapping("/show")
     public ModelAndView showAgreementForConsent() {
@@ -163,6 +199,7 @@ public class AgreementConsentController {
         return modelAndView;
     }
 
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
     @PostMapping("/admin/cancel/{consentId}")
     public ModelAndView cancelConsent(@PathVariable UUID consentId) {
 

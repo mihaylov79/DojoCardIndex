@@ -325,3 +325,37 @@
         word-wrap: break-word;
     }
 }
+
+/* Стилове за отменени съгласия */
+.row-canceled {
+    background-color: #fff3f3;
+    opacity: 0.8;
+}
+
+.status-canceled {
+    color: #c62828;
+    font-weight: bold;
+}
+
+/* Стил за бутон "Оттегли" */
+.btn-cancel {
+    background-color: transparent;
+    color: var(--red-main);
+    border: 2px solid var(--red-main);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    font-weight: 650;
+}
+
+.btn-cancel:active {
+    transform: scale(0.98);
+}
+
