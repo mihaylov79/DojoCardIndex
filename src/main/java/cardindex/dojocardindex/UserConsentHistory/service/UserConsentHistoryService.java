@@ -8,7 +8,10 @@ import cardindex.dojocardindex.UserConsentHistory.repository.UserConsentHistoryR
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserConsentHistoryService {
@@ -50,6 +53,24 @@ public class UserConsentHistoryService {
 
     public List<UserConsentHistory> getHistoryForConsent(UserConsent consent) {
         return historyRepository.findByConsentOrderByActionAtDesc(consent);
+    }
+
+    public List<UserConsentHistory> getHistoryForUser(User user) {
+        return historyRepository.findByConsent_UserOrderByActionAtDesc(user);
+    }
+
+    public Map<String, List<UserConsentHistory>> getHistoryForUserGroupedByAgreementTitle(User user) {
+        return getHistoryForUser(user).stream()
+                .collect(Collectors.groupingBy(
+                        history -> {
+                            if (history.getConsent() == null || history.getConsent().getAgreement() == null || history.getConsent().getAgreement().getTitle() == null) {
+                                return "Без заглавие";
+                            }
+                            return history.getConsent().getAgreement().getTitle();
+                        },
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
     }
 
     public void saveConsentHistory(UserConsentHistory history) {

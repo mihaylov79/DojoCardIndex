@@ -1,5 +1,6 @@
 package cardindex.dojocardindex.UserConsentHistory.repository;
 
+import cardindex.dojocardindex.User.models.User;
 import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsentHistory.model.UserConsentHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import java.util.UUID;
 public interface UserConsentHistoryRepository extends JpaRepository<UserConsentHistory, UUID> {
 
     List<UserConsentHistory> findByConsentOrderByActionAtDesc(UserConsent consent);
+
+    List<UserConsentHistory> findByConsent_UserOrderByActionAtDesc(User user);
 }

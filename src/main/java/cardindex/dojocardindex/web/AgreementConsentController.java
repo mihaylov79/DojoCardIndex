@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -235,6 +236,19 @@ public class AgreementConsentController {
     public String resendMail(@PathVariable UUID consentId, @RequestParam String type) {
         userConsentService.resendMail(consentId, type);
         return "redirect:/consent/failed-mails";
+    }
+
+    @GetMapping("/users/consent-history/details/{userId}")
+    public ModelAndView getConsentHistoryDetails(@PathVariable UUID userId){
+
+        User user = userService.getUserById(userId);
+        Map<String, List<UserConsentHistory>> historyByAgreement = userConsentHistoryService.getHistoryForUserGroupedByAgreementTitle(user);
+        int eventCount = historyByAgreement.values().stream().mapToInt(List::size).sum();
+        ModelAndView modelAndView = new ModelAndView("consent-history-details");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("historyByAgreement", historyByAgreement);
+        modelAndView.addObject("eventCount", eventCount);
+        return modelAndView;
     }
 }
 

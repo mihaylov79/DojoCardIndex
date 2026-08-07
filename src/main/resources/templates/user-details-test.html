@@ -87,6 +87,11 @@
                         <button onclick="window.location.href='/users/list'">Регистрирани потребители</button>
                         <button onclick="window.location.href='/users/list/active'">Активни потребители</button>
                         <button onclick="window.location.href='/home'">Профилна страница</button>
+                        <button type="button"
+                                sec:authorize="hasAnyRole('TRAINER', 'ADMIN')"
+                                th:onclick="|window.location.href='@{/consent/users/consent-history/details/{userId}(userId=${user.id})}'|">
+                            Съгласия
+                        </button>
                     </td>
                 </tr>
                 <tr>
@@ -142,7 +147,7 @@
                     <th>Телефон</th>
                     <td data-label="Телефон" th:text="${user.contactPersonPhone}"></td>
                 </tr>
-                <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${user.contactPersonEmail} != null">
+                <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')" th:if="${!#strings.isEmpty(user.contactPersonEmail)}">
                     <th>Имейл на лице за контакт</th>
                     <td data-label="Имейл на лице за контакт" th:text="${user.contactPersonEmail}"></td>
                 </tr>

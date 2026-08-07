@@ -129,7 +129,7 @@
                         <th>Телефон</th>
                         <td data-label="Телефон" th:text="${user.contactPersonPhone}"></td>
                     </tr>
-                    <tr th:if="${user.contactPersonEmail} != null">
+                    <tr th:if="${!#strings.isEmpty(user.contactPersonEmail)}">
                         <th>Имейл на лице за контакт</th>
                         <td data-label="Имейл на лице за контакт" th:text="${user.contactPersonEmail}"></td>
                     </tr>
