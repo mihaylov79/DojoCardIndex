@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
     <link rel="stylesheet" th:href="@{/css/events-test.css}"/>
     <link rel="stylesheet" th:href="@{/css/my-consents.css}"/>
     <link rel="stylesheet" th:href="@{/css/consent-details.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .consent-section {
             margin-bottom: 40px;
@@ -90,16 +89,19 @@
                         <div class="timeline-content">
                             <div class="timeline-header">
                                 <span class="action-badge" th:text="${history.action}">ДЕЙСТВИЕ</span>
-                                        <span class="action-time" th:text="${#temporals.format(history.actionAt, 'dd-MM-yyyy HH:mm:ss')}">Време</span>
-                                    </div>
-                                            <div class="history-meta">
-                                                <span class="history-date" th:text="${'Съгласие от: ' + #temporals.format(history.consent.createdAt, 'dd-MM-yyyy HH:mm')}">Дата</span>
-                                                <small class="consent-id"
-                                                       th:if="${history.consent != null}"
-                                                       th:text="${history.consent.id}">00000000-0000-0000-0000-000000000000</small>
-                                            </div>
-                            <span th:if="${history.consent.canceled}" class="status-canceled" style="font-size: 0.75rem; margin-left: 10px;">ОТТЕГЛЕНО</span>
-                            <span th:unless="${history.consent.canceled}"
+                                <span class="action-time" th:text="${#temporals.format(history.actionAt, 'dd-MM-yyyy HH:mm:ss')}">Време</span>
+                            </div>
+                            <div class="history-meta">
+                                <span class="history-date"
+                                      th:if="${history.consent != null}"
+                                      th:text="${'Съгласие от: ' + #temporals.format(history.consent.createdAt, 'dd-MM-yyyy HH:mm')}">Дата</span>
+                                <span class="history-date" th:unless="${history.consent != null}">Съгласие от: -</span>
+                                <small class="consent-id"
+                                       th:if="${history.consent != null}"
+                                       th:text="${history.consent.id}">00000000-0000-0000-0000-000000000000</small>
+                            </div>
+                            <span th:if="${history.consent != null and history.consent.canceled}" class="status-canceled" style="font-size: 0.75rem; margin-left: 10px;">ОТТЕГЛЕНО</span>
+                            <span th:if="${history.consent != null and !history.consent.canceled}"
                                   th:text="${history.consent.finished ? 'ПРИКЛЮЧЕНО' : 'НЕПРИКЛЮЧЕНО'}"
                                   th:classappend="${history.consent.finished} ? 'status-finished' : 'status-unfinished'"
                                   style="font-size: 0.75rem; margin-left: 10px;"></span>
@@ -117,6 +119,12 @@
         </div>
 
         <div class="back-actions">
+            <a sec:authorize="hasAnyRole('TRAINER', 'ADMIN')"
+               th:href="@{/consent/users/consent-history/details/{userId}/export/pdf(userId=${user.id})}"
+               class="btn-view"
+               style="margin-right: 10px;">
+                Експорт PDF
+            </a>
             <a href="javascript:history.back()" class="btn-view">← Назад</a>
         </div>
     </div>

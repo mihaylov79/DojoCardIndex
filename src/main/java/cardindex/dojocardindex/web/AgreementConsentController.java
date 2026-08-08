@@ -8,9 +8,11 @@ import cardindex.dojocardindex.UserConsent.model.UserConsent;
 import cardindex.dojocardindex.UserConsent.service.ConsentActionResult;
 import cardindex.dojocardindex.UserConsent.service.UserConsentService;
 import cardindex.dojocardindex.UserConsentHistory.model.UserConsentHistory;
+import cardindex.dojocardindex.UserConsentHistory.service.ConsentHistoryExportService;
 import cardindex.dojocardindex.UserConsentHistory.service.UserConsentHistoryService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,13 +33,15 @@ public class AgreementConsentController {
     private final UserService userService;
     private final UserConsentService userConsentService;
     private final UserConsentHistoryService userConsentHistoryService;
+    private final ConsentHistoryExportService consentHistoryExportService;
 
     @Autowired
-    public AgreementConsentController(AgreementService agreementService, UserService userService, UserConsentService userConsentService, UserConsentHistoryService userConsentHistoryService) {
+    public AgreementConsentController(AgreementService agreementService, UserService userService, UserConsentService userConsentService, UserConsentHistoryService userConsentHistoryService, ConsentHistoryExportService consentHistoryExportService) {
         this.agreementService = agreementService;
         this.userService = userService;
         this.userConsentService = userConsentService;
         this.userConsentHistoryService = userConsentHistoryService;
+        this.consentHistoryExportService = consentHistoryExportService;
     }
 
     @GetMapping("/my-consents")
@@ -249,6 +253,12 @@ public class AgreementConsentController {
         modelAndView.addObject("historyByAgreement", historyByAgreement);
         modelAndView.addObject("eventCount", eventCount);
         return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('TRAINER', 'ADMIN')")
+    @GetMapping("/users/consent-history/details/{userId}/export/pdf")
+    public void exportConsentHistoryPdf(@PathVariable UUID userId, HttpServletResponse response) {
+        consentHistoryExportService.exportConsentHistoryPdf(userId, response);
     }
 }
 
