@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цялостна история на съгласията</title>
+    <link rel="stylesheet" th:href="@{/css/default-test.css}"/>
+    <link rel="stylesheet" th:href="@{/css/events-test.css}"/>
+    <link rel="stylesheet" th:href="@{/css/my-consents.css}"/>
+    <link rel="stylesheet" th:href="@{/css/consent-details.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .consent-section {
+            margin-bottom: 40px;
+            border-bottom: 2px dashed #dee2e6;
+            padding-bottom: 20px;
+        }
+        .consent-section:last-child {
+            border-bottom: none;
+        }
+        .user-header-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--red-main, #d9534f);
+        }
+        .agreement-info-mini {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .agreement-title {
+            font-weight: 600;
+            color: #333;
+        }
+        .history-meta { display:flex; gap:0.5rem; align-items:center; margin-top:6px; }
+        .history-date { color:#444; font-size:0.95rem; }
+        .consent-id { color:#777; font-size:0.75rem; font-family: monospace; margin-left: 0.25rem; }
+    </style>
+</head>
+<body>
+<header>
+    <th:block th:insert="~{fragments/nav :: nav}"></th:block>
+</header>
+
+<div class="main-container consent-details-page">
+    <div class="table-container">
+        <div class="events-header">
+            <h2><i class="fas fa-history"></i> История на съгласията</h2>
+        </div>
+
+        <div class="user-header-info">
+            <div class="details-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="detail-item">
+                    <span class="detail-label">Потребител</span>
+                    <span class="detail-value" th:text="${user.firstName + ' ' + user.lastName}">Михаил Михайлов</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Имейл</span>
+                    <span class="detail-value" th:text="${user.email}">misho@example.com</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Общо събития</span>
+                    <span class="detail-value" th:text="${eventCount}">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#maps.isEmpty(historyByAgreement)}" class="no-events my-consents-empty">
+            <p>Няма история на съгласия за този потребител.</p>
+        </div>
+
+        <div th:unless="${#maps.isEmpty(historyByAgreement)}">
+            <div th:each="entry : ${historyByAgreement}" class="consent-section">
+                <div class="agreement-info-mini">
+                    <div>
+                        <span class="agreement-title" th:text="${entry.key}">Споразумение</span>
+                        <span class="action-time" style="margin-left: 10px;" th:text="${'Събития: ' + #lists.size(entry.value)}">0</span>
+                    </div>
+                </div>
+
+                <div class="audit-timeline">
+                    <div class="timeline-item" th:each="history : ${entry.value}">
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <span class="action-badge" th:text="${history.action}">ДЕЙСТВИЕ</span>
+                                        <span class="action-time" th:text="${#temporals.format(history.actionAt, 'dd-MM-yyyy HH:mm:ss')}">Време</span>
+                                    </div>
+                                            <div class="history-meta">
+                                                <span class="history-date" th:text="${'Съгласие от: ' + #temporals.format(history.consent.createdAt, 'dd-MM-yyyy HH:mm')}">Дата</span>
+                                                <small class="consent-id"
+                                                       th:if="${history.consent != null}"
+                                                       th:text="${history.consent.id}">00000000-0000-0000-0000-000000000000</small>
+                                            </div>
+                            <span th:if="${history.consent.canceled}" class="status-canceled" style="font-size: 0.75rem; margin-left: 10px;">ОТТЕГЛЕНО</span>
+                            <span th:unless="${history.consent.canceled}"
+                                  th:text="${history.consent.finished ? 'ПРИКЛЮЧЕНО' : 'НЕПРИКЛЮЧЕНО'}"
+                                  th:classappend="${history.consent.finished} ? 'status-finished' : 'status-unfinished'"
+                                  style="font-size: 0.75rem; margin-left: 10px;"></span>
+                            <span class="action-by">
+                                Извършено от: <strong th:text="${history.actionBy != null ? history.actionBy.firstName + ' ' + history.actionBy.lastName : 'Система'}">Система</strong>
+                            </span>
+                            <p class="action-reason" th:text="${history.reason}">Причина/Описание</p>
+                            <div th:if="${history.notes != null and !#strings.isEmpty(history.notes)}" class="action-notes">
+                                <p th:text="${history.notes}">Бележки</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-actions">
+            <a href="javascript:history.back()" class="btn-view">← Назад</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
