@@ -436,10 +436,10 @@ public class UserConsentService {
 
         consent = sendCancelConsentConfirmationEmailWithStatus(consent, request, consent.getUser());
 
-        historyService.log(consent, ConsentHistoryAction.CANCELED_BY_ADMIN, userService.getCurrentUser(), "Изпратен мейл за потвърждение за слубебно оттеглено съгласие от администратор за потребител " + consent.getUser().getEmail());
+        historyService.log(consent, ConsentHistoryAction.CANCELED_BY_ADMIN, userService.getCurrentUser(), "Изпратен мейл за потвърждение за служебно оттеглено съгласие от администратор за потребител " + consent.getUser().getEmail());
 
         if (consent.getCancellationConfirmationMailStatus() == MailSendStatus.CANCELLATION_CONFIRMATION_MAIL_FAILED){
-            historyService.log(consent, ConsentHistoryAction.CANCELLATION_CONFIRMATION_MAIL_FAILED, userService.getCurrentUser(), "Неуспешно изпращане на мейл за потвърждение за слубебно оттеглено съгласие от администратор за потребител " + consent.getUser().getEmail());
+            historyService.log(consent, ConsentHistoryAction.CANCELLATION_CONFIRMATION_MAIL_FAILED, userService.getCurrentUser(), "Неуспешно изпращане на мейл за потвърждение за служебно оттеглено съгласие от администратор за потребител " + consent.getUser().getEmail());
         }
 
         return consent;

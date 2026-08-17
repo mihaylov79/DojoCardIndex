@@ -28,11 +28,11 @@
             <p>Изпратен е имейл до родителя. Моля, изчакайте потвърждение.</p>
                 <div th:if="${tokenSecondsLeft}">
                         <p>Оставащо време до изтичане на линка:
-                                                                                    <span th:if="${tokenSecondsLeft >= 3600}"
-                                                                                          th:text="${#strings.format('%02d ч %02d мин', tokenSecondsLeft div 3600, (tokenSecondsLeft mod 3600) div 60)}">
-                                                                                    </span>
-                                                                                    <span th:unless="${tokenSecondsLeft >= 3600}"
-                                                                                          th:text="${#strings.format('%02d мин', tokenSecondsLeft div 60)}"></span>
+                            <span th:if="${tokenSecondsLeft >= 3600}"
+                                  th:text="|${tokenSecondsLeft div 3600} ч ${(tokenSecondsLeft mod 3600) div 60} мин|">
+                            </span>
+                            <span th:unless="${tokenSecondsLeft >= 3600}"
+                                  th:text="|${tokenSecondsLeft div 60} мин|"></span>
                         </p>
                     </div>
         </div>
