@@ -96,3 +96,12 @@
     background: #0d47a1;
 }
 
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+

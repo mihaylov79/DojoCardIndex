@@ -816,6 +816,10 @@ public class UserConsentService {
                 .flatMap(agreement -> getOptConsent(user, agreement));
     }
 
+    public Optional<MailSendStatus> getMailStatusForActiveConsent(User user) {
+        return getUserActiveConsent(user).map(UserConsent::getSentInvitationMailStatus);
+    }
+
     public boolean canRevokeConsent(UserConsent consent) {
         return consent !=null && !consent.isMinor();
     }

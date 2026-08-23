@@ -25,16 +25,30 @@
             </form>
         </div>
         <div th:unless="${tokenExpired}" class="waiting-info">
-            <p>Изпратен е имейл до родителя. Моля, изчакайте потвърждение.</p>
+            <!-- Блок при неуспешно изпратен имейл -->
+            <div th:if="${mailStatus?.name() == 'INVITATION_FAILED'}" class="alert-error">
+                <p>⚠️ Възникна проблем при изпращането на имейла до вашия родител.</p>
+                <p>Моля, проверете имейл адреса в профила си или опитайте отново.</p>
+                <div class="action-buttons">
+                    <form th:action="@{/consent/resend-parrent-consent}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-regenerate">Опитай отново сега</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Стандартен блок при успех -->
+            <div th:unless="${mailStatus?.name() == 'INVITATION_FAILED'}">
+                <p>Изпратен е имейл до родителя. Моля, изчакайте потвърждение.</p>
                 <div th:if="${tokenSecondsLeft}">
-                        <p>Оставащо време до изтичане на линка:
-                            <span th:if="${tokenSecondsLeft >= 3600}"
-                                  th:text="|${tokenSecondsLeft div 3600} ч ${(tokenSecondsLeft mod 3600) div 60} мин|">
-                            </span>
-                            <span th:unless="${tokenSecondsLeft >= 3600}"
-                                  th:text="|${tokenSecondsLeft div 60} мин|"></span>
-                        </p>
-                    </div>
+                    <p>Оставащо време до изтичане на линка:
+                        <span th:if="${tokenSecondsLeft >= 3600}"
+                              th:text="|${tokenSecondsLeft div 3600} ч ${(tokenSecondsLeft mod 3600) div 60} мин|">
+                        </span>
+                        <span th:unless="${tokenSecondsLeft >= 3600}"
+                              th:text="|${tokenSecondsLeft div 60} мин|"></span>
+                    </p>
+                </div>
+            </div>
         </div>
         <!-- <a href="/home" class="btn-back">Към начална страница</a> -->
         <!-- Бутонът за връщане към начална страница е премахнат по изискване -->
