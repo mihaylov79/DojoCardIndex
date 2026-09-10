@@ -87,7 +87,7 @@ resource "azurerm_mysql_flexible_database" "db" {
 }
 
 resource "azurerm_mysql_flexible_server_firewall_rule" "fr" {
-  end_ip_address      = "255.255.255.255"
+  end_ip_address      = "0.0.0.0" #  НЕ Е ТЕСТВАНО!!! Разрешаване само на вътрешния трафик от Azure услуги -тествано с 255.255.255.255
   name                = "dojo-firewall"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mysql_flexible_server.server.name
@@ -99,6 +99,7 @@ resource "azurerm_linux_web_app" "alwa" {
   name                = "dragon-dojo"
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.sp.id
+  https_only = true # НЕ Е ТЕСТВАНО !!! Автоматично пренасочва целия HTTP (порт 80) трафик към HTTPS (порт 443) с 301 Redirect
 
   site_config {
     application_stack {
@@ -109,8 +110,8 @@ resource "azurerm_linux_web_app" "alwa" {
   }
 
   app_settings = {
-
-    "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=true&requireSSL=false&serverTimezone=UTC"
+    # НЕ Е ТЕСТВАНО !!! Променено requireSSL=true вместо false
+    "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=true&requireSSL=true&serverTimezone=UTC"
 
     "SPRING_DATASOURCE_USERNAME" = "dojoadmin"
     "SPRING_DATASOURCE_PASSWORD" = var.admin_password
