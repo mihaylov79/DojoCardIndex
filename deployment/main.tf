@@ -23,7 +23,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  location = "Italy North"
+  location = "Poland Central"
   name     = "dragon-dojo-rg"
 }
 
