@@ -1,9 +1,11 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.Message.Service.MessageService;
 import cardindex.dojocardindex.Message.models.Message;
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.service.UserConsentService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.SendMessageRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +38,12 @@ public class MessageControllerApiTest {
 
     @MockitoBean
     private MessageService messageService;
+
+    @MockitoBean
+    private AgreementService agreementService;
+
+    @MockitoBean
+    private UserConsentService userConsentService;
 
 
     @Test

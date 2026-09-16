@@ -1,9 +1,11 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.Post.Service.PostService;
 import cardindex.dojocardindex.Post.models.Post;
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.service.UserConsentService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreatePostRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +38,10 @@ public class PostControllerApiTest {
     private UserService userService;
     @MockitoBean
     private PostService postService;
+    @MockitoBean
+    private AgreementService agreementService;
+    @MockitoBean
+    private UserConsentService userConsentService;
 
     @Test
     public void getPostsPage_ShouldReturnPostsPage_WhenAuthenticated() throws Exception {

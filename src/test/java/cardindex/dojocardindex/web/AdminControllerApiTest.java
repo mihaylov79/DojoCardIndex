@@ -1,7 +1,9 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.service.UserConsentService;
 import cardindex.dojocardindex.exceptions.UserNotFoundException;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.CreateUserRequest;
@@ -35,6 +37,12 @@ public class AdminControllerApiTest {
 
     @MockitoBean
     private UserService userService;
+
+    @MockitoBean
+    private AgreementService agreementService;
+
+    @MockitoBean
+    private UserConsentService userConsentService;
 
     @Autowired
     private MockMvc mockMvc;

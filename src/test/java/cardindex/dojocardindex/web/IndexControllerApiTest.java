@@ -1,5 +1,6 @@
 package cardindex.dojocardindex.web;
 
+import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.models.EventType;
 import cardindex.dojocardindex.Event.models.Requirements;
@@ -12,6 +13,7 @@ import cardindex.dojocardindex.User.models.UserRole;
 import cardindex.dojocardindex.User.models.UserStatus;
 import cardindex.dojocardindex.User.repository.UserRepository;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.service.UserConsentService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,12 @@ public class IndexControllerApiTest {
 
     @MockitoBean
     private UserRepository userRepository;
+
+    @MockitoBean
+    private AgreementService agreementService;
+
+    @MockitoBean
+    private UserConsentService userConsentService;
 
 
     @Autowired

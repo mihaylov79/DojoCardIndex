@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.web;
 
 
+import cardindex.dojocardindex.Agreement.service.AgreementService;
 import cardindex.dojocardindex.Event.models.Event;
 import cardindex.dojocardindex.Event.models.EventType;
 import cardindex.dojocardindex.Event.models.Requirements;
@@ -10,6 +11,7 @@ import cardindex.dojocardindex.EventParticipationRequest.model.RequestStatus;
 import cardindex.dojocardindex.EventParticipationRequest.service.EventParticipationService;
 import cardindex.dojocardindex.User.models.*;
 import cardindex.dojocardindex.User.service.UserService;
+import cardindex.dojocardindex.UserConsent.service.UserConsentService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,10 @@ public class EventParticipationControllerApiTest {
     private UserService userService;
     @MockitoBean
     private EventService eventService;
+    @MockitoBean
+    private AgreementService agreementService;
+    @MockitoBean
+    private UserConsentService userConsentService;
 
 
     @Test

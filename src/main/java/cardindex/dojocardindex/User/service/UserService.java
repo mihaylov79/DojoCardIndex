@@ -106,6 +106,7 @@ public class UserService implements UserDetailsService {
                 .isCompetitor(createUserRequest.getIsCompetitor())
                 .height(createUserRequest.getHeight())
                 .weight(createUserRequest.getWeight())
+                .medicalExamsPassed(createUserRequest.getMedicalExamsPassed())
                 .contactPerson(createUserRequest.getContactPerson())
                 .contactPersonPhone(createUserRequest.getContactPersonPhone())
                 .contactPersonEmail(createUserRequest.getContactPersonEmail())
