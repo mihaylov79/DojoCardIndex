@@ -87,7 +87,7 @@ resource "azurerm_mysql_flexible_database" "db" {
 }
 
 resource "azurerm_mysql_flexible_server_firewall_rule" "fr" {
-  end_ip_address      = "0.0.0.0" #  НЕ Е ТЕСТВАНО!!! Разрешаване само на вътрешния трафик от Azure услуги -тествано с 255.255.255.255
+  end_ip_address      = "0.0.0.0" #  НРазрешаване само на вътрешния трафик от Azure услуги
   name                = "dojo-firewall"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mysql_flexible_server.server.name
@@ -110,7 +110,7 @@ resource "azurerm_linux_web_app" "alwa" {
   }
 
   app_settings = {
-    # НЕ Е ТЕСТВАНО !!! Променено requireSSL=true вместо false
+    # Променено requireSSL=true вместо false
     "SPRING_DATASOURCE_URL" = "jdbc:mysql://${azurerm_mysql_flexible_server.server.fqdn}:3306/${azurerm_mysql_flexible_database.db.name}?useSSL=true&requireSSL=true&serverTimezone=UTC"
 
     "SPRING_DATASOURCE_USERNAME" = "dojoadmin"

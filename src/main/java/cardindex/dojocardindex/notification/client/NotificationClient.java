@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "mail-svc", url = "https://mail-svc-app-container-app.bluewave-fd99efbb.polandcentral.azurecontainerapps.io/api/v1/notifications")
+//@FeignClient(name = "mail-svc", url = "https://mail-svc-app-container-app.bluewave-fd99efbb.polandcentral.azurecontainerapps.io/api/v1/notifications")
 //@FeignClient(name = "mail-svc", url = "http://localhost:8081/api/v1/notifications")
+@FeignClient(name = "mail-svc", url = "${notification.service.url}")
 public interface NotificationClient {
 
     @PostMapping("/preferences")
