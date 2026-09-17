@@ -117,30 +117,27 @@ body {
 }
 
 .button-group a,
-.button-group button {
-    padding: 12px 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.button-group .btn-primary {
-    background-color: #d4a574;
-    color: white;
-}
-
-.button-group .btn-primary:hover {
-    background-color: #c1934a;
-}
-
+.button-group button,
+.button-group .btn-primary,
 .button-group .btn-secondary {
-    background-color: #6c757d;
-    color: white;
+    color: var(--red-main);
+    font-weight: 400;
+    margin: 0.3em;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-main);
+    border-color: var(--red-main);
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.3s ease;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
 }
 
+.button-group a:hover,
+.button-group button:hover,
+.button-group .btn-primary:hover,
 .button-group .btn-secondary:hover {
-    background-color: #5a6268;
+    font-weight: 650;
 }

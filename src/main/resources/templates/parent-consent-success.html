@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="bg" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Успешно потвърдено родителско съгласие</title>
-    <link rel="stylesheet" href="/css/default-test.css">
-    <link rel="stylesheet" href="/css/error-test.css">
+    <link rel="stylesheet" th:href="@{/css/default-test.css}">
+    <link rel="stylesheet" th:href="@{/css/error-test.css}">
 </head>
 <body>
 <header>
@@ -12,6 +14,12 @@
 <div class="main-container">
     <div class="additional-info">
         <div class="message">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" stroke="#28a745" stroke-width="2" fill="#e8f5e9"/>
+                    <polyline points="8 12 11 15 16 9" stroke="#28a745" stroke-width="2.5"/>
+                </svg>
+            </div>
             <h1>Поздравления!</h1>
             <hr class="line"/>
             <h3>Родителското съгласие беше потвърдено успешно.</h3>
@@ -19,7 +27,11 @@
             <p><b>Споразумение:</b> <span th:text="${agreementTitle}"></span></p>
             <p><b>ID на съгласието:</b> <span th:text="${consentId}"></span></p>
         </div>
-        <p><a href="/home">Към профилната страница</a></p>
+        <p>Вече можете спокойно да затворите тази страница или да продължите към сайта.</p>
+        <div class="button-group">
+            <button class="btn-primary" onclick="window.close();">Затвори страницата</button>
+<!--            <a href="/home" class="btn-secondary">Към профилната страница</a>-->
+        </div>
     </div>
 </div>
 </body>
