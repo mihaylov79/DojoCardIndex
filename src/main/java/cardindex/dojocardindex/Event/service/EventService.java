@@ -303,17 +303,7 @@ public class EventService {
 
         Document document = new Document(PageSize.A4);
 
-        try (InputStream backgroundStream = getClass().getClassLoader().getResourceAsStream("static/images/KAN_PDF_BACKGROUND.jpg")) {
-            if (backgroundStream == null) {
-                throw new ExportIOException("Background image не е намерено!");
-            }
-            Image background = Image.getInstance(backgroundStream.readAllBytes());
-            PdfWriter  writer = PdfWriter.getInstance(document,response.getOutputStream());
-            writer.setPageEvent(new BackgroundPageEvent(background,0.3f));
-        } catch (IOException e) {
-            log.error("Генерирането на PDF файл за събитие: {} беще неуспешно!",eventId,e);
-            throw new ExportIOException("Генерирането на PDF файл беще неуспешно!");
-        }
+        setPageBackground(response, document);
         document.open();
 
 //        // Зареждане на шрифт с кирилица
@@ -504,21 +494,15 @@ public class EventService {
         response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
 
         Document document = new Document(PageSize.A4);
-        try (InputStream backgroundStream = getClass().getClassLoader().getResourceAsStream("static/images/Kan_PDF_background.jpg");
-             InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/Ubuntu-Regular.ttf")) {
 
-            if (backgroundStream == null) {
-                throw new ExportIOException("Background image не е намерено!");
-            }
+        setPageBackground(response, document);
+
+            document.open();
+
+        try (InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/Ubuntu-Regular.ttf")) {
             if (fontStream == null) {
                 throw new ExportIOException("Шрифтът Ubuntu-Regular.ttf не е намерен!");
             }
-
-            Image imageBackground = Image.getInstance(backgroundStream.readAllBytes());
-            PdfWriter writer = PdfWriter.getInstance(document,response.getOutputStream());
-            writer.setPageEvent(new BackgroundPageEvent(imageBackground,0.3f));
-
-            document.open();
 
             BaseFont baseFont = BaseFont.createFont("Ubuntu-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontStream.readAllBytes(), null);
             Font defaultFont = new Font(baseFont,14,Font.NORMAL);
@@ -578,6 +562,69 @@ public class EventService {
         }
 
     }
+    //TODO Да помисля за изнасяне на export методите в отделен service, който да се грижи за генериране на PDF файловете за събития.
+    public void exportParentConsentConfirmNote(UUID eventId, UUID userId, HttpServletResponse response) {
+        Event event = getEventById(eventId);
+        User user = userService.getUserById(userId);
+
+        if (userService.calculateAge(user.getBirthDate()) >= 18) {
+            throw new IllegalEventOperationException("Потребителят е навършил 18 години и не се изисква родителско съгласие.");
+        }
+
+        response.setContentType("application/pdf");
+        String fileName = URLEncoder.encode(user.getFirstName() + "_" + user.getLastName() + "_" + eventId + ".pdf", StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
+
+        Document document = new Document(PageSize.A4);
+        setPageBackground(response, document);
+        document.open();
+
+        try (InputStream fontStream = getClass().getClassLoader().getResourceAsStream("fonts/Ubuntu-Regular.ttf")) {
+            if (fontStream == null) {
+                throw new ExportIOException("Шрифтът Ubuntu-Regular.ttf не е намерен!");
+            }
+
+            BaseFont baseFont = BaseFont.createFont("Ubuntu-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontStream.readAllBytes(), null);
+            Font defaultFont = new Font(baseFont, 12, Font.NORMAL);
+            Font titleFont = new Font(baseFont, 16, Font.BOLD);
+            Font logoFont = new Font(baseFont, 22, Font.BOLDITALIC);
+
+            addDojoName(logoFont, document);
+            document.add(Chunk.NEWLINE);
+
+            Paragraph title = new Paragraph("ДЕКЛАРАЦИЯ ЗА РОДИТЕЛСКО СЪГЛАСИЕ", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(Chunk.NEWLINE);
+
+            String parentName = (user.getContactPerson() != null && !user.getContactPerson().isBlank())
+                    ? user.getContactPerson()
+                    : "..................................................";
+
+            String birthDateStr = user.getBirthDate() != null
+                    ? user.getBirthDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy ' г.'"))
+                    : "................";
+
+            String content = "Аз " + parentName + ", родител/настойник на " + user.getFirstName() + " " + user.getLastName() +
+                    ", роден на " + birthDateStr +
+                    ", давам своето съгласие за участие в: \"" + event.getEventDescription() +
+                    "\", което ще се проведе на " + event.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy ' г.'")) +
+                    " в " + event.getLocation() + ".\n\n" +
+                    "С подписването на тази декларация потвърждавам, че съм запознат с правилата и условията на посоченото по-горе събитие, както и за евентуални рискове свързани с участието на детето ми в него.\n\n" +
+                    "Дата: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy ' г.'")) + "\n\n" +
+                    "Подпис на родител/настойник: ....................................................";
+
+            // Задължително подаваме defaultFont, за да се изпише правилно кирилицата
+            Paragraph mainText = new Paragraph(content, defaultFont);
+            mainText.setAlignment(Element.ALIGN_JUSTIFIED);
+            document.add(mainText);
+
+            document.close();
+        } catch (Exception e) {
+            log.error("Грешка при генериране на родителско съгласие за потребител {} и събитие {}", userId, eventId, e);
+            throw new ExportIOException("Генерирането на PDF файл беше неуспешно!");
+        }
+    }
 
     private static void addDojoName(Font logoFont, Document document) {
         Paragraph clubName = (new Paragraph("\"ДРАГОН ДОДЖО ДСД - Асеновград\"", logoFont));
@@ -616,6 +663,20 @@ public class EventService {
         cell.setPaddingBottom(5f);
 
         return cell;
+    }
+
+    private void setPageBackground(HttpServletResponse response, Document document) {
+        try (InputStream backgroundStream = getClass().getClassLoader().getResourceAsStream("static/images/KAN_PDF_BACKGROUND.jpg")) {
+            if (backgroundStream == null) {
+                throw new ExportIOException("Фоновото изображение KAN_PDF_BACKGROUND.jpg не е намерено!");
+            }
+            Image background = Image.getInstance(backgroundStream.readAllBytes());
+            PdfWriter  writer = PdfWriter.getInstance(document, response.getOutputStream());
+            writer.setPageEvent(new BackgroundPageEvent(background,0.3f));
+        } catch (IOException e) {
+            log.error("Грешка при зареждане или задаване на фоново изображение за PDF!", e);
+            throw new ExportIOException("Неуспешно инициализиране на фоновото изображение на PDF документа!");
+        }
     }
 
 }
