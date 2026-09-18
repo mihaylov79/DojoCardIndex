@@ -6,6 +6,7 @@ import cardindex.dojocardindex.notification.client.dto.NotificationPreferenceReq
 import cardindex.dojocardindex.notification.client.dto.NotificationPreference;
 import cardindex.dojocardindex.notification.client.dto.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,12 +22,20 @@ import java.util.UUID;
 public class NotificationService {
 
     private final NotificationClient notificationClient;
+    private final ObjectProvider<NotificationService> selfProvider; //решава проблема с извикване на кеширан метод в рамките на същият клас -
+                                                                    // където извикването става директно в обекта и не минава през Spring проксито.
+                                                                    // Решава проблема като Spring автоматично разрешава проксито в момента на извикване на selfProvider.getObject().
+                                                                    // selfProvider.getObject(): Връща вече създадения от Spring контекста singleton бийн (неговото CGLIB/AOP прокси).
+                                                                    // Това е обикновена операция по четене на референция от паметта, която отнема наносекунди.
+                                                                    // Няма нови нишки или блокирания Няма нови нишки или блокирания: Операцията не създава нови нишки.
+                                                                    // Справяне с циклични зависимости - ObjectProvider отлага извличането на бийна до момента на реалното извикване, което елиминира цикъла.
 
 
     @Autowired
-    public NotificationService(NotificationClient notificationClient) {
+    public NotificationService(NotificationClient notificationClient, ObjectProvider<NotificationService> selfProvider) {
         this.notificationClient = notificationClient;
 
+        this.selfProvider = selfProvider;
     }
 
     @Async
@@ -96,7 +105,7 @@ public class NotificationService {
     @CacheEvict(value = "notification-history", key = "#recipientID")
     public void sendNotification(UUID recipientID, String firstName, String lastName, String title, String content) {
         // Проверка на предпочитанията за известия
-        NotificationPreference preference = getUserNotificationPreference(recipientID);
+        NotificationPreference preference = selfProvider.getObject().getUserNotificationPreference(recipientID);
 
         if (preference.isEnabled()) {
             NotificationRequest notificationRequest = NotificationRequest.builder()
