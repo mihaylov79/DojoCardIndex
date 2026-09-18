@@ -259,8 +259,15 @@ public class EventController {
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/{eventId}/export/{userId}")
-    public void exportUserExamProtocolPDF(@PathVariable UUID eventId, @PathVariable UUID userId, HttpServletResponse response){
+    public void exportUserExamProtocolPDF(@PathVariable UUID eventId,
+                                          @PathVariable UUID userId, HttpServletResponse response){
         eventService.exportPDFExamProtocolForUser(eventId,userId,response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("tournaments/export/pdf/{eventId}/parent-consent/{userId}")
+    public void exportUserParentConsentDeclarationPDF(@PathVariable UUID eventId,
+                                                      @PathVariable UUID userId, HttpServletResponse response) {
+        eventService.exportParentConsentConfirmNote(eventId, userId, response);
+    }
 }

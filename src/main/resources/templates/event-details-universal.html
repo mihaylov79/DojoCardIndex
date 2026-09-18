@@ -63,6 +63,13 @@
                         <button type="submit">Експорт</button>
                     </form>
 
+                    <!-- Бутон Декларация за съгласие (само при TOURNAMENT и непълнолетни участници) -->
+                    <form th:if="${event.type.name() == 'TOURNAMENT' and userAges[user.id] != null and userAges[user.id] < 18}"
+                          th:action="@{/events/tournaments/export/pdf/{eventId}/parent-consent/{userId}(eventId=${event.id}, userId=${user.id})}"
+                          th:method="GET">
+                        <button type="submit">Декларация</button>
+                    </form>
+
                     <!-- Бутон Отпиши (за всички събития) -->
                     <form th:action="@{/events/requests/{eventId}/users/{userId}/unapprove(eventId=${event.id}, userId=${user.id})}"
                           th:method="PUT">
