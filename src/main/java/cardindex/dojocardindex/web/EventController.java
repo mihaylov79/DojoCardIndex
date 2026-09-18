@@ -1,6 +1,7 @@
 package cardindex.dojocardindex.web;
 
 import cardindex.dojocardindex.Event.models.Event;
+import cardindex.dojocardindex.Event.service.EventExportService;
 import cardindex.dojocardindex.Event.service.EventService;
 import cardindex.dojocardindex.User.models.Degree;
 import cardindex.dojocardindex.User.models.User;
@@ -30,11 +31,13 @@ public class EventController {
 
     private final EventService eventService;
     private final UserService userService;
+    private final EventExportService eventExportService;
 
     @Autowired
-    public EventController(EventService eventService, UserService userService) {
+    public EventController(EventService eventService, UserService userService, EventExportService eventExportService) {
         this.eventService = eventService;
         this.userService = userService;
+        this.eventExportService = eventExportService;
     }
 
     @GetMapping
@@ -247,27 +250,27 @@ public class EventController {
     @GetMapping("/tournaments/export/csv/{eventId}")
     public void EventCsvExport(@PathVariable UUID eventId, HttpServletResponse response) {
 
-        eventService.exportEventDetailsAsCsv(eventId,response);
+        eventExportService.exportEventDetailsAsCsv(eventId,response);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/tournaments/export/pdf/{eventId}")
     public void EventPdfExport(@PathVariable UUID eventId, HttpServletResponse response) {
 
-        eventService.exportEventDetailsAsPDF(eventId,response);
+        eventExportService.exportEventDetailsAsPDF(eventId,response);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("/{eventId}/export/{userId}")
     public void exportUserExamProtocolPDF(@PathVariable UUID eventId,
                                           @PathVariable UUID userId, HttpServletResponse response){
-        eventService.exportPDFExamProtocolForUser(eventId,userId,response);
+        eventExportService.exportPDFExamProtocolForUser(eventId,userId,response);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
     @GetMapping("tournaments/export/pdf/{eventId}/parent-consent/{userId}")
     public void exportUserParentConsentDeclarationPDF(@PathVariable UUID eventId,
                                                       @PathVariable UUID userId, HttpServletResponse response) {
-        eventService.exportParentConsentConfirmNote(eventId, userId, response);
+        eventExportService.exportParentConsentConfirmNote(eventId, userId, response);
     }
 }
