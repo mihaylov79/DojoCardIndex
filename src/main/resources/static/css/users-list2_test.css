@@ -8,10 +8,49 @@
     --white: #fff;
 }
 
-/* Търсачка */
+/* Търсачка и команден панел */
 .search-container {
     margin: 1rem 0 1.5rem 0;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-container > *:only-child {
+    margin-left: auto;
+}
+
+.export-btn {
+    text-decoration: none;
+}
+
+.export-btn button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    font-family: 'Raleway', sans-serif;
+    border: 2px solid var(--red-main);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--red-main);
+    cursor: pointer;
+    font-weight: 400;
+    transition: font-weight 0.2s ease;
+}
+
+.export-btn button:hover {
+    font-weight: 650;
+}
+
+.export-btn button svg {
+    width: 17px;
+    height: 17px;
+    stroke: var(--red-main);
+    flex-shrink: 0;
 }
 
 .search-container input {

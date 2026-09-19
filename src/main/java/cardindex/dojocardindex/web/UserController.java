@@ -9,6 +9,7 @@ import cardindex.dojocardindex.web.dto.EditUserProfileRequest;
 import cardindex.dojocardindex.web.dto.UserEditAdminRequest;
 import cardindex.dojocardindex.web.mapper.DTOMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -186,6 +187,12 @@ public class UserController {
         modelAndView.addObject("userAges",userAges);
 
         return modelAndView;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','TRAINER')")
+    @GetMapping("/users/list/active/export/csv")
+    public void exportActiveUsersToExcel(HttpServletResponse response) {
+        userService.exportActiveUsersToCSV(response);
     }
 
     @PostMapping("/users/upload-profile-picture/{userId}")

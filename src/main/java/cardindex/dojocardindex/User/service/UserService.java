@@ -9,6 +9,7 @@ import cardindex.dojocardindex.imageUpload.ImageUploadService;
 import cardindex.dojocardindex.notification.service.NotificationService;
 import cardindex.dojocardindex.security.CustomUserDetails;
 import cardindex.dojocardindex.web.dto.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -467,6 +472,52 @@ public class UserService implements UserDetailsService {
     public void saveUser(User user) {
 
         userRepository.save(user);
+    }
+
+    public void exportActiveUsersToCSV(HttpServletResponse response) {
+        List<User> activeUsers = getAllActiveUsers();
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"active_users.csv\"");
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy" + " г.");
+
+        try {
+            OutputStream out = response.getOutputStream();
+            out.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF}); // Write BOM for UTF-8
+
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+
+
+            writer.println("ID;Email;Име;Фамилия;Дата на раждане;Възраст;Телефон;Състезател;Височина;Тегло;Преминал медицински прегледи;Лице за контакт;Телефон на лицето за контакт;Email на лицето за контакт;Защитена степен;Първи места;Втори Места;Трети места;Роля;Статус;Статус на регистрация");
+            activeUsers.forEach(user -> writer.printf("%s;%s;%s;%s;%s;%d;%s;%s;%.1f;%.1f;%s;%s;%s;%s;%s;%d;%d;%d;%s;%s;%s%n",
+                    user.getId(),
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getBirthDate() != null ? user.getBirthDate().format(dateFormatter) : "",
+                    calculateAge(user.getBirthDate()),
+                    user.getUserPhone(),
+                    user.getIsCompetitor() != true ? "Да" : "Не",
+                    user.getHeight(),
+                    user.getWeight(),
+                    user.getMedicalExamsPassed() != null ? user.getMedicalExamsPassed().format(dateFormatter) : "",
+                    user.getContactPerson(),
+                    user.getContactPersonPhone(),
+                    user.getContactPersonEmail(),
+                    user.getReachedDegree().getDescription(),
+                    user.getAchievedFirstPlaces(),
+                    user.getAchievedSecondPlaces(),
+                    user.getAchievedThirdPlaces(),
+                    user.getRole().getDescription(),
+                    user.getStatus().getDescription(),
+                    user.getRegistrationStatus().getDescription()));
+
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            log.error("Генерирането на CSV файл за активните потребители беше неуспешно!", e);
+            throw new ExportIOException("Генерирането на CSV файл беше неуспешно!");
+        }
     }
 
 
