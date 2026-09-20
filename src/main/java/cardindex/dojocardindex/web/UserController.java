@@ -270,6 +270,20 @@ public class UserController {
                                    @Valid CreateUserRequest createUserRequest,
                                    BindingResult result){
         User user = userService.getUserById(details.getId());
+
+        if (createUserRequest.getBirthDate() != null) {
+            int age = userService.calculateAge(createUserRequest.getBirthDate());
+
+            if (age<18){
+                if (createUserRequest.getContactPerson() == null || createUserRequest.getContactPerson().isBlank()) {
+                    result.rejectValue("contactPerson", "error.contactPerson", "Лицето за контакт е задължително за непълнолетни потребители!");
+                }
+                if (createUserRequest.getContactPersonEmail() == null || createUserRequest.getContactPersonEmail().isBlank()) {
+                    result.rejectValue("contactPersonEmail", "error.contactPersonEmail", "Имейлът на лицето за контакт е задължителен за непълнолетни потребители!");
+                }
+            }
+        }
+
         if (result.hasErrors()){
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("addUser");

@@ -40,6 +40,8 @@ public class CreateUserRequest {
 //    @URL(message = "Моля въведета валиден URL")
 //    private String profilePicture;
 
+    @NotNull(message = "Това поле не може да бъде празно")
+    @Past(message = "Дата на раждане трябва да бъде в миналото")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 

@@ -135,9 +135,11 @@ public class AdminControllerApiTest {
         request.setMedicalExamsPassed(LocalDate.parse("2025-03-01"));
         request.setContactPerson("Георги Иванов");
         request.setContactPersonPhone("0877322122");
+        request.setContactPersonEmail("contact@example.com");
 
         User mockUser = User.builder().id(userId).build();
         when(userService.getUserById(userId)).thenReturn(mockUser);
+        when(userService.calculateAge(any(LocalDate.class))).thenReturn(43);
         doNothing().when(userService).createNewUser(any(CreateUserRequest.class));
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
