@@ -138,6 +138,10 @@
                     <th>Тегло</th>
                     <td data-label="Тегло" th:text="${user.weight} + ' кг.'"></td>
                 </tr>
+                <tr th:if="${wins} > 0">
+                    <th>Победи</th>
+                    <td data-label="Победи" th:text="${wins}"></td>
+                </tr>
                 <tr sec:authorize="hasAnyRole('TRAINER', 'ADMIN')"
                     th:if="${user.contactPerson != null and !#strings.isEmpty(user.contactPerson)}">
                     <th>Лице за контакт</th>

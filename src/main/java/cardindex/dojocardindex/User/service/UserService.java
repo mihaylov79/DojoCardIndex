@@ -474,6 +474,12 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public int getUserTournamentParticipationWins(User user) {
+        return user.getAchievedFirstPlaces()
+                + user.getAchievedSecondPlaces()
+                + user.getAchievedThirdPlaces();
+    }
+
     public void exportActiveUsersToCSV(HttpServletResponse response) {
         List<User> activeUsers = getAllActiveUsers();
         response.setContentType("text/csv; charset=UTF-8");

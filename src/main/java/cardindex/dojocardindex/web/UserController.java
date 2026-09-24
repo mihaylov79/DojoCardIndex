@@ -130,12 +130,13 @@ public class UserController {
 
         User currentUser = userService.getUserById(details.getId());
         User user = userService.getUserById(id);
+        int wins = userService.getUserTournamentParticipationWins(user);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("user-details-test");
         modelAndView.addObject("user", user);
         modelAndView.addObject("currentUser", currentUser);
-
+        modelAndView.addObject("wins", wins);
         return modelAndView;
 
     }

@@ -119,7 +119,7 @@ public class ConsentHistoryExportService {
                 }
             }
 
-            Paragraph footer = new Paragraph("Документът е генериран автоматично.", smallFont);
+            Paragraph footer = new Paragraph("Документът е генериран автоматично чрез информационната система на Драгон Доджо.", smallFont);
             footer.setSpacingBefore(10f);
             document.add(footer);
         } catch (IOException e) {
