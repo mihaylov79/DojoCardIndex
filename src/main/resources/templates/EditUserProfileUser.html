@@ -63,17 +63,17 @@
             <span th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" class="errors"></span>
         </div>
 
-        <div class="field">
-            <label for="field-contactPerson">Лице за контакт</label>
-            <input type="text" id="field-contactPerson" th:field="*{contactPerson}" placeholder="" class="errors">
-        </div>
+<!--        <div class="field">-->
+<!--            <label for="field-contactPerson">Лице за контакт</label>-->
+<!--            <input type="text" id="field-contactPerson" th:field="*{contactPerson}" placeholder="" class="errors">-->
+<!--        </div>-->
 
-        <div class="field">
-            <label for="field-contactPersonPhone">Телефон на лице за контакт</label>
-            <input type="text" id="field-contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">
-            <span th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"
-                  class="errors"></span>
-        </div>
+<!--        <div class="field">-->
+<!--            <label for="field-contactPersonPhone">Телефон на лице за контакт</label>-->
+<!--            <input type="text" id="field-contactPersonPhone" th:field="*{contactPersonPhone}" placeholder="">-->
+<!--            <span th:if="${#fields.hasErrors('contactPersonPhone')}" th:errors="*{contactPersonPhone}"-->
+<!--                  class="errors"></span>-->
+<!--        </div>-->
 
         <input type="submit" class="button save" value="Запази">
     </form>

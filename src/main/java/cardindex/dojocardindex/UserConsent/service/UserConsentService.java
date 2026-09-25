@@ -314,6 +314,12 @@ public class UserConsentService {
         consent = sendParentConsentInvitationEmailWithStatus(consent, emailRequest, user);
 
         historyService.log(consent, ConsentHistoryAction.PARENT_CONSENT_TOKEN_REGENERATED, user, "Генериран е нов токен за родителско съгласие за потребител " + user.getEmail());
+        
+        if(consent.getSentInvitationMailStatus() == MailSendStatus.SENT) {
+            historyService.log(consent, ConsentHistoryAction.PARENT_INVITED, user, "Инициирано е родителско съгласие за потребител " + user.getEmail() + " с нов токен за родителско съгласие");
+        }else {
+            historyService.log(consent, ConsentHistoryAction.PARENT_INVITATION_FAILED, user, "Неуспещно изпращане на покана за родителско съгласие на потребител " + user.getEmail() + " с нов токен за родителско съгласие");
+        }
     }
     
     @Transactional

@@ -134,8 +134,8 @@ public class UserService implements UserDetailsService {
                 .interests(editUserProfileRequest.getInterests())
                 .height(editUserProfileRequest.getHeight())
                 .weight(editUserProfileRequest.getWeight())
-                .contactPerson(editUserProfileRequest.getContactPerson())
-                .contactPersonPhone(editUserProfileRequest.getContactPersonPhone())
+//                .contactPerson(editUserProfileRequest.getContactPerson())
+//                .contactPersonPhone(editUserProfileRequest.getContactPersonPhone())
                 .build();
 
         userRepository.save(user);
@@ -261,6 +261,7 @@ public class UserService implements UserDetailsService {
                 .medicalExamsPassed(userEditAdminRequest.getMedicalExamsPassed())
                 .contactPerson(userEditAdminRequest.getContactPerson())
                 .contactPersonPhone(userEditAdminRequest.getContactPersonPhone())
+                .contactPersonEmail(userEditAdminRequest.getContactPersonEmail())
                 .build();
 
         userRepository.save(user);
